@@ -2,6 +2,8 @@ export type UserMode = "boss" | "hq" | "self" | "shaper"
 
 export type WebsiteTemplate = "minimal" | "editorial" | "grid"
 
+export type ColorScheme = "warm" | "ocean" | "forest" | "royal"
+
 export type BlockType = "hero" | "about" | "services" | "contact"
 
 export type PriceType = "fixed" | "quote"
@@ -22,6 +24,7 @@ export interface Website {
   user_id: string
   handle: string
   template: WebsiteTemplate
+  color_scheme: ColorScheme
   is_published: boolean
   created_at: string
   updated_at: string

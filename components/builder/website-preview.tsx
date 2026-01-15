@@ -4,17 +4,20 @@ import type {
   WebsiteBlock,
   Service,
   WebsiteTemplate,
+  ColorScheme,
   HeroContent,
   AboutContent,
   ServicesContent,
   ContactContent,
 } from "@/lib/types"
+import { colorSchemes, getGradient, getPriceGradient } from "@/lib/colors"
 import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight } from "lucide-react"
 
 interface WebsitePreviewProps {
   blocks: WebsiteBlock[]
   services: Service[]
   template: WebsiteTemplate
+  colorScheme: ColorScheme
   scale?: number
   profileName?: string | null
   profileAvatar?: string | null
@@ -24,11 +27,13 @@ export function WebsitePreview({
   blocks,
   services,
   template,
+  colorScheme,
   scale = 1,
   profileName,
   profileAvatar,
 }: WebsitePreviewProps) {
   const visibleBlocks = blocks.filter((b) => b.is_visible)
+  const colors = colorSchemes[colorScheme]
 
   const formatPrice = (amount: number | null, type: string) => {
     if (type === "quote") return "Báo giá"
@@ -42,8 +47,8 @@ export function WebsitePreview({
   if (template === "minimal") {
     return (
       <div
-        className="min-h-full bg-[#FFFBF7] text-stone-800"
-        style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
+        className="min-h-full"
+        style={{ transform: `scale(${scale})`, transformOrigin: "top left", backgroundColor: colors.background, color: colors.text }}
       >
         {/* Decorative elements */}
         <svg
@@ -51,17 +56,17 @@ export function WebsitePreview({
           viewBox="0 0 400 80"
           preserveAspectRatio="none"
         >
-          <path d="M0,40 Q100,10 200,40 T400,30" fill="none" stroke="#E8B4A0" strokeWidth="1" />
+          <path d="M0,40 Q100,10 200,40 T400,30" fill="none" stroke={colors.primary} strokeWidth="1" />
         </svg>
-        <div className="absolute top-10 right-4 w-32 h-32 rounded-full bg-gradient-to-br from-orange-100 via-rose-50 to-transparent opacity-40 blur-2xl pointer-events-none" />
+        <div className="absolute top-10 right-4 w-32 h-32 rounded-full opacity-40 blur-2xl pointer-events-none" style={{ background: `linear-gradient(to bottom right, ${colors.primary}30, ${colors.secondary}20, transparent)` }} />
 
         {/* Navigation */}
-        <nav className="sticky top-0 z-10 bg-[#FFFBF7]/80 backdrop-blur-sm border-b border-stone-100">
+        <nav className="sticky top-0 z-10 backdrop-blur-sm" style={{ backgroundColor: `${colors.background}cc`, borderBottom: `1px solid ${colors.border}` }}>
           <div className="px-4 py-3 flex items-center justify-between">
-            <span className="text-xs font-medium tracking-wide text-stone-600">portfolio</span>
+            <span className="text-xs font-medium tracking-wide" style={{ color: colors.textMuted }}>portfolio</span>
             <div className="flex gap-3">
               {["Home", "About", "Services"].map((item) => (
-                <span key={item} className="text-[10px] text-stone-400">{item}</span>
+                <span key={item} className="text-[10px]" style={{ color: colors.textMuted }}>{item}</span>
               ))}
             </div>
           </div>
@@ -74,25 +79,27 @@ export function WebsitePreview({
               const content = block.content as HeroContent
               return (
                 <section key={block.id} className="py-12 px-4 text-center">
-                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Portfolio</p>
+                  <p className="text-[10px] tracking-[0.2em] uppercase mb-2" style={{ color: colors.textMuted }}>Portfolio</p>
                   <h1 className="text-2xl font-light tracking-tight leading-[0.95]">
                     {content.title?.split(" ")[0] || profileName?.split(" ")[0] || "Humanized"}
                   </h1>
                   <h2
                     className="text-2xl font-light tracking-tight leading-[0.95]"
                     style={{
-                      background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)",
+                      backgroundImage: getGradient(colorScheme),
+                      backgroundClip: "text",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
+                      color: "transparent",
                     }}
                   >
                     {content.title?.split(" ").slice(1).join(" ") || "Design."}
                   </h2>
-                  <p className="mt-4 text-xs text-stone-500 max-w-xs mx-auto leading-relaxed">
+                  <p className="mt-4 text-xs max-w-xs mx-auto leading-relaxed" style={{ color: colors.textMuted }}>
                     {content.subtitle || "I transform ideas into beautiful experiences."}
                   </p>
                   {content.cta_text && (
-                    <a className="mt-4 inline-flex items-center gap-1 text-xs text-stone-700 font-medium">
+                    <a className="mt-4 inline-flex items-center gap-1 text-xs font-medium" style={{ color: colors.text }}>
                       {content.cta_text}
                       <ArrowRight className="h-3 w-3" />
                     </a>
@@ -105,9 +112,9 @@ export function WebsitePreview({
               const content = block.content as AboutContent
               return (
                 <section key={block.id} className="py-10 px-4">
-                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">About</p>
+                  <p className="text-[10px] tracking-[0.2em] uppercase mb-2" style={{ color: colors.textMuted }}>About</p>
                   <h2 className="text-lg font-light mb-3">{content.heading || "Về tôi"}</h2>
-                  <p className="text-xs text-stone-500 leading-relaxed">
+                  <p className="text-xs leading-relaxed" style={{ color: colors.textMuted }}>
                     {content.description || "Thông tin giới thiệu."}
                   </p>
                 </section>
@@ -117,24 +124,26 @@ export function WebsitePreview({
             case "services": {
               const content = block.content as ServicesContent
               return (
-                <section key={block.id} className="py-10 px-4 bg-white/50">
-                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Services</p>
+                <section key={block.id} className="py-10 px-4" style={{ backgroundColor: colors.backgroundAlt }}>
+                  <p className="text-[10px] tracking-[0.2em] uppercase mb-2" style={{ color: colors.textMuted }}>Services</p>
                   <h2 className="text-lg font-light mb-3">{content.heading || "Dịch vụ"}</h2>
                   <div className="grid gap-3 grid-cols-2">
                     {services.length > 0 ? (
                       services.map((service, i) => (
-                        <div key={service.id} className="p-3 rounded-lg border border-stone-100 bg-white">
-                          <span className="text-[8px] text-stone-300">0{i + 1}</span>
+                        <div key={service.id} className="p-3 rounded-lg" style={{ border: `1px solid ${colors.border}`, backgroundColor: colors.background }}>
+                          <span className="text-[8px]" style={{ color: colors.textMuted }}>0{i + 1}</span>
                           <h3 className="text-xs font-medium mt-1">{service.title}</h3>
                           {service.description && (
-                            <p className="mt-1 text-[10px] text-stone-500 line-clamp-2">{service.description}</p>
+                            <p className="mt-1 text-[10px] line-clamp-2" style={{ color: colors.textMuted }}>{service.description}</p>
                           )}
                           <p
                             className="mt-2 text-[10px] font-medium"
                             style={{
-                              background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 100%)",
+                              backgroundImage: getPriceGradient(colorScheme),
+                              backgroundClip: "text",
                               WebkitBackgroundClip: "text",
                               WebkitTextFillColor: "transparent",
+                              color: "transparent",
                             }}
                           >
                             {formatPrice(service.price_amount, service.price_type)}
@@ -142,7 +151,7 @@ export function WebsitePreview({
                         </div>
                       ))
                     ) : (
-                      <p className="text-xs text-stone-400 col-span-2">Chưa có dịch vụ</p>
+                      <p className="text-xs col-span-2" style={{ color: colors.textMuted }}>Chưa có dịch vụ</p>
                     )}
                   </div>
                 </section>
@@ -153,9 +162,9 @@ export function WebsitePreview({
               const content = block.content as ContactContent
               return (
                 <section key={block.id} className="py-10 px-4 text-center">
-                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Contact</p>
+                  <p className="text-[10px] tracking-[0.2em] uppercase mb-2" style={{ color: colors.textMuted }}>Contact</p>
                   <h2 className="text-lg font-light mb-4">{content.heading || "Liên hệ"}</h2>
-                  <div className="space-y-2 text-xs text-stone-600">
+                  <div className="space-y-2 text-xs" style={{ color: colors.textMuted }}>
                     {content.email && (
                       <div className="flex items-center justify-center gap-2">
                         <Mail className="h-3 w-3" />
@@ -179,8 +188,8 @@ export function WebsitePreview({
         })}
 
         {/* Footer */}
-        <footer className="py-4 px-4 border-t border-stone-100 text-center">
-          <p className="text-[8px] text-stone-300">Stay Creative</p>
+        <footer className="py-4 px-4 text-center" style={{ borderTop: `1px solid ${colors.border}` }}>
+          <p className="text-[8px]" style={{ color: colors.textMuted }}>Stay Creative</p>
         </footer>
       </div>
     )
@@ -195,8 +204,8 @@ export function WebsitePreview({
         className="min-h-full bg-[#1A1A1A] text-white relative"
         style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
       >
-        {/* Gold accent sidebar */}
-        <div className="absolute top-0 left-0 w-6 h-full bg-[#E6C068]" />
+        {/* Accent sidebar */}
+        <div className="absolute top-0 left-0 w-6 h-full" style={{ backgroundColor: colors.primary }} />
 
         {/* Background watermark */}
         <div className="absolute top-16 left-4 text-[60px] font-black text-white/[0.03] leading-[0.8] tracking-tighter pointer-events-none">
@@ -207,7 +216,7 @@ export function WebsitePreview({
         <nav className="sticky top-0 z-10 bg-[#1A1A1A]/90 backdrop-blur-sm ml-6">
           <div className="px-3 py-3 flex items-center justify-between">
             <div className="flex items-center gap-1">
-              <span className="text-xs font-bold text-[#E6C068]">port.</span>
+              <span className="text-xs font-bold" style={{ color: colors.primary }}>port.</span>
               <span className="text-[8px] text-white/40 uppercase">creative</span>
             </div>
             <div className="flex gap-2">
@@ -239,14 +248,14 @@ export function WebsitePreview({
                       {/* Dots */}
                       <div className="absolute bottom-1 right-1 grid grid-cols-3 gap-px">
                         {[...Array(9)].map((_, i) => (
-                          <div key={i} className="w-1 h-1 rounded-full bg-[#E6C068]/50" />
+                          <div key={i} className="w-1 h-1 rounded-full" style={{ backgroundColor: `${colors.primary}80` }} />
                         ))}
                       </div>
                     </div>
 
                     {/* Content */}
                     <div className="flex-1">
-                      <p className="text-[8px] text-[#E6C068] uppercase tracking-[0.15em] mb-1">
+                      <p className="text-[8px] uppercase tracking-[0.15em] mb-1" style={{ color: colors.primary }}>
                         Breathing in the aroma
                       </p>
                       <h1 className="text-lg font-bold leading-tight">of creativity.</h1>
@@ -282,8 +291,8 @@ export function WebsitePreview({
               return (
                 <section key={block.id} className="ml-6 px-3 py-6 border-t border-white/10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-px bg-[#E6C068]" />
-                    <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">About</span>
+                    <div className="w-6 h-px" style={{ backgroundColor: colors.primary }} />
+                    <span className="text-[8px] uppercase tracking-wider" style={{ color: colors.primary }}>About</span>
                   </div>
                   <h2 className="text-base font-bold mb-2">{content.heading || "Về tôi"}</h2>
                   <p className="text-[10px] text-white/50 leading-relaxed">
@@ -298,8 +307,8 @@ export function WebsitePreview({
               return (
                 <section key={block.id} className="ml-6 px-3 py-6 bg-[#141414]">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-px bg-[#E6C068]" />
-                    <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Services</span>
+                    <div className="w-6 h-px" style={{ backgroundColor: colors.primary }} />
+                    <span className="text-[8px] uppercase tracking-wider" style={{ color: colors.primary }}>Services</span>
                   </div>
                   <h2 className="text-base font-bold mb-3">{content.heading || "Dịch vụ"}</h2>
                   <div className="space-y-0">
@@ -307,7 +316,7 @@ export function WebsitePreview({
                       services.map((service, i) => (
                         <div key={service.id} className="py-3 border-b border-white/10 flex items-start justify-between gap-2">
                           <div className="flex items-start gap-2">
-                            <span className="text-[8px] text-[#E6C068]/50">0{i + 1}</span>
+                            <span className="text-[8px]" style={{ color: `${colors.primary}80` }}>0{i + 1}</span>
                             <div>
                               <h3 className="text-xs font-bold">{service.title}</h3>
                               {service.description && (
@@ -315,7 +324,7 @@ export function WebsitePreview({
                               )}
                             </div>
                           </div>
-                          <span className="text-[10px] text-[#E6C068] font-bold whitespace-nowrap">
+                          <span className="text-[10px] font-bold whitespace-nowrap" style={{ color: colors.primary }}>
                             {formatPrice(service.price_amount, service.price_type)}
                           </span>
                         </div>
@@ -333,20 +342,20 @@ export function WebsitePreview({
               return (
                 <section key={block.id} className="ml-6 px-3 py-6 border-t border-white/10">
                   <div className="flex items-center gap-2 mb-3">
-                    <div className="w-6 h-px bg-[#E6C068]" />
-                    <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Contact</span>
+                    <div className="w-6 h-px" style={{ backgroundColor: colors.primary }} />
+                    <span className="text-[8px] uppercase tracking-wider" style={{ color: colors.primary }}>Contact</span>
                   </div>
                   <h2 className="text-base font-bold mb-3">{content.heading || "Liên hệ"}</h2>
                   <div className="space-y-2">
                     {content.email && (
                       <div className="flex items-center gap-2 text-[10px] text-white/60">
-                        <Mail className="h-3 w-3 text-[#E6C068]" />
+                        <Mail className="h-3 w-3" style={{ color: colors.primary }} />
                         {content.email}
                       </div>
                     )}
                     {content.phone && (
                       <div className="flex items-center gap-2 text-[10px] text-white/60">
-                        <Phone className="h-3 w-3 text-[#E6C068]" />
+                        <Phone className="h-3 w-3" style={{ color: colors.primary }} />
                         {content.phone}
                       </div>
                     )}
@@ -373,28 +382,28 @@ export function WebsitePreview({
   // ═══════════════════════════════════════════════════════════════════
   return (
     <div
-      className="min-h-full bg-[#FDFBF9] text-stone-800 relative"
-      style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
+      className="min-h-full relative"
+      style={{ transform: `scale(${scale})`, transformOrigin: "top left", backgroundColor: colors.background, color: colors.text }}
     >
       {/* Decorative elements */}
-      <div className="absolute top-8 left-4 w-16 h-16 border border-dashed border-stone-200/50 rounded-full pointer-events-none" />
-      <div className="absolute top-32 right-2 w-2 h-2 bg-[#2D5A4A] rounded rotate-12 pointer-events-none" />
+      <div className="absolute top-8 left-4 w-16 h-16 border border-dashed rounded-full pointer-events-none" style={{ borderColor: `${colors.border}80` }} />
+      <div className="absolute top-32 right-2 w-2 h-2 rounded rotate-12 pointer-events-none" style={{ backgroundColor: colors.primary }} />
       <svg className="absolute top-20 left-2 w-12 h-20 opacity-20 pointer-events-none" viewBox="0 0 60 80">
-        <path d="M5,70 Q30,20 55,40" fill="none" stroke="#2D5A4A" strokeWidth="1" strokeDasharray="3,3" />
+        <path d="M5,70 Q30,20 55,40" fill="none" stroke={colors.primary} strokeWidth="1" strokeDasharray="3,3" />
       </svg>
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-10 bg-[#FDFBF9]/90 backdrop-blur-sm border-b border-stone-100">
+      <nav className="sticky top-0 z-10 backdrop-blur-sm" style={{ backgroundColor: `${colors.background}e6`, borderBottom: `1px solid ${colors.border}` }}>
         <div className="px-3 py-3 flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-[#2D5A4A] rounded" />
+            <div className="w-2 h-2 rounded" style={{ backgroundColor: colors.primary }} />
             <span className="text-xs font-semibold">Deo.</span>
           </div>
           <div className="flex items-center gap-2">
             {["Home", "Services"].map((item) => (
-              <span key={item} className="text-[10px] text-stone-500">{item}</span>
+              <span key={item} className="text-[10px]" style={{ color: colors.textMuted }}>{item}</span>
             ))}
-            <div className="px-2 py-1 bg-[#E6A84D] rounded">
+            <div className="px-2 py-1 rounded" style={{ backgroundColor: colors.secondary }}>
               <span className="text-[8px] text-white font-medium">Hire Me</span>
             </div>
           </div>
@@ -437,20 +446,20 @@ export function WebsitePreview({
 
                   {/* Avatar */}
                   <div className="relative">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-b from-[#F7D87A] to-[#E6A84D] overflow-hidden">
+                    <div className="w-20 h-20 rounded-full overflow-hidden" style={{ background: `linear-gradient(to bottom, ${colors.accent}, ${colors.secondary})` }}>
                       {profileAvatar ? (
                         <img src={profileAvatar} alt="" className="w-full h-full object-cover" />
                       ) : (
                         <div className="w-full h-full flex items-end justify-center pb-1">
-                          <div className="w-8 h-8 rounded-full bg-[#D4956A]" />
+                          <div className="w-8 h-8 rounded-full" style={{ backgroundColor: colors.primary }} />
                         </div>
                       )}
                     </div>
                     {/* Dots */}
-                    <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full border border-dashed border-stone-300" />
+                    <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full border border-dashed" style={{ borderColor: colors.border }} />
                     <div className="absolute bottom-1 -left-1 grid grid-cols-3 gap-px">
                       {[...Array(6)].map((_, i) => (
-                        <div key={i} className="w-1 h-1 rounded-full bg-[#2D5A4A]" />
+                        <div key={i} className="w-1 h-1 rounded-full" style={{ backgroundColor: colors.primary }} />
                       ))}
                     </div>
                   </div>
@@ -458,18 +467,18 @@ export function WebsitePreview({
 
                 {/* Right content */}
                 <div className="mt-4">
-                  <p className="text-[10px] text-stone-500 leading-relaxed">
+                  <p className="text-[10px] leading-relaxed" style={{ color: colors.textMuted }}>
                     {content.subtitle || "I design beautifully simple things."}
                   </p>
 
                   {/* Rating */}
-                  <div className="mt-3 inline-block p-2 bg-white rounded border border-stone-100 shadow-sm">
-                    <p className="text-[7px] text-stone-400">5k+ Reviews</p>
+                  <div className="mt-3 inline-block p-2 rounded shadow-sm" style={{ backgroundColor: colors.background, border: `1px solid ${colors.border}` }}>
+                    <p className="text-[7px]" style={{ color: colors.textMuted }}>5k+ Reviews</p>
                     <div className="flex items-center gap-1">
                       <span className="text-sm font-bold">4.9</span>
                       <div className="flex gap-px">
                         {[...Array(5)].map((_, i) => (
-                          <span key={i} className="text-[8px] text-yellow-500">★</span>
+                          <span key={i} className="text-[8px]" style={{ color: colors.secondary }}>★</span>
                         ))}
                       </div>
                     </div>
@@ -477,10 +486,10 @@ export function WebsitePreview({
 
                   {/* Script */}
                   <div className="mt-3 text-right">
-                    <p className="text-lg text-[#2D5A4A] italic" style={{ fontFamily: "Georgia, serif" }}>
+                    <p className="text-lg italic" style={{ fontFamily: "Georgia, serif", color: colors.primary }}>
                       Creative
                     </p>
-                    <p className="text-xs text-stone-400 -mt-1">Designer.</p>
+                    <p className="text-xs -mt-1" style={{ color: colors.textMuted }}>Designer.</p>
                   </div>
                 </div>
               </section>
@@ -490,13 +499,13 @@ export function WebsitePreview({
           case "about": {
             const content = block.content as AboutContent
             return (
-              <section key={block.id} className="px-3 py-6 bg-[#F5F0E8]/50">
+              <section key={block.id} className="px-3 py-6" style={{ backgroundColor: colors.backgroundAlt }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
-                  <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">About</span>
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colors.primary }} />
+                  <span className="text-[8px] uppercase tracking-wider" style={{ color: colors.primary }}>About</span>
                 </div>
                 <h2 className="text-base font-bold mb-2">{content.heading || "Về tôi"}</h2>
-                <p className="text-[10px] text-stone-600 leading-relaxed">
+                <p className="text-[10px] leading-relaxed" style={{ color: colors.textMuted }}>
                   {content.description || "Thông tin giới thiệu."}
                 </p>
               </section>
@@ -508,27 +517,27 @@ export function WebsitePreview({
             return (
               <section key={block.id} className="px-3 py-6">
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-1.5 h-1.5 bg-[#E6A84D] rounded-full" />
-                  <span className="text-[8px] text-[#E6A84D] uppercase tracking-wider">Services</span>
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colors.secondary }} />
+                  <span className="text-[8px] uppercase tracking-wider" style={{ color: colors.secondary }}>Services</span>
                 </div>
                 <h2 className="text-base font-bold mb-3">{content.heading || "Dịch vụ"}</h2>
                 <div className="grid gap-2 grid-cols-2">
                   {services.length > 0 ? (
                     services.map((service, i) => (
-                      <div key={service.id} className="relative p-3 rounded-lg border border-stone-100 bg-white overflow-hidden">
-                        <div className="absolute top-0 left-0 w-0.5 h-full bg-gradient-to-b from-[#2D5A4A] to-[#E6A84D] opacity-0 hover:opacity-100 transition-opacity" />
-                        <span className="text-[7px] text-stone-300">0{i + 1}</span>
+                      <div key={service.id} className="relative p-3 rounded-lg overflow-hidden" style={{ border: `1px solid ${colors.border}`, backgroundColor: colors.background }}>
+                        <div className="absolute top-0 left-0 w-0.5 h-full opacity-0 hover:opacity-100 transition-opacity" style={{ background: `linear-gradient(to bottom, ${colors.primary}, ${colors.secondary})` }} />
+                        <span className="text-[7px]" style={{ color: colors.textMuted }}>0{i + 1}</span>
                         <h3 className="mt-1 text-[11px] font-semibold">{service.title}</h3>
                         {service.description && (
-                          <p className="mt-1 text-[9px] text-stone-500 line-clamp-2">{service.description}</p>
+                          <p className="mt-1 text-[9px] line-clamp-2" style={{ color: colors.textMuted }}>{service.description}</p>
                         )}
-                        <p className="mt-2 text-[10px] font-medium text-[#E6A84D]">
+                        <p className="mt-2 text-[10px] font-medium" style={{ color: colors.secondary }}>
                           {formatPrice(service.price_amount, service.price_type)}
                         </p>
                       </div>
                     ))
                   ) : (
-                    <p className="text-[10px] text-stone-400 col-span-2">Chưa có dịch vụ</p>
+                    <p className="text-[10px] col-span-2" style={{ color: colors.textMuted }}>Chưa có dịch vụ</p>
                   )}
                 </div>
               </section>
@@ -538,25 +547,25 @@ export function WebsitePreview({
           case "contact": {
             const content = block.content as ContactContent
             return (
-              <section key={block.id} className="px-3 py-6 bg-[#F5F0E8]/50">
+              <section key={block.id} className="px-3 py-6" style={{ backgroundColor: colors.backgroundAlt }}>
                 <div className="flex items-center gap-2 mb-3">
-                  <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
-                  <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">Contact</span>
+                  <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: colors.primary }} />
+                  <span className="text-[8px] uppercase tracking-wider" style={{ color: colors.primary }}>Contact</span>
                 </div>
                 <h2 className="text-base font-bold mb-3">{content.heading || "Liên hệ"}</h2>
                 <div className="space-y-2">
                   {content.email && (
-                    <div className="flex items-center gap-2 text-[10px] text-stone-600">
-                      <div className="w-5 h-5 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
-                        <Mail className="h-2.5 w-2.5 text-[#2D5A4A]" />
+                    <div className="flex items-center gap-2 text-[10px]" style={{ color: colors.textMuted }}>
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}20` }}>
+                        <Mail className="h-2.5 w-2.5" style={{ color: colors.primary }} />
                       </div>
                       {content.email}
                     </div>
                   )}
                   {content.phone && (
-                    <div className="flex items-center gap-2 text-[10px] text-stone-600">
-                      <div className="w-5 h-5 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
-                        <Phone className="h-2.5 w-2.5 text-[#2D5A4A]" />
+                    <div className="flex items-center gap-2 text-[10px]" style={{ color: colors.textMuted }}>
+                      <div className="w-5 h-5 rounded-full flex items-center justify-center" style={{ backgroundColor: `${colors.primary}20` }}>
+                        <Phone className="h-2.5 w-2.5" style={{ color: colors.primary }} />
                       </div>
                       {content.phone}
                     </div>
@@ -564,7 +573,7 @@ export function WebsitePreview({
                 </div>
 
                 {/* CTA */}
-                <div className="mt-4 px-3 py-2 bg-gradient-to-r from-[#2D5A4A] to-[#3d7a64] text-white rounded text-center">
+                <div className="mt-4 px-3 py-2 text-white rounded text-center" style={{ background: `linear-gradient(to right, ${colors.primary}, ${colors.secondary})` }}>
                   <span className="text-[10px] font-medium">Let's Work Together →</span>
                 </div>
               </section>
@@ -578,12 +587,12 @@ export function WebsitePreview({
 
       {/* Wave */}
       <svg className="w-full h-6" viewBox="0 0 400 24" preserveAspectRatio="none">
-        <path d="M0,24 Q100,8 200,16 T400,10 L400,24 Z" fill="#F5F0E8" />
+        <path d="M0,24 Q100,8 200,16 T400,10 L400,24 Z" fill={colors.backgroundAlt} />
       </svg>
 
       {/* Footer */}
-      <footer className="py-3 px-3 bg-[#F5F0E8] text-center">
-        <p className="text-[8px] text-stone-400">Powered by BYOUR</p>
+      <footer className="py-3 px-3 text-center" style={{ backgroundColor: colors.backgroundAlt }}>
+        <p className="text-[8px]" style={{ color: colors.textMuted }}>Powered by BYOUR</p>
       </footer>
     </div>
   )

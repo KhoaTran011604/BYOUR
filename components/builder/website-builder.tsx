@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
-import type { Website, WebsiteBlock, Service, WebsiteTemplate } from "@/lib/types"
+import type { Website, WebsiteBlock, Service, WebsiteTemplate, ColorScheme } from "@/lib/types"
 import { ArrowLeft, Eye, Globe, Settings2, Smartphone, Monitor } from "lucide-react"
 import { BlockEditor } from "@/components/builder/block-editor"
 import { BlockList } from "@/components/builder/block-list"
@@ -29,6 +29,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
   const [viewMode, setViewMode] = useState<ViewMode>("edit")
   const [deviceView, setDeviceView] = useState<DeviceView>("desktop")
   const [template, setTemplate] = useState<WebsiteTemplate>(website.template)
+  const [colorScheme, setColorScheme] = useState<ColorScheme>(website.color_scheme || "warm")
   const [isPublished, setIsPublished] = useState(website.is_published)
   const [isSaving, setIsSaving] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
@@ -118,6 +119,16 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
     [website.id],
   )
 
+  const handleColorSchemeChange = useCallback(
+    async (newColorScheme: ColorScheme) => {
+      setColorScheme(newColorScheme)
+
+      const supabase = createClient()
+      await supabase.from("websites").update({ color_scheme: newColorScheme }).eq("id", website.id)
+    },
+    [website.id],
+  )
+
   const handlePublish = async () => {
     setIsSaving(true)
     const supabase = createClient()
@@ -202,7 +213,9 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
         {showSettings && (
           <TemplateSettings
             template={template}
+            colorScheme={colorScheme}
             onTemplateChange={handleTemplateChange}
+            onColorSchemeChange={handleColorSchemeChange}
             onClose={() => setShowSettings(false)}
           />
         )}
@@ -239,7 +252,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
               <div className="p-4">
                 <div className="text-sm font-medium text-muted-foreground mb-2">Preview</div>
                 <div className="rounded-lg border border-border bg-background overflow-hidden">
-                  <WebsitePreview blocks={blocks} services={services} template={template} scale={0.5} />
+                  <WebsitePreview blocks={blocks} services={services} template={template} colorScheme={colorScheme} scale={0.5} />
                 </div>
               </div>
             </div>
@@ -252,7 +265,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
                 deviceView === "mobile" ? "w-[375px]" : "w-full max-w-5xl"
               }`}
             >
-              <WebsitePreview blocks={blocks} services={services} template={template} />
+              <WebsitePreview blocks={blocks} services={services} template={template} colorScheme={colorScheme} />
             </div>
           </div>
         )}
