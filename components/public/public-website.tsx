@@ -7,7 +7,7 @@ import type {
   ServicesContent,
   ContactContent,
 } from "@/lib/types"
-import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight } from "lucide-react"
+import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight, Play } from "lucide-react"
 import Link from "next/link"
 
 interface PublicWebsiteProps {
@@ -18,7 +18,7 @@ interface PublicWebsiteProps {
   profileAvatar: string | null
 }
 
-export function PublicWebsite({ website, blocks, services, profileName }: PublicWebsiteProps) {
+export function PublicWebsite({ website, blocks, services, profileName, profileAvatar }: PublicWebsiteProps) {
   const { template } = website
 
   const formatPrice = (amount: number | null, type: string) => {
@@ -27,236 +27,671 @@ export function PublicWebsite({ website, blocks, services, profileName }: Public
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount)
   }
 
-  // Template-specific styles
-  const getTemplateStyles = () => {
-    switch (template) {
-      case "editorial":
-        return {
-          wrapper: "font-serif",
-          hero: "min-h-[70vh] flex items-center bg-foreground text-background px-8 py-24",
-          heroInner: "max-w-4xl",
-          heroTitle: "text-5xl md:text-7xl font-bold tracking-tight leading-tight",
-          heroSubtitle: "mt-8 text-xl md:text-2xl opacity-80 max-w-2xl leading-relaxed",
-          heroCta:
-            "mt-10 inline-flex items-center gap-2 bg-background text-foreground px-8 py-4 text-lg font-medium hover:opacity-90 transition-opacity",
-          section: "py-24 px-8",
-          sectionAlt: "py-24 px-8 bg-muted/30",
-          sectionTitle: "text-4xl font-bold mb-8 pb-4 border-b-2 border-foreground",
-          sectionContent: "text-lg leading-relaxed text-muted-foreground",
-          serviceGrid: "grid gap-8 md:grid-cols-1",
-          serviceCard: "p-8 border-l-4 border-accent bg-background",
-          serviceTitle: "text-xl font-bold",
-          serviceDesc: "mt-3 text-muted-foreground",
-          servicePrice: "mt-4 text-lg font-semibold text-accent",
-          contactItem: "flex items-center gap-4 text-lg",
-          socialLinks: "flex gap-6 mt-8",
-        }
-      case "grid":
-        return {
-          wrapper: "font-sans",
-          hero: "bg-accent text-accent-foreground px-6 py-16 md:py-24",
-          heroInner: "max-w-6xl mx-auto",
-          heroTitle: "text-3xl md:text-4xl font-bold",
-          heroSubtitle: "mt-4 text-lg opacity-90 max-w-xl",
-          heroCta:
-            "mt-8 inline-flex items-center gap-2 bg-background text-foreground px-6 py-3 rounded-md font-medium hover:opacity-90 transition-opacity",
-          section: "py-16 px-6",
-          sectionAlt: "py-16 px-6 bg-muted/30",
-          sectionTitle: "text-xl font-bold uppercase tracking-wider mb-6",
-          sectionContent: "text-base text-muted-foreground",
-          serviceGrid: "grid gap-4 sm:grid-cols-2 lg:grid-cols-3",
-          serviceCard: "p-5 rounded-lg bg-card border border-border hover:border-accent/50 transition-colors",
-          serviceTitle: "font-semibold",
-          serviceDesc: "mt-2 text-sm text-muted-foreground line-clamp-2",
-          servicePrice: "mt-3 text-sm font-medium text-accent",
-          contactItem: "flex items-center gap-3 text-sm",
-          socialLinks: "flex gap-4 mt-6",
-        }
-      default: // minimal
-        return {
-          wrapper: "font-sans",
-          hero: "min-h-[60vh] flex items-center justify-center text-center px-6 py-20 bg-background",
-          heroInner: "max-w-3xl mx-auto",
-          heroTitle: "text-4xl md:text-5xl font-bold tracking-tight",
-          heroSubtitle: "mt-6 text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed",
-          heroCta:
-            "mt-10 inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-md font-medium hover:opacity-90 transition-opacity",
-          section: "py-20 px-6 max-w-4xl mx-auto",
-          sectionAlt: "py-20 px-6 bg-muted/30",
-          sectionTitle: "text-2xl md:text-3xl font-bold mb-6 text-center",
-          sectionContent: "text-muted-foreground leading-relaxed text-center",
-          serviceGrid: "grid gap-6 md:grid-cols-2 max-w-4xl mx-auto",
-          serviceCard: "p-6 rounded-xl border border-border bg-card hover:shadow-md transition-shadow",
-          serviceTitle: "text-lg font-semibold",
-          serviceDesc: "mt-2 text-sm text-muted-foreground",
-          servicePrice: "mt-4 font-medium text-accent",
-          contactItem: "flex items-center gap-3",
-          socialLinks: "flex justify-center gap-5 mt-8",
-        }
-    }
+  // Get block content by type
+  const getBlock = (type: string) => blocks.find((b) => b.block_type === type)
+  const heroBlock = getBlock("hero")?.content as HeroContent | undefined
+  const aboutBlock = getBlock("about")?.content as AboutContent | undefined
+  const servicesBlock = getBlock("services")?.content as ServicesContent | undefined
+  const contactBlock = getBlock("contact")?.content as ContactContent | undefined
+
+  // ═══════════════════════════════════════════════════════════════════
+  // MINIMAL TEMPLATE - Soft, Elegant, Humanized Design
+  // ═══════════════════════════════════════════════════════════════════
+  if (template === "minimal") {
+    return (
+      <div className="min-h-screen bg-[#FFFBF7] text-stone-800">
+        {/* Decorative elements */}
+        <svg
+          className="fixed bottom-20 left-0 w-full h-40 opacity-10 pointer-events-none"
+          viewBox="0 0 1200 200"
+          preserveAspectRatio="none"
+        >
+          <path d="M0,100 Q300,20 600,100 T1200,80" fill="none" stroke="#E8B4A0" strokeWidth="2" />
+        </svg>
+        <div className="fixed top-20 right-10 w-96 h-96 rounded-full bg-gradient-to-br from-orange-100 via-rose-50 to-transparent opacity-40 blur-3xl pointer-events-none" />
+
+        {/* Navigation */}
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FFFBF7]/80 backdrop-blur-md border-b border-stone-100">
+          <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+            <span className="text-sm font-medium tracking-wide">{website.handle}.byour.co</span>
+            <div className="hidden md:flex gap-8">
+              {["Home", "About", "Services", "Contact"].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm text-stone-400 hover:text-stone-800 transition-colors"
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
+
+        {/* Hero Section */}
+        <section id="home" className="min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20">
+          <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-4">Portfolio</p>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[0.9]">
+            {heroBlock?.title?.split(" ")[0] || profileName?.split(" ")[0] || "Humanized"}
+          </h1>
+          <h2
+            className="text-5xl md:text-7xl lg:text-8xl font-light tracking-tight leading-[0.9]"
+            style={{
+              background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            {heroBlock?.title?.split(" ").slice(1).join(" ") || "Design."}
+          </h2>
+          <p className="mt-8 text-lg text-stone-500 max-w-xl leading-relaxed">
+            {heroBlock?.subtitle || "I transform ideas into beautiful, meaningful digital experiences."}
+          </p>
+          {heroBlock?.cta_text && (
+            <a
+              href={heroBlock.cta_link || "#contact"}
+              className="mt-10 inline-flex items-center gap-2 text-stone-800 font-medium hover:gap-4 transition-all"
+            >
+              {heroBlock.cta_text}
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          )}
+
+          {/* Play intro button */}
+          <div className="absolute bottom-10 right-10 hidden lg:flex items-center gap-3 text-stone-400">
+            <div className="w-12 h-12 rounded-full border border-stone-300 flex items-center justify-center hover:border-stone-500 hover:text-stone-600 transition-colors cursor-pointer">
+              <Play className="h-4 w-4 ml-0.5" />
+            </div>
+            <span className="text-xs tracking-wider">Play Intro</span>
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="py-32 px-6">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-4">About</p>
+            <h2 className="text-3xl md:text-4xl font-light mb-8">{aboutBlock?.heading || "Về tôi"}</h2>
+            <p className="text-lg text-stone-500 leading-relaxed whitespace-pre-line">
+              {aboutBlock?.description || "Thông tin giới thiệu về bản thân và công việc của bạn."}
+            </p>
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section id="services" className="py-32 px-6 bg-white/50">
+          <div className="max-w-4xl mx-auto">
+            <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-4">Services</p>
+            <h2 className="text-3xl md:text-4xl font-light mb-4">{servicesBlock?.heading || "Dịch vụ"}</h2>
+            {servicesBlock?.description && (
+              <p className="text-stone-500 mb-12">{servicesBlock.description}</p>
+            )}
+            <div className="grid gap-6 md:grid-cols-2">
+              {services.map((service, i) => (
+                <div
+                  key={service.id}
+                  className="group p-8 rounded-2xl border border-stone-100 bg-white hover:border-stone-200 hover:shadow-lg transition-all"
+                >
+                  <span className="text-xs text-stone-300 tracking-wider">0{i + 1}</span>
+                  <h3 className="mt-2 text-xl font-medium">{service.title}</h3>
+                  {service.description && (
+                    <p className="mt-3 text-stone-500 text-sm leading-relaxed">{service.description}</p>
+                  )}
+                  <p
+                    className="mt-4 font-medium"
+                    style={{
+                      background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {formatPrice(service.price_amount, service.price_type)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="py-32 px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-4">Contact</p>
+            <h2 className="text-3xl md:text-4xl font-light mb-12">{contactBlock?.heading || "Liên hệ"}</h2>
+            <div className="inline-flex flex-col items-center gap-4">
+              {contactBlock?.email && (
+                <a
+                  href={`mailto:${contactBlock.email}`}
+                  className="flex items-center gap-3 text-stone-600 hover:text-stone-800 transition-colors"
+                >
+                  <Mail className="h-5 w-5" />
+                  {contactBlock.email}
+                </a>
+              )}
+              {contactBlock?.phone && (
+                <a
+                  href={`tel:${contactBlock.phone}`}
+                  className="flex items-center gap-3 text-stone-600 hover:text-stone-800 transition-colors"
+                >
+                  <Phone className="h-5 w-5" />
+                  {contactBlock.phone}
+                </a>
+              )}
+              {contactBlock?.address && (
+                <div className="flex items-center gap-3 text-stone-600">
+                  <MapPin className="h-5 w-5" />
+                  {contactBlock.address}
+                </div>
+              )}
+            </div>
+
+            {contactBlock?.social_links && Object.values(contactBlock.social_links).some((v) => v) && (
+              <div className="flex justify-center gap-6 mt-10">
+                {contactBlock.social_links.facebook && (
+                  <a href={contactBlock.social_links.facebook} target="_blank" rel="noopener noreferrer" className="text-stone-400 hover:text-stone-600 transition-colors">
+                    <Facebook className="h-5 w-5" />
+                  </a>
+                )}
+                {contactBlock.social_links.instagram && (
+                  <a href={contactBlock.social_links.instagram} target="_blank" rel="noopener noreferrer" className="text-stone-400 hover:text-stone-600 transition-colors">
+                    <Instagram className="h-5 w-5" />
+                  </a>
+                )}
+                {contactBlock.social_links.linkedin && (
+                  <a href={contactBlock.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="text-stone-400 hover:text-stone-600 transition-colors">
+                    <Linkedin className="h-5 w-5" />
+                  </a>
+                )}
+                {contactBlock.social_links.twitter && (
+                  <a href={contactBlock.social_links.twitter} target="_blank" rel="noopener noreferrer" className="text-stone-400 hover:text-stone-600 transition-colors">
+                    <Twitter className="h-5 w-5" />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="py-8 px-6 border-t border-stone-100">
+          <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-400">
+            <p>www.{website.handle}.byour.co</p>
+            <p>
+              © {new Date().getFullYear()} {profileName || website.handle} · Powered by{" "}
+              <Link href="/" className="hover:text-stone-600">BYOUR</Link>
+            </p>
+            <p>Stay Creative</p>
+          </div>
+        </footer>
+      </div>
+    )
   }
 
-  const styles = getTemplateStyles()
+  // ═══════════════════════════════════════════════════════════════════
+  // EDITORIAL TEMPLATE - Bold, Dark, Professional (Sultan style)
+  // ═══════════════════════════════════════════════════════════════════
+  if (template === "editorial") {
+    return (
+      <div className="min-h-screen bg-[#1A1A1A] text-white">
+        {/* Gold accent sidebar */}
+        <div className="fixed top-0 left-0 w-16 md:w-24 h-full bg-[#E6C068] z-40" />
 
-  return (
-    <div className={`min-h-screen bg-background ${styles.wrapper}`}>
-      {blocks.map((block) => {
-        switch (block.block_type) {
-          case "hero": {
-            const content = block.content as HeroContent
-            return (
-              <section key={block.id} id="hero" className={styles.hero}>
-                <div className={styles.heroInner}>
-                  <h1 className={styles.heroTitle}>{content.title || profileName || "Chào mừng"}</h1>
-                  <p className={styles.heroSubtitle}>{content.subtitle || "Chào mừng đến với trang web của tôi"}</p>
-                  {content.cta_text && (
-                    <a href={content.cta_link || "#contact"} className={styles.heroCta}>
-                      {content.cta_text}
-                      <ArrowRight className="h-4 w-4" />
-                    </a>
-                  )}
-                </div>
-              </section>
-            )
-          }
+        {/* Background watermark */}
+        <div className="fixed top-1/4 left-20 md:left-32 text-[20vw] font-black text-white/[0.02] leading-[0.8] tracking-tighter pointer-events-none select-none">
+          {(profileName?.split(" ")[0] || website.handle).toUpperCase().slice(0, 4)}
+        </div>
 
-          case "about": {
-            const content = block.content as AboutContent
-            return (
-              <section key={block.id} id="about" className={styles.section}>
-                <h2 className={styles.sectionTitle}>{content.heading || "Về tôi"}</h2>
-                <p className={`${styles.sectionContent} whitespace-pre-line`}>
-                  {content.description || "Thông tin giới thiệu"}
-                </p>
-              </section>
-            )
-          }
+        {/* Navigation */}
+        <nav className="fixed top-0 left-16 md:left-24 right-0 z-50 bg-[#1A1A1A]/90 backdrop-blur-md">
+          <div className="px-8 py-5 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-[#E6C068]">{website.handle.slice(0, 4)}.</span>
+              <span className="text-xs text-white/40 uppercase tracking-wider">creative</span>
+            </div>
+            <div className="hidden md:flex gap-8">
+              {["About", "Work", "Contact"].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm text-white/50 hover:text-white transition-colors"
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          </div>
+        </nav>
 
-          case "services": {
-            const content = block.content as ServicesContent
-            return (
-              <section key={block.id} id="services" className={styles.sectionAlt}>
-                <div className={template === "minimal" ? "max-w-4xl mx-auto" : ""}>
-                  <h2 className={styles.sectionTitle}>{content.heading || "Dịch vụ"}</h2>
-                  {content.description && <p className={`${styles.sectionContent} mb-8`}>{content.description}</p>}
-                  {services.length > 0 ? (
-                    <div className={styles.serviceGrid}>
-                      {services.map((service) => (
-                        <div key={service.id} className={styles.serviceCard}>
-                          <h3 className={styles.serviceTitle}>{service.title}</h3>
-                          {service.description && <p className={styles.serviceDesc}>{service.description}</p>}
-                          <p className={styles.servicePrice}>{formatPrice(service.price_amount, service.price_type)}</p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-center text-muted-foreground">Chưa có dịch vụ nào</p>
-                  )}
-                </div>
-              </section>
-            )
-          }
-
-          case "contact": {
-            const content = block.content as ContactContent
-            return (
-              <section key={block.id} id="contact" className={styles.section}>
-                <div className={template === "minimal" ? "text-center" : ""}>
-                  <h2 className={styles.sectionTitle}>{content.heading || "Liên hệ"}</h2>
-                  <div className={`space-y-4 ${template === "minimal" ? "inline-flex flex-col items-center" : ""}`}>
-                    {content.email && (
-                      <div className={styles.contactItem}>
-                        <Mail className="h-5 w-5 text-accent flex-shrink-0" />
-                        <a href={`mailto:${content.email}`} className="hover:text-accent transition-colors">
-                          {content.email}
-                        </a>
-                      </div>
-                    )}
-                    {content.phone && (
-                      <div className={styles.contactItem}>
-                        <Phone className="h-5 w-5 text-accent flex-shrink-0" />
-                        <a href={`tel:${content.phone}`} className="hover:text-accent transition-colors">
-                          {content.phone}
-                        </a>
-                      </div>
-                    )}
-                    {content.address && (
-                      <div className={styles.contactItem}>
-                        <MapPin className="h-5 w-5 text-accent flex-shrink-0" />
-                        <span>{content.address}</span>
-                      </div>
-                    )}
+        {/* Hero Section */}
+        <section id="home" className="min-h-screen pl-16 md:pl-24 pt-20">
+          <div className="h-screen flex items-center px-8 md:px-16">
+            <div className="grid md:grid-cols-2 gap-12 items-center max-w-6xl">
+              {/* Photo placeholder */}
+              <div className="relative aspect-[3/4] bg-stone-800 overflow-hidden">
+                {profileAvatar ? (
+                  <img src={profileAvatar} alt={profileName || ""} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="w-32 h-32 rounded-full bg-stone-700" />
                   </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
+                {/* Decorative dots */}
+                <div className="absolute bottom-6 right-6 grid grid-cols-4 gap-1">
+                  {[...Array(16)].map((_, i) => (
+                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#E6C068]/60" />
+                  ))}
+                </div>
+              </div>
 
-                  {content.social_links && Object.values(content.social_links).some((v) => v) && (
-                    <div className={styles.socialLinks}>
-                      {content.social_links.facebook && (
-                        <a
-                          href={content.social_links.facebook}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-accent transition-colors"
-                          aria-label="Facebook"
-                        >
-                          <Facebook className="h-6 w-6" />
-                        </a>
-                      )}
-                      {content.social_links.instagram && (
-                        <a
-                          href={content.social_links.instagram}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-accent transition-colors"
-                          aria-label="Instagram"
-                        >
-                          <Instagram className="h-6 w-6" />
-                        </a>
-                      )}
-                      {content.social_links.linkedin && (
-                        <a
-                          href={content.social_links.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-accent transition-colors"
-                          aria-label="LinkedIn"
-                        >
-                          <Linkedin className="h-6 w-6" />
-                        </a>
-                      )}
-                      {content.social_links.twitter && (
-                        <a
-                          href={content.social_links.twitter}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-muted-foreground hover:text-accent transition-colors"
-                          aria-label="Twitter"
-                        >
-                          <Twitter className="h-6 w-6" />
-                        </a>
-                      )}
+              {/* Content */}
+              <div>
+                <p className="text-[#E6C068] uppercase tracking-[0.3em] text-sm mb-4">
+                  Breathing in the aroma
+                </p>
+                <h1 className="text-4xl md:text-6xl font-bold leading-tight">
+                  of creativity.
+                </h1>
+                <p className="mt-6 text-white/50 leading-relaxed max-w-md">
+                  {heroBlock?.subtitle || "With years of experience in design, I help businesses stand out and connect with their audience."}
+                </p>
+                {heroBlock?.cta_text && (
+                  <a
+                    href={heroBlock.cta_link || "#contact"}
+                    className="mt-8 inline-flex items-center gap-3 border border-white/20 px-6 py-3 text-sm uppercase tracking-wider hover:bg-white hover:text-[#1A1A1A] transition-all"
+                  >
+                    {heroBlock.cta_text}
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Stats row */}
+          <div className="px-8 md:px-16 py-12 border-t border-white/10">
+            <div className="flex gap-16">
+              {[
+                { value: "10+", label: "Years Exp." },
+                { value: services.length.toString(), label: "Services" },
+                { value: "50+", label: "Clients" },
+              ].map((stat) => (
+                <div key={stat.label}>
+                  <span className="text-4xl font-bold block">{stat.value}</span>
+                  <span className="text-xs text-white/40 uppercase tracking-wider">{stat.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="pl-16 md:pl-24 py-32 px-8 md:px-16 border-t border-white/10">
+          <div className="max-w-4xl">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-px bg-[#E6C068]" />
+              <span className="text-[#E6C068] text-sm uppercase tracking-wider">About</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-8">{aboutBlock?.heading || "Về tôi"}</h2>
+            <p className="text-white/60 text-lg leading-relaxed whitespace-pre-line">
+              {aboutBlock?.description || "Thông tin giới thiệu về bản thân và công việc của bạn."}
+            </p>
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section id="work" className="pl-16 md:pl-24 py-32 px-8 md:px-16 bg-[#141414]">
+          <div className="max-w-6xl">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-px bg-[#E6C068]" />
+              <span className="text-[#E6C068] text-sm uppercase tracking-wider">Services</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">{servicesBlock?.heading || "Dịch vụ"}</h2>
+            {servicesBlock?.description && (
+              <p className="text-white/50 mb-12 max-w-2xl">{servicesBlock.description}</p>
+            )}
+            <div className="space-y-0">
+              {services.map((service, i) => (
+                <div
+                  key={service.id}
+                  className="group py-8 border-b border-white/10 hover:border-[#E6C068]/50 transition-colors"
+                >
+                  <div className="flex items-start justify-between gap-8">
+                    <div className="flex items-start gap-6">
+                      <span className="text-[#E6C068]/50 text-sm">0{i + 1}</span>
+                      <div>
+                        <h3 className="text-xl font-bold group-hover:text-[#E6C068] transition-colors">
+                          {service.title}
+                        </h3>
+                        {service.description && (
+                          <p className="mt-2 text-white/40 max-w-md">{service.description}</p>
+                        )}
+                      </div>
+                    </div>
+                    <span className="text-[#E6C068] font-bold">
+                      {formatPrice(service.price_amount, service.price_type)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="pl-16 md:pl-24 py-32 px-8 md:px-16 border-t border-white/10">
+          <div className="max-w-4xl">
+            <div className="flex items-center gap-4 mb-8">
+              <div className="w-12 h-px bg-[#E6C068]" />
+              <span className="text-[#E6C068] text-sm uppercase tracking-wider">Contact</span>
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold mb-12">{contactBlock?.heading || "Let's work together"}</h2>
+            <div className="space-y-6">
+              {contactBlock?.email && (
+                <a href={`mailto:${contactBlock.email}`} className="flex items-center gap-4 text-lg text-white/60 hover:text-[#E6C068] transition-colors">
+                  <Mail className="h-5 w-5 text-[#E6C068]" />
+                  {contactBlock.email}
+                </a>
+              )}
+              {contactBlock?.phone && (
+                <a href={`tel:${contactBlock.phone}`} className="flex items-center gap-4 text-lg text-white/60 hover:text-[#E6C068] transition-colors">
+                  <Phone className="h-5 w-5 text-[#E6C068]" />
+                  {contactBlock.phone}
+                </a>
+              )}
+              {contactBlock?.address && (
+                <div className="flex items-center gap-4 text-lg text-white/60">
+                  <MapPin className="h-5 w-5 text-[#E6C068]" />
+                  {contactBlock.address}
+                </div>
+              )}
+            </div>
+
+            {contactBlock?.social_links && Object.values(contactBlock.social_links).some((v) => v) && (
+              <div className="flex gap-6 mt-12">
+                {contactBlock.social_links.facebook && (
+                  <a href={contactBlock.social_links.facebook} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-[#E6C068] transition-colors">
+                    <Facebook className="h-6 w-6" />
+                  </a>
+                )}
+                {contactBlock.social_links.instagram && (
+                  <a href={contactBlock.social_links.instagram} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-[#E6C068] transition-colors">
+                    <Instagram className="h-6 w-6" />
+                  </a>
+                )}
+                {contactBlock.social_links.linkedin && (
+                  <a href={contactBlock.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-[#E6C068] transition-colors">
+                    <Linkedin className="h-6 w-6" />
+                  </a>
+                )}
+                {contactBlock.social_links.twitter && (
+                  <a href={contactBlock.social_links.twitter} target="_blank" rel="noopener noreferrer" className="text-white/40 hover:text-[#E6C068] transition-colors">
+                    <Twitter className="h-6 w-6" />
+                  </a>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="pl-16 md:pl-24 py-8 px-8 md:px-16 border-t border-white/10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-white/40">
+            <p>© {new Date().getFullYear()} {profileName || website.handle}</p>
+            <p>
+              Powered by{" "}
+              <Link href="/" className="text-[#E6C068] hover:underline">BYOUR</Link>
+            </p>
+          </div>
+        </footer>
+      </div>
+    )
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // GRID TEMPLATE - Playful, Modern, Creative (John Deo style)
+  // ═══════════════════════════════════════════════════════════════════
+  return (
+    <div className="min-h-screen bg-[#FDFBF9] text-stone-800">
+      {/* Decorative elements */}
+      <div className="fixed top-20 left-20 w-64 h-64 border-2 border-dashed border-stone-200/50 rounded-full pointer-events-none" />
+      <div className="fixed bottom-40 right-20 w-8 h-8 bg-[#2D5A4A] rounded rotate-12 pointer-events-none" />
+      <svg className="fixed top-1/3 left-10 w-40 h-60 opacity-20 pointer-events-none" viewBox="0 0 60 80">
+        <path d="M5,70 Q30,20 55,40" fill="none" stroke="#2D5A4A" strokeWidth="1" strokeDasharray="4,4" />
+      </svg>
+
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#FDFBF9]/90 backdrop-blur-md border-b border-stone-100">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="w-3 h-3 bg-[#2D5A4A] rounded" />
+            <span className="font-semibold">{website.handle}.</span>
+          </div>
+          <div className="hidden md:flex items-center gap-6">
+            {["Home", "Services", "Projects", "Contact"].map((item) => (
+              <a
+                key={item}
+                href={`#${item.toLowerCase()}`}
+                className="text-sm text-stone-500 hover:text-stone-800 transition-colors"
+              >
+                {item}
+              </a>
+            ))}
+            <a
+              href="#contact"
+              className="px-4 py-2 bg-[#E6A84D] text-white rounded text-sm font-medium hover:bg-[#d49a45] transition-colors"
+            >
+              Hire Me
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="min-h-screen pt-20 px-6">
+        <div className="max-w-6xl mx-auto py-20">
+          <div className="grid md:grid-cols-3 gap-8 items-center">
+            {/* Left content */}
+            <div className="md:col-span-1">
+              <p className="text-stone-400 mb-2">Xin chào! Tôi là</p>
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">
+                {heroBlock?.title || profileName || "John Deo"}.
+              </h1>
+
+              {/* Experience badge */}
+              <div className="mt-6 inline-flex items-center gap-2 px-3 py-2 bg-stone-100 rounded-full">
+                <span className="text-2xl font-bold">08</span>
+                <div className="text-xs text-stone-500 leading-tight">
+                  <div>Years</div>
+                  <div>Experience</div>
+                </div>
+              </div>
+
+              {/* Social icons */}
+              <div className="mt-6 flex gap-2">
+                {contactBlock?.social_links?.linkedin && (
+                  <a href={contactBlock.social_links.linkedin} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded border border-stone-200 flex items-center justify-center text-stone-400 hover:text-[#2D5A4A] hover:border-[#2D5A4A] transition-colors">
+                    <Linkedin className="h-4 w-4" />
+                  </a>
+                )}
+                {contactBlock?.social_links?.instagram && (
+                  <a href={contactBlock.social_links.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded border border-stone-200 flex items-center justify-center text-stone-400 hover:text-[#2D5A4A] hover:border-[#2D5A4A] transition-colors">
+                    <Instagram className="h-4 w-4" />
+                  </a>
+                )}
+                {contactBlock?.social_links?.facebook && (
+                  <a href={contactBlock.social_links.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded border border-stone-200 flex items-center justify-center text-stone-400 hover:text-[#2D5A4A] hover:border-[#2D5A4A] transition-colors">
+                    <Facebook className="h-4 w-4" />
+                  </a>
+                )}
+                {contactBlock?.social_links?.twitter && (
+                  <a href={contactBlock.social_links.twitter} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded border border-stone-200 flex items-center justify-center text-stone-400 hover:text-[#2D5A4A] hover:border-[#2D5A4A] transition-colors">
+                    <Twitter className="h-4 w-4" />
+                  </a>
+                )}
+              </div>
+            </div>
+
+            {/* Center - Avatar */}
+            <div className="md:col-span-1 flex justify-center">
+              <div className="relative">
+                <div className="w-64 h-64 md:w-80 md:h-80 rounded-full bg-gradient-to-b from-[#F7D87A] to-[#E6A84D] overflow-hidden">
+                  {profileAvatar ? (
+                    <img src={profileAvatar} alt={profileName || ""} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-end justify-center pb-4">
+                      <div className="w-32 h-32 rounded-full bg-[#D4956A]" />
                     </div>
                   )}
                 </div>
-              </section>
-            )
-          }
+                {/* Decorative dots */}
+                <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full border-2 border-dashed border-stone-300" />
+                <div className="absolute bottom-4 -left-4 grid grid-cols-3 gap-1">
+                  {[...Array(9)].map((_, i) => (
+                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-[#2D5A4A]" />
+                  ))}
+                </div>
+              </div>
+            </div>
 
-          default:
-            return null
-        }
-      })}
+            {/* Right content */}
+            <div className="md:col-span-1 space-y-4">
+              <p className="text-stone-500 leading-relaxed">
+                {heroBlock?.subtitle || "I design beautifully simple things and I love what I do."}
+              </p>
+
+              {/* Rating card */}
+              <div className="p-4 bg-white rounded-lg border border-stone-100 shadow-sm inline-block">
+                <p className="text-xs text-stone-400 mb-1">5k+ Reviews</p>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">4.9</span>
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-yellow-500">★</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Script text */}
+              <div className="text-right pt-4">
+                <p className="text-3xl text-[#2D5A4A] italic" style={{ fontFamily: "Georgia, serif" }}>
+                  Creative
+                </p>
+                <p className="text-lg text-stone-400">Designer.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-24 px-6 bg-[#F5F0E8]/50">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-2 bg-[#2D5A4A] rounded-full" />
+            <span className="text-sm text-[#2D5A4A] uppercase tracking-wider">About Me</span>
+          </div>
+          <h2 className="text-3xl font-bold mb-6">{aboutBlock?.heading || "Về tôi"}</h2>
+          <p className="text-stone-600 text-lg leading-relaxed whitespace-pre-line">
+            {aboutBlock?.description || "Thông tin giới thiệu về bản thân và công việc của bạn."}
+          </p>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="py-24 px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-2 bg-[#E6A84D] rounded-full" />
+            <span className="text-sm text-[#E6A84D] uppercase tracking-wider">Services</span>
+          </div>
+          <h2 className="text-3xl font-bold mb-4">{servicesBlock?.heading || "Dịch vụ"}</h2>
+          {servicesBlock?.description && (
+            <p className="text-stone-500 mb-12">{servicesBlock.description}</p>
+          )}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service, i) => (
+              <div
+                key={service.id}
+                className="group relative p-6 rounded-xl border border-stone-100 bg-white hover:border-[#2D5A4A]/30 hover:shadow-lg transition-all overflow-hidden"
+              >
+                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-[#2D5A4A] to-[#E6A84D] opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="text-xs text-stone-300">0{i + 1}</span>
+                <h3 className="mt-2 text-lg font-semibold group-hover:text-[#2D5A4A] transition-colors">
+                  {service.title}
+                </h3>
+                {service.description && (
+                  <p className="mt-2 text-sm text-stone-500 line-clamp-2">{service.description}</p>
+                )}
+                <p className="mt-4 font-medium text-[#E6A84D]">
+                  {formatPrice(service.price_amount, service.price_type)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-24 px-6 bg-[#F5F0E8]/50">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-2 h-2 bg-[#2D5A4A] rounded-full" />
+            <span className="text-sm text-[#2D5A4A] uppercase tracking-wider">Contact</span>
+          </div>
+          <h2 className="text-3xl font-bold mb-12">{contactBlock?.heading || "Liên hệ với tôi"}</h2>
+          <div className="grid md:grid-cols-2 gap-12">
+            <div className="space-y-4">
+              {contactBlock?.email && (
+                <a href={`mailto:${contactBlock.email}`} className="flex items-center gap-3 text-stone-600 hover:text-[#2D5A4A] transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
+                    <Mail className="h-4 w-4 text-[#2D5A4A]" />
+                  </div>
+                  {contactBlock.email}
+                </a>
+              )}
+              {contactBlock?.phone && (
+                <a href={`tel:${contactBlock.phone}`} className="flex items-center gap-3 text-stone-600 hover:text-[#2D5A4A] transition-colors">
+                  <div className="w-10 h-10 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
+                    <Phone className="h-4 w-4 text-[#2D5A4A]" />
+                  </div>
+                  {contactBlock.phone}
+                </a>
+              )}
+              {contactBlock?.address && (
+                <div className="flex items-center gap-3 text-stone-600">
+                  <div className="w-10 h-10 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-[#2D5A4A]" />
+                  </div>
+                  {contactBlock.address}
+                </div>
+              )}
+            </div>
+            <div className="flex items-center justify-center">
+              <a
+                href={`mailto:${contactBlock?.email || ""}`}
+                className="px-8 py-4 bg-gradient-to-r from-[#2D5A4A] to-[#3d7a64] text-white rounded-lg font-medium hover:shadow-lg transition-shadow flex items-center gap-2"
+              >
+                Let's Work Together
+                <ArrowRight className="h-4 w-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Wave decoration */}
+      <svg className="w-full h-20" viewBox="0 0 1200 80" preserveAspectRatio="none">
+        <path d="M0,80 Q300,20 600,50 T1200,30 L1200,80 Z" fill="#F5F0E8" />
+      </svg>
 
       {/* Footer */}
-      <footer className="border-t border-border py-8 px-6">
-        <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+      <footer className="py-8 px-6 bg-[#F5F0E8]">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-stone-500">
+          <p>© {new Date().getFullYear()} {profileName || website.handle}</p>
           <p>
-            Tạo bởi{" "}
-            <Link href="/" className="text-accent hover:underline">
-              BYOUR
-            </Link>
-          </p>
-          <p>
-            © {new Date().getFullYear()} {profileName || website.handle}
+            Powered by{" "}
+            <Link href="/" className="text-[#2D5A4A] hover:underline">BYOUR</Link>
           </p>
         </div>
       </footer>

@@ -10,6 +10,7 @@ import { createClient } from "@/lib/supabase/client"
 import type { WebsiteTemplate } from "@/lib/types"
 import { ArrowLeft, ArrowRight, Check } from "lucide-react"
 import Link from "next/link"
+import { TemplatePreview } from "./template-previews"
 
 const templates: { id: WebsiteTemplate; name: string; description: string }[] = [
   {
@@ -183,9 +184,10 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
                     <CardDescription>{template.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="aspect-video rounded-lg border border-border bg-muted/50 flex items-center justify-center">
-                      <span className="text-sm text-muted-foreground">Preview {template.name}</span>
-                    </div>
+                    <TemplatePreview
+                      template={template.id}
+                      isSelected={selectedTemplate === template.id}
+                    />
                   </CardContent>
                 </Card>
               ))}
