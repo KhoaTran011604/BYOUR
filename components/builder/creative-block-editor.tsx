@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent } from "@/components/ui/card"
 import type { CreativeContent, CreativeItem, CreativeItemType } from "@/lib/types"
 import {
-  Plus,
   Trash2,
   GripVertical,
   Image,
@@ -17,6 +16,7 @@ import {
   Space,
   MousePointerClick,
   Type,
+  Heading,
 } from "lucide-react"
 import type React from "react"
 
@@ -26,6 +26,7 @@ interface CreativeBlockEditorProps {
 }
 
 const itemTypeLabels: Record<CreativeItemType, string> = {
+  heading: "Tiêu đề",
   image: "Hình ảnh",
   link: "Liên kết",
   divider: "Đường kẻ",
@@ -35,6 +36,7 @@ const itemTypeLabels: Record<CreativeItemType, string> = {
 }
 
 const itemTypeIcons: Record<CreativeItemType, React.ElementType> = {
+  heading: Heading,
   image: Image,
   link: Link,
   divider: Minus,
@@ -52,6 +54,7 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
     const newItem: CreativeItem = {
       id: crypto.randomUUID(),
       type,
+      ...(type === "heading" && { heading_text: "", heading_size: "medium" as const }),
       ...(type === "image" && { image_url: "", image_alt: "" }),
       ...(type === "link" && { link_text: "Liên kết mới", link_url: "" }),
       ...(type === "button" && { button_text: "Nút mới", button_url: "", button_style: "primary" as const }),
@@ -96,6 +99,32 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
 
   const renderItemEditor = (item: CreativeItem) => {
     switch (item.type) {
+      case "heading":
+        return (
+          <div className="space-y-2">
+            <Input
+              value={item.heading_text || ""}
+              onChange={(e) => handleUpdateItem(item.id, { heading_text: e.target.value })}
+              placeholder="Nhập tiêu đề..."
+            />
+            <Select
+              value={item.heading_size || "medium"}
+              onValueChange={(value: "large" | "medium" | "small") =>
+                handleUpdateItem(item.id, { heading_size: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="large">Lớn</SelectItem>
+                <SelectItem value="medium">Vừa</SelectItem>
+                <SelectItem value="small">Nhỏ</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )
+
       case "image":
         return (
           <div className="space-y-2">

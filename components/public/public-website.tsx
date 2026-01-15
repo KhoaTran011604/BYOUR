@@ -31,8 +31,24 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
 
   const renderCreativeItem = (item: CreativeItem, variant: "minimal" | "editorial" | "grid") => {
     const spacerSizes = { small: "h-4", medium: "h-8", large: "h-16" }
+    const headingSizes = {
+      large: "text-3xl md:text-4xl font-bold",
+      medium: "text-2xl md:text-3xl font-bold",
+      small: "text-xl md:text-2xl font-semibold",
+    }
 
     switch (item.type) {
+      case "heading":
+        return (
+          <h2
+            className={`${headingSizes[item.heading_size || "medium"]} mb-6 ${
+              variant === "editorial" ? "text-white" : "text-stone-800"
+            }`}
+          >
+            {item.heading_text || ""}
+          </h2>
+        )
+
       case "image":
         return item.image_url ? (
           <img

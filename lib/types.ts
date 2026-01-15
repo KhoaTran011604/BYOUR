@@ -70,11 +70,14 @@ export interface ContactContent {
   }
 }
 
-export type CreativeItemType = "image" | "link" | "divider" | "spacer" | "button" | "text"
+export type CreativeItemType = "heading" | "image" | "link" | "divider" | "spacer" | "button" | "text"
 
 export interface CreativeItem {
   id: string
   type: CreativeItemType
+  // Heading
+  heading_text?: string
+  heading_size?: "large" | "medium" | "small"
   // Image
   image_url?: string
   image_alt?: string

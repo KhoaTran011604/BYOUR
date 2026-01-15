@@ -40,8 +40,24 @@ export function WebsitePreview({
 
   const renderCreativeItem = (item: CreativeItem, variant: "minimal" | "editorial" | "grid") => {
     const spacerSizes = { small: "h-2", medium: "h-4", large: "h-8" }
+    const headingSizes = {
+      large: "text-lg font-bold",
+      medium: "text-base font-bold",
+      small: "text-sm font-semibold",
+    }
 
     switch (item.type) {
+      case "heading":
+        return (
+          <h2
+            className={`${headingSizes[item.heading_size || "medium"]} mb-2 ${
+              variant === "editorial" ? "text-white" : "text-stone-800"
+            }`}
+          >
+            {item.heading_text || ""}
+          </h2>
+        )
+
       case "image":
         return item.image_url ? (
           <img
