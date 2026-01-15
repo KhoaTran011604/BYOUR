@@ -5,7 +5,7 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
-import type { Website, WebsiteBlock, Service, WebsiteTemplate } from "@/lib/types"
+import type { Website, WebsiteBlock, Service, WebsiteTemplate, BlockType } from "@/lib/types"
 import { ArrowLeft, Eye, Globe, Settings2, Smartphone, Monitor } from "lucide-react"
 import { BlockEditor } from "@/components/builder/block-editor"
 import { BlockList } from "@/components/builder/block-list"
@@ -107,6 +107,50 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
     const supabase = createClient()
     await supabase.from("services").delete().eq("id", serviceId)
   }, [])
+
+  const handleBlockAdd = useCallback(
+    async (blockType: BlockType) => {
+      const supabase = createClient()
+
+      const defaultContent: Record<BlockType, object> = {
+        hero: { title: "", subtitle: "", image_url: null, cta_text: null, cta_link: null },
+        about: { heading: "Về tôi", description: "", image_url: null },
+        services: { heading: "Dịch vụ", description: null },
+        contact: { heading: "Liên hệ", email: null, phone: null, address: null, social_links: {} },
+        creative: { name: "Creative Block", items: [] },
+      }
+
+      const newBlock = {
+        website_id: website.id,
+        block_type: blockType,
+        order_index: blocks.length,
+        content: defaultContent[blockType],
+        is_visible: true,
+      }
+
+      const { data, error } = await supabase.from("website_blocks").insert(newBlock).select().single()
+
+      if (!error && data) {
+        setBlocks((prev) => [...prev, data])
+        setSelectedBlockId(data.id)
+      }
+    },
+    [website.id, blocks.length],
+  )
+
+  const handleBlockDelete = useCallback(
+    async (blockId: string) => {
+      const supabase = createClient()
+      await supabase.from("website_blocks").delete().eq("id", blockId)
+
+      setBlocks((prev) => prev.filter((b) => b.id !== blockId))
+
+      if (selectedBlockId === blockId) {
+        setSelectedBlockId(blocks[0]?.id || null)
+      }
+    },
+    [selectedBlockId, blocks],
+  )
 
   const handleTemplateChange = useCallback(
     async (newTemplate: WebsiteTemplate) => {
@@ -217,6 +261,8 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
                 onSelectBlock={setSelectedBlockId}
                 onReorderBlocks={handleBlockReorder}
                 onToggleVisibility={handleBlockVisibilityToggle}
+                onAddBlock={handleBlockAdd}
+                onDeleteBlock={handleBlockDelete}
               />
             </div>
 

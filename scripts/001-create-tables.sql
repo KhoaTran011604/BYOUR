@@ -27,7 +27,7 @@ CREATE TABLE websites (
 CREATE TABLE website_blocks (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   website_id UUID NOT NULL REFERENCES websites(id) ON DELETE CASCADE,
-  block_type TEXT NOT NULL CHECK (block_type IN ('hero', 'about', 'services', 'contact')),
+  block_type TEXT NOT NULL CHECK (block_type IN ('hero', 'about', 'services', 'contact', 'creative')),
   order_index INTEGER NOT NULL DEFAULT 0,
   content JSONB NOT NULL DEFAULT '{}',
   is_visible BOOLEAN DEFAULT TRUE,

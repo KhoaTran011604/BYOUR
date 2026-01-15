@@ -13,9 +13,11 @@ import type {
   AboutContent,
   ServicesContent,
   ContactContent,
+  CreativeContent,
   PriceType,
 } from "@/lib/types"
 import { Plus, Trash2 } from "lucide-react"
+import { CreativeBlockEditor } from "@/components/builder/creative-block-editor"
 
 interface BlockEditorProps {
   block: WebsiteBlock
@@ -281,23 +283,34 @@ export function BlockEditor({
     )
   }
 
-  const blockTitles = {
+  const blockTitles: Record<string, string> = {
     hero: "Hero Section",
     about: "Giới thiệu",
     services: "Dịch vụ",
     contact: "Liên hệ",
+    creative: "Creative Block",
   }
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{blockTitles[block.block_type]}</CardTitle>
+        <CardTitle>
+          {block.block_type === "creative"
+            ? (block.content as CreativeContent).name || "Creative Block"
+            : blockTitles[block.block_type]}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         {block.block_type === "hero" && renderHeroEditor()}
         {block.block_type === "about" && renderAboutEditor()}
         {block.block_type === "services" && renderServicesEditor()}
         {block.block_type === "contact" && renderContactEditor()}
+        {block.block_type === "creative" && (
+          <CreativeBlockEditor
+            content={block.content as CreativeContent}
+            onContentChange={(content) => onBlockUpdate(block.id, content)}
+          />
+        )}
       </CardContent>
     </Card>
   )
