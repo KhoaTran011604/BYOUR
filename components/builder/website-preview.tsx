@@ -9,7 +9,7 @@ import type {
   ServicesContent,
   ContactContent,
 } from "@/lib/types"
-import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight, Play } from "lucide-react"
+import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight } from "lucide-react"
 
 interface WebsitePreviewProps {
   blocks: WebsiteBlock[]
@@ -35,13 +35,6 @@ export function WebsitePreview({
     if (!amount) return "Liên hệ"
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount)
   }
-
-  // Get block content by type
-  const getBlock = (type: string) => visibleBlocks.find((b) => b.block_type === type)
-  const heroBlock = getBlock("hero")?.content as HeroContent | undefined
-  const aboutBlock = getBlock("about")?.content as AboutContent | undefined
-  const servicesBlock = getBlock("services")?.content as ServicesContent | undefined
-  const contactBlock = getBlock("contact")?.content as ContactContent | undefined
 
   // ═══════════════════════════════════════════════════════════════════
   // MINIMAL TEMPLATE - Soft, Elegant, Humanized Design
@@ -74,103 +67,116 @@ export function WebsitePreview({
           </div>
         </nav>
 
-        {/* Hero Section */}
-        {heroBlock !== undefined && (
-          <section className="py-12 px-4 text-center">
-            <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Portfolio</p>
-            <h1 className="text-2xl font-light tracking-tight leading-[0.95]">
-              {heroBlock?.title?.split(" ")[0] || profileName?.split(" ")[0] || "Humanized"}
-            </h1>
-            <h2
-              className="text-2xl font-light tracking-tight leading-[0.95]"
-              style={{
-                background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              {heroBlock?.title?.split(" ").slice(1).join(" ") || "Design."}
-            </h2>
-            <p className="mt-4 text-xs text-stone-500 max-w-xs mx-auto leading-relaxed">
-              {heroBlock?.subtitle || "I transform ideas into beautiful experiences."}
-            </p>
-            {heroBlock?.cta_text && (
-              <a className="mt-4 inline-flex items-center gap-1 text-xs text-stone-700 font-medium">
-                {heroBlock.cta_text}
-                <ArrowRight className="h-3 w-3" />
-              </a>
-            )}
-          </section>
-        )}
-
-        {/* About Section */}
-        {aboutBlock !== undefined && (
-          <section className="py-10 px-4">
-            <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">About</p>
-            <h2 className="text-lg font-light mb-3">{aboutBlock?.heading || "Về tôi"}</h2>
-            <p className="text-xs text-stone-500 leading-relaxed">
-              {aboutBlock?.description || "Thông tin giới thiệu."}
-            </p>
-          </section>
-        )}
-
-        {/* Services Section */}
-        {servicesBlock !== undefined && (
-          <section className="py-10 px-4 bg-white/50">
-            <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Services</p>
-            <h2 className="text-lg font-light mb-3">{servicesBlock?.heading || "Dịch vụ"}</h2>
-            <div className="grid gap-3 grid-cols-2">
-              {services.length > 0 ? (
-                services.map((service, i) => (
-                  <div
-                    key={service.id}
-                    className="p-3 rounded-lg border border-stone-100 bg-white"
+        {/* Render blocks in order */}
+        {visibleBlocks.map((block) => {
+          switch (block.block_type) {
+            case "hero": {
+              const content = block.content as HeroContent
+              return (
+                <section key={block.id} className="py-12 px-4 text-center">
+                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Portfolio</p>
+                  <h1 className="text-2xl font-light tracking-tight leading-[0.95]">
+                    {content.title?.split(" ")[0] || profileName?.split(" ")[0] || "Humanized"}
+                  </h1>
+                  <h2
+                    className="text-2xl font-light tracking-tight leading-[0.95]"
+                    style={{
+                      background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
                   >
-                    <span className="text-[8px] text-stone-300">0{i + 1}</span>
-                    <h3 className="text-xs font-medium mt-1">{service.title}</h3>
-                    {service.description && (
-                      <p className="mt-1 text-[10px] text-stone-500 line-clamp-2">{service.description}</p>
-                    )}
-                    <p
-                      className="mt-2 text-[10px] font-medium"
-                      style={{
-                        background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                      }}
-                    >
-                      {formatPrice(service.price_amount, service.price_type)}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-xs text-stone-400 col-span-2">Chưa có dịch vụ</p>
-              )}
-            </div>
-          </section>
-        )}
+                    {content.title?.split(" ").slice(1).join(" ") || "Design."}
+                  </h2>
+                  <p className="mt-4 text-xs text-stone-500 max-w-xs mx-auto leading-relaxed">
+                    {content.subtitle || "I transform ideas into beautiful experiences."}
+                  </p>
+                  {content.cta_text && (
+                    <a className="mt-4 inline-flex items-center gap-1 text-xs text-stone-700 font-medium">
+                      {content.cta_text}
+                      <ArrowRight className="h-3 w-3" />
+                    </a>
+                  )}
+                </section>
+              )
+            }
 
-        {/* Contact Section */}
-        {contactBlock !== undefined && (
-          <section className="py-10 px-4 text-center">
-            <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Contact</p>
-            <h2 className="text-lg font-light mb-4">{contactBlock?.heading || "Liên hệ"}</h2>
-            <div className="space-y-2 text-xs text-stone-600">
-              {contactBlock?.email && (
-                <div className="flex items-center justify-center gap-2">
-                  <Mail className="h-3 w-3" />
-                  {contactBlock.email}
-                </div>
-              )}
-              {contactBlock?.phone && (
-                <div className="flex items-center justify-center gap-2">
-                  <Phone className="h-3 w-3" />
-                  {contactBlock.phone}
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+            case "about": {
+              const content = block.content as AboutContent
+              return (
+                <section key={block.id} className="py-10 px-4">
+                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">About</p>
+                  <h2 className="text-lg font-light mb-3">{content.heading || "Về tôi"}</h2>
+                  <p className="text-xs text-stone-500 leading-relaxed">
+                    {content.description || "Thông tin giới thiệu."}
+                  </p>
+                </section>
+              )
+            }
+
+            case "services": {
+              const content = block.content as ServicesContent
+              return (
+                <section key={block.id} className="py-10 px-4 bg-white/50">
+                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Services</p>
+                  <h2 className="text-lg font-light mb-3">{content.heading || "Dịch vụ"}</h2>
+                  <div className="grid gap-3 grid-cols-2">
+                    {services.length > 0 ? (
+                      services.map((service, i) => (
+                        <div key={service.id} className="p-3 rounded-lg border border-stone-100 bg-white">
+                          <span className="text-[8px] text-stone-300">0{i + 1}</span>
+                          <h3 className="text-xs font-medium mt-1">{service.title}</h3>
+                          {service.description && (
+                            <p className="mt-1 text-[10px] text-stone-500 line-clamp-2">{service.description}</p>
+                          )}
+                          <p
+                            className="mt-2 text-[10px] font-medium"
+                            style={{
+                              background: "linear-gradient(135deg, #F59E0B 0%, #EC4899 100%)",
+                              WebkitBackgroundClip: "text",
+                              WebkitTextFillColor: "transparent",
+                            }}
+                          >
+                            {formatPrice(service.price_amount, service.price_type)}
+                          </p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-xs text-stone-400 col-span-2">Chưa có dịch vụ</p>
+                    )}
+                  </div>
+                </section>
+              )
+            }
+
+            case "contact": {
+              const content = block.content as ContactContent
+              return (
+                <section key={block.id} className="py-10 px-4 text-center">
+                  <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Contact</p>
+                  <h2 className="text-lg font-light mb-4">{content.heading || "Liên hệ"}</h2>
+                  <div className="space-y-2 text-xs text-stone-600">
+                    {content.email && (
+                      <div className="flex items-center justify-center gap-2">
+                        <Mail className="h-3 w-3" />
+                        {content.email}
+                      </div>
+                    )}
+                    {content.phone && (
+                      <div className="flex items-center justify-center gap-2">
+                        <Phone className="h-3 w-3" />
+                        {content.phone}
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )
+            }
+
+            default:
+              return null
+          }
+        })}
 
         {/* Footer */}
         <footer className="py-4 px-4 border-t border-stone-100 text-center">
@@ -212,134 +218,147 @@ export function WebsitePreview({
           </div>
         </nav>
 
-        {/* Hero Section */}
-        {heroBlock !== undefined && (
-          <section className="ml-6 px-3 py-8">
-            <div className="flex gap-3">
-              {/* Photo placeholder */}
-              <div className="relative w-20 h-24 bg-stone-800 overflow-hidden flex-shrink-0">
-                {profileAvatar ? (
-                  <img src={profileAvatar} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-8 h-8 rounded-full bg-stone-700" />
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
-                {/* Dots */}
-                <div className="absolute bottom-1 right-1 grid grid-cols-3 gap-px">
-                  {[...Array(9)].map((_, i) => (
-                    <div key={i} className="w-1 h-1 rounded-full bg-[#E6C068]/50" />
-                  ))}
-                </div>
-              </div>
-
-              {/* Content */}
-              <div className="flex-1">
-                <p className="text-[8px] text-[#E6C068] uppercase tracking-[0.15em] mb-1">
-                  Breathing in the aroma
-                </p>
-                <h1 className="text-lg font-bold leading-tight">of creativity.</h1>
-                <p className="mt-2 text-[10px] text-white/50 leading-relaxed">
-                  {heroBlock?.subtitle || "With years of experience in design."}
-                </p>
-                {heroBlock?.cta_text && (
-                  <div className="mt-3 inline-flex items-center gap-1 border border-white/20 px-2 py-1">
-                    <span className="text-[8px] text-white/60 uppercase tracking-wider">{heroBlock.cta_text}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Stats */}
-            <div className="flex gap-6 mt-6 pt-4 border-t border-white/10">
-              {[
-                { value: "10+", label: "Years" },
-                { value: String(services.length || 0), label: "Services" },
-              ].map((stat) => (
-                <div key={stat.label}>
-                  <span className="text-lg font-bold block">{stat.value}</span>
-                  <span className="text-[8px] text-white/40 uppercase">{stat.label}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* About Section */}
-        {aboutBlock !== undefined && (
-          <section className="ml-6 px-3 py-6 border-t border-white/10">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-px bg-[#E6C068]" />
-              <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">About</span>
-            </div>
-            <h2 className="text-base font-bold mb-2">{aboutBlock?.heading || "Về tôi"}</h2>
-            <p className="text-[10px] text-white/50 leading-relaxed">
-              {aboutBlock?.description || "Thông tin giới thiệu."}
-            </p>
-          </section>
-        )}
-
-        {/* Services Section */}
-        {servicesBlock !== undefined && (
-          <section className="ml-6 px-3 py-6 bg-[#141414]">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-px bg-[#E6C068]" />
-              <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Services</span>
-            </div>
-            <h2 className="text-base font-bold mb-3">{servicesBlock?.heading || "Dịch vụ"}</h2>
-            <div className="space-y-0">
-              {services.length > 0 ? (
-                services.map((service, i) => (
-                  <div
-                    key={service.id}
-                    className="py-3 border-b border-white/10 flex items-start justify-between gap-2"
-                  >
-                    <div className="flex items-start gap-2">
-                      <span className="text-[8px] text-[#E6C068]/50">0{i + 1}</span>
-                      <div>
-                        <h3 className="text-xs font-bold">{service.title}</h3>
-                        {service.description && (
-                          <p className="mt-1 text-[9px] text-white/40 line-clamp-1">{service.description}</p>
-                        )}
+        {/* Render blocks in order */}
+        {visibleBlocks.map((block) => {
+          switch (block.block_type) {
+            case "hero": {
+              const content = block.content as HeroContent
+              return (
+                <section key={block.id} className="ml-6 px-3 py-8">
+                  <div className="flex gap-3">
+                    {/* Photo placeholder */}
+                    <div className="relative w-20 h-24 bg-stone-800 overflow-hidden flex-shrink-0">
+                      {profileAvatar ? (
+                        <img src={profileAvatar} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-8 h-8 rounded-full bg-stone-700" />
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A] via-transparent to-transparent" />
+                      {/* Dots */}
+                      <div className="absolute bottom-1 right-1 grid grid-cols-3 gap-px">
+                        {[...Array(9)].map((_, i) => (
+                          <div key={i} className="w-1 h-1 rounded-full bg-[#E6C068]/50" />
+                        ))}
                       </div>
                     </div>
-                    <span className="text-[10px] text-[#E6C068] font-bold whitespace-nowrap">
-                      {formatPrice(service.price_amount, service.price_type)}
-                    </span>
-                  </div>
-                ))
-              ) : (
-                <p className="text-[10px] text-white/40">Chưa có dịch vụ</p>
-              )}
-            </div>
-          </section>
-        )}
 
-        {/* Contact Section */}
-        {contactBlock !== undefined && (
-          <section className="ml-6 px-3 py-6 border-t border-white/10">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-px bg-[#E6C068]" />
-              <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Contact</span>
-            </div>
-            <h2 className="text-base font-bold mb-3">{contactBlock?.heading || "Liên hệ"}</h2>
-            <div className="space-y-2">
-              {contactBlock?.email && (
-                <div className="flex items-center gap-2 text-[10px] text-white/60">
-                  <Mail className="h-3 w-3 text-[#E6C068]" />
-                  {contactBlock.email}
-                </div>
-              )}
-              {contactBlock?.phone && (
-                <div className="flex items-center gap-2 text-[10px] text-white/60">
-                  <Phone className="h-3 w-3 text-[#E6C068]" />
-                  {contactBlock.phone}
-                </div>
-              )}
-            </div>
-          </section>
-        )}
+                    {/* Content */}
+                    <div className="flex-1">
+                      <p className="text-[8px] text-[#E6C068] uppercase tracking-[0.15em] mb-1">
+                        Breathing in the aroma
+                      </p>
+                      <h1 className="text-lg font-bold leading-tight">of creativity.</h1>
+                      <p className="mt-2 text-[10px] text-white/50 leading-relaxed">
+                        {content.subtitle || "With years of experience in design."}
+                      </p>
+                      {content.cta_text && (
+                        <div className="mt-3 inline-flex items-center gap-1 border border-white/20 px-2 py-1">
+                          <span className="text-[8px] text-white/60 uppercase tracking-wider">{content.cta_text}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="flex gap-6 mt-6 pt-4 border-t border-white/10">
+                    {[
+                      { value: "10+", label: "Years" },
+                      { value: String(services.length || 0), label: "Services" },
+                    ].map((stat) => (
+                      <div key={stat.label}>
+                        <span className="text-lg font-bold block">{stat.value}</span>
+                        <span className="text-[8px] text-white/40 uppercase">{stat.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )
+            }
+
+            case "about": {
+              const content = block.content as AboutContent
+              return (
+                <section key={block.id} className="ml-6 px-3 py-6 border-t border-white/10">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-px bg-[#E6C068]" />
+                    <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">About</span>
+                  </div>
+                  <h2 className="text-base font-bold mb-2">{content.heading || "Về tôi"}</h2>
+                  <p className="text-[10px] text-white/50 leading-relaxed">
+                    {content.description || "Thông tin giới thiệu."}
+                  </p>
+                </section>
+              )
+            }
+
+            case "services": {
+              const content = block.content as ServicesContent
+              return (
+                <section key={block.id} className="ml-6 px-3 py-6 bg-[#141414]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-px bg-[#E6C068]" />
+                    <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Services</span>
+                  </div>
+                  <h2 className="text-base font-bold mb-3">{content.heading || "Dịch vụ"}</h2>
+                  <div className="space-y-0">
+                    {services.length > 0 ? (
+                      services.map((service, i) => (
+                        <div key={service.id} className="py-3 border-b border-white/10 flex items-start justify-between gap-2">
+                          <div className="flex items-start gap-2">
+                            <span className="text-[8px] text-[#E6C068]/50">0{i + 1}</span>
+                            <div>
+                              <h3 className="text-xs font-bold">{service.title}</h3>
+                              {service.description && (
+                                <p className="mt-1 text-[9px] text-white/40 line-clamp-1">{service.description}</p>
+                              )}
+                            </div>
+                          </div>
+                          <span className="text-[10px] text-[#E6C068] font-bold whitespace-nowrap">
+                            {formatPrice(service.price_amount, service.price_type)}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-[10px] text-white/40">Chưa có dịch vụ</p>
+                    )}
+                  </div>
+                </section>
+              )
+            }
+
+            case "contact": {
+              const content = block.content as ContactContent
+              return (
+                <section key={block.id} className="ml-6 px-3 py-6 border-t border-white/10">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-6 h-px bg-[#E6C068]" />
+                    <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Contact</span>
+                  </div>
+                  <h2 className="text-base font-bold mb-3">{content.heading || "Liên hệ"}</h2>
+                  <div className="space-y-2">
+                    {content.email && (
+                      <div className="flex items-center gap-2 text-[10px] text-white/60">
+                        <Mail className="h-3 w-3 text-[#E6C068]" />
+                        {content.email}
+                      </div>
+                    )}
+                    {content.phone && (
+                      <div className="flex items-center gap-2 text-[10px] text-white/60">
+                        <Phone className="h-3 w-3 text-[#E6C068]" />
+                        {content.phone}
+                      </div>
+                    )}
+                  </div>
+                </section>
+              )
+            }
+
+            default:
+              return null
+          }
+        })}
 
         {/* Footer */}
         <footer className="ml-6 py-3 px-3 border-t border-white/10">
@@ -382,167 +401,180 @@ export function WebsitePreview({
         </div>
       </nav>
 
-      {/* Hero Section */}
-      {heroBlock !== undefined && (
-        <section className="px-3 py-8">
-          <div className="flex items-start gap-3">
-            {/* Left */}
-            <div className="flex-1">
-              <p className="text-[10px] text-stone-400 mb-1">Xin chào! Tôi là</p>
-              <h1 className="text-xl font-bold tracking-tight leading-[1.1]">
-                {heroBlock?.title || profileName || "John Deo"}.
-              </h1>
+      {/* Render blocks in order */}
+      {visibleBlocks.map((block) => {
+        switch (block.block_type) {
+          case "hero": {
+            const content = block.content as HeroContent
+            return (
+              <section key={block.id} className="px-3 py-8">
+                <div className="flex items-start gap-3">
+                  {/* Left */}
+                  <div className="flex-1">
+                    <p className="text-[10px] text-stone-400 mb-1">Xin chào! Tôi là</p>
+                    <h1 className="text-xl font-bold tracking-tight leading-[1.1]">
+                      {content.title || profileName || "John Deo"}.
+                    </h1>
 
-              {/* Badge */}
-              <div className="mt-3 inline-flex items-center gap-1 px-2 py-1 bg-stone-100 rounded-full">
-                <span className="text-sm font-bold">08</span>
-                <div className="text-[7px] text-stone-500 leading-tight">
-                  <div>Years</div>
-                  <div>Exp</div>
-                </div>
-              </div>
+                    {/* Badge */}
+                    <div className="mt-3 inline-flex items-center gap-1 px-2 py-1 bg-stone-100 rounded-full">
+                      <span className="text-sm font-bold">08</span>
+                      <div className="text-[7px] text-stone-500 leading-tight">
+                        <div>Years</div>
+                        <div>Exp</div>
+                      </div>
+                    </div>
 
-              {/* Social icons */}
-              <div className="mt-3 flex gap-1">
-                {["in", "ig", "fb"].map((icon) => (
-                  <div key={icon} className="w-5 h-5 rounded border border-stone-200 flex items-center justify-center">
-                    <span className="text-[7px] text-stone-400">{icon}</span>
+                    {/* Social icons */}
+                    <div className="mt-3 flex gap-1">
+                      {["in", "ig", "fb"].map((icon) => (
+                        <div key={icon} className="w-5 h-5 rounded border border-stone-200 flex items-center justify-center">
+                          <span className="text-[7px] text-stone-400">{icon}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                ))}
-              </div>
-            </div>
 
-            {/* Avatar */}
-            <div className="relative">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-b from-[#F7D87A] to-[#E6A84D] overflow-hidden">
-                {profileAvatar ? (
-                  <img src={profileAvatar} alt="" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-end justify-center pb-1">
-                    <div className="w-8 h-8 rounded-full bg-[#D4956A]" />
+                  {/* Avatar */}
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-b from-[#F7D87A] to-[#E6A84D] overflow-hidden">
+                      {profileAvatar ? (
+                        <img src={profileAvatar} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-full h-full flex items-end justify-center pb-1">
+                          <div className="w-8 h-8 rounded-full bg-[#D4956A]" />
+                        </div>
+                      )}
+                    </div>
+                    {/* Dots */}
+                    <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full border border-dashed border-stone-300" />
+                    <div className="absolute bottom-1 -left-1 grid grid-cols-3 gap-px">
+                      {[...Array(6)].map((_, i) => (
+                        <div key={i} className="w-1 h-1 rounded-full bg-[#2D5A4A]" />
+                      ))}
+                    </div>
                   </div>
-                )}
-              </div>
-              {/* Dots */}
-              <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full border border-dashed border-stone-300" />
-              <div className="absolute bottom-1 -left-1 grid grid-cols-3 gap-px">
-                {[...Array(6)].map((_, i) => (
-                  <div key={i} className="w-1 h-1 rounded-full bg-[#2D5A4A]" />
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Right content */}
-          <div className="mt-4">
-            <p className="text-[10px] text-stone-500 leading-relaxed">
-              {heroBlock?.subtitle || "I design beautifully simple things."}
-            </p>
-
-            {/* Rating */}
-            <div className="mt-3 inline-block p-2 bg-white rounded border border-stone-100 shadow-sm">
-              <p className="text-[7px] text-stone-400">5k+ Reviews</p>
-              <div className="flex items-center gap-1">
-                <span className="text-sm font-bold">4.9</span>
-                <div className="flex gap-px">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-[8px] text-yellow-500">★</span>
-                  ))}
                 </div>
-              </div>
-            </div>
 
-            {/* Script */}
-            <div className="mt-3 text-right">
-              <p className="text-lg text-[#2D5A4A] italic" style={{ fontFamily: "Georgia, serif" }}>
-                Creative
-              </p>
-              <p className="text-xs text-stone-400 -mt-1">Designer.</p>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* About Section */}
-      {aboutBlock !== undefined && (
-        <section className="px-3 py-6 bg-[#F5F0E8]/50">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
-            <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">About</span>
-          </div>
-          <h2 className="text-base font-bold mb-2">{aboutBlock?.heading || "Về tôi"}</h2>
-          <p className="text-[10px] text-stone-600 leading-relaxed">
-            {aboutBlock?.description || "Thông tin giới thiệu."}
-          </p>
-        </section>
-      )}
-
-      {/* Services Section */}
-      {servicesBlock !== undefined && (
-        <section className="px-3 py-6">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-1.5 bg-[#E6A84D] rounded-full" />
-            <span className="text-[8px] text-[#E6A84D] uppercase tracking-wider">Services</span>
-          </div>
-          <h2 className="text-base font-bold mb-3">{servicesBlock?.heading || "Dịch vụ"}</h2>
-          <div className="grid gap-2 grid-cols-2">
-            {services.length > 0 ? (
-              services.map((service, i) => (
-                <div
-                  key={service.id}
-                  className="relative p-3 rounded-lg border border-stone-100 bg-white overflow-hidden"
-                >
-                  <div className="absolute top-0 left-0 w-0.5 h-full bg-gradient-to-b from-[#2D5A4A] to-[#E6A84D] opacity-0 hover:opacity-100 transition-opacity" />
-                  <span className="text-[7px] text-stone-300">0{i + 1}</span>
-                  <h3 className="mt-1 text-[11px] font-semibold">{service.title}</h3>
-                  {service.description && (
-                    <p className="mt-1 text-[9px] text-stone-500 line-clamp-2">{service.description}</p>
-                  )}
-                  <p className="mt-2 text-[10px] font-medium text-[#E6A84D]">
-                    {formatPrice(service.price_amount, service.price_type)}
+                {/* Right content */}
+                <div className="mt-4">
+                  <p className="text-[10px] text-stone-500 leading-relaxed">
+                    {content.subtitle || "I design beautifully simple things."}
                   </p>
-                </div>
-              ))
-            ) : (
-              <p className="text-[10px] text-stone-400 col-span-2">Chưa có dịch vụ</p>
-            )}
-          </div>
-        </section>
-      )}
 
-      {/* Contact Section */}
-      {contactBlock !== undefined && (
-        <section className="px-3 py-6 bg-[#F5F0E8]/50">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
-            <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">Contact</span>
-          </div>
-          <h2 className="text-base font-bold mb-3">{contactBlock?.heading || "Liên hệ"}</h2>
-          <div className="space-y-2">
-            {contactBlock?.email && (
-              <div className="flex items-center gap-2 text-[10px] text-stone-600">
-                <div className="w-5 h-5 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
-                  <Mail className="h-2.5 w-2.5 text-[#2D5A4A]" />
-                </div>
-                {contactBlock.email}
-              </div>
-            )}
-            {contactBlock?.phone && (
-              <div className="flex items-center gap-2 text-[10px] text-stone-600">
-                <div className="w-5 h-5 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
-                  <Phone className="h-2.5 w-2.5 text-[#2D5A4A]" />
-                </div>
-                {contactBlock.phone}
-              </div>
-            )}
-          </div>
+                  {/* Rating */}
+                  <div className="mt-3 inline-block p-2 bg-white rounded border border-stone-100 shadow-sm">
+                    <p className="text-[7px] text-stone-400">5k+ Reviews</p>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm font-bold">4.9</span>
+                      <div className="flex gap-px">
+                        {[...Array(5)].map((_, i) => (
+                          <span key={i} className="text-[8px] text-yellow-500">★</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
 
-          {/* CTA */}
-          <div className="mt-4 px-3 py-2 bg-gradient-to-r from-[#2D5A4A] to-[#3d7a64] text-white rounded text-center">
-            <span className="text-[10px] font-medium">Let's Work Together →</span>
-          </div>
-        </section>
-      )}
+                  {/* Script */}
+                  <div className="mt-3 text-right">
+                    <p className="text-lg text-[#2D5A4A] italic" style={{ fontFamily: "Georgia, serif" }}>
+                      Creative
+                    </p>
+                    <p className="text-xs text-stone-400 -mt-1">Designer.</p>
+                  </div>
+                </div>
+              </section>
+            )
+          }
+
+          case "about": {
+            const content = block.content as AboutContent
+            return (
+              <section key={block.id} className="px-3 py-6 bg-[#F5F0E8]/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
+                  <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">About</span>
+                </div>
+                <h2 className="text-base font-bold mb-2">{content.heading || "Về tôi"}</h2>
+                <p className="text-[10px] text-stone-600 leading-relaxed">
+                  {content.description || "Thông tin giới thiệu."}
+                </p>
+              </section>
+            )
+          }
+
+          case "services": {
+            const content = block.content as ServicesContent
+            return (
+              <section key={block.id} className="px-3 py-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1.5 h-1.5 bg-[#E6A84D] rounded-full" />
+                  <span className="text-[8px] text-[#E6A84D] uppercase tracking-wider">Services</span>
+                </div>
+                <h2 className="text-base font-bold mb-3">{content.heading || "Dịch vụ"}</h2>
+                <div className="grid gap-2 grid-cols-2">
+                  {services.length > 0 ? (
+                    services.map((service, i) => (
+                      <div key={service.id} className="relative p-3 rounded-lg border border-stone-100 bg-white overflow-hidden">
+                        <div className="absolute top-0 left-0 w-0.5 h-full bg-gradient-to-b from-[#2D5A4A] to-[#E6A84D] opacity-0 hover:opacity-100 transition-opacity" />
+                        <span className="text-[7px] text-stone-300">0{i + 1}</span>
+                        <h3 className="mt-1 text-[11px] font-semibold">{service.title}</h3>
+                        {service.description && (
+                          <p className="mt-1 text-[9px] text-stone-500 line-clamp-2">{service.description}</p>
+                        )}
+                        <p className="mt-2 text-[10px] font-medium text-[#E6A84D]">
+                          {formatPrice(service.price_amount, service.price_type)}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-[10px] text-stone-400 col-span-2">Chưa có dịch vụ</p>
+                  )}
+                </div>
+              </section>
+            )
+          }
+
+          case "contact": {
+            const content = block.content as ContactContent
+            return (
+              <section key={block.id} className="px-3 py-6 bg-[#F5F0E8]/50">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
+                  <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">Contact</span>
+                </div>
+                <h2 className="text-base font-bold mb-3">{content.heading || "Liên hệ"}</h2>
+                <div className="space-y-2">
+                  {content.email && (
+                    <div className="flex items-center gap-2 text-[10px] text-stone-600">
+                      <div className="w-5 h-5 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
+                        <Mail className="h-2.5 w-2.5 text-[#2D5A4A]" />
+                      </div>
+                      {content.email}
+                    </div>
+                  )}
+                  {content.phone && (
+                    <div className="flex items-center gap-2 text-[10px] text-stone-600">
+                      <div className="w-5 h-5 rounded-full bg-[#2D5A4A]/10 flex items-center justify-center">
+                        <Phone className="h-2.5 w-2.5 text-[#2D5A4A]" />
+                      </div>
+                      {content.phone}
+                    </div>
+                  )}
+                </div>
+
+                {/* CTA */}
+                <div className="mt-4 px-3 py-2 bg-gradient-to-r from-[#2D5A4A] to-[#3d7a64] text-white rounded text-center">
+                  <span className="text-[10px] font-medium">Let's Work Together →</span>
+                </div>
+              </section>
+            )
+          }
+
+          default:
+            return null
+        }
+      })}
 
       {/* Wave */}
       <svg className="w-full h-6" viewBox="0 0 400 24" preserveAspectRatio="none">

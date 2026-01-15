@@ -246,7 +246,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
           </>
         ) : (
           /* Full Preview Mode */
-          <div className="flex-1 flex items-center justify-center bg-muted/50 p-8 overflow-auto">
+          <div className="flex-1 flex items-start justify-center bg-muted/50 p-8 overflow-auto">
             <div
               className={`bg-background rounded-lg border border-border shadow-lg overflow-hidden transition-all ${
                 deviceView === "mobile" ? "w-[375px]" : "w-full max-w-5xl"
