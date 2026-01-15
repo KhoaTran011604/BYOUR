@@ -6,8 +6,10 @@ import type {
   AboutContent,
   ServicesContent,
   ContactContent,
+  CreativeContent,
+  CreativeItem,
 } from "@/lib/types"
-import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight, Play } from "lucide-react"
+import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight, Play, ExternalLink } from "lucide-react"
 import Link from "next/link"
 
 interface PublicWebsiteProps {
@@ -25,6 +27,100 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
     if (type === "quote") return "Báo giá"
     if (!amount) return "Liên hệ"
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount)
+  }
+
+  const renderCreativeItem = (item: CreativeItem, variant: "minimal" | "editorial" | "grid") => {
+    const spacerSizes = { small: "h-4", medium: "h-8", large: "h-16" }
+
+    switch (item.type) {
+      case "image":
+        return item.image_url ? (
+          <img
+            src={item.image_url}
+            alt={item.image_alt || ""}
+            className="w-full rounded-lg object-cover"
+          />
+        ) : null
+
+      case "link":
+        return (
+          <a
+            href={item.link_url || "#"}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center gap-2 ${
+              variant === "editorial"
+                ? "text-[#E6C068] hover:text-[#d4af5c]"
+                : variant === "grid"
+                  ? "text-[#2D5A4A] hover:text-[#3d7a64]"
+                  : "text-stone-600 hover:text-stone-800"
+            } transition-colors`}
+          >
+            <ExternalLink className="h-4 w-4" />
+            {item.link_text || "Liên kết"}
+          </a>
+        )
+
+      case "button":
+        const buttonStyles = {
+          primary:
+            variant === "editorial"
+              ? "bg-[#E6C068] text-[#1A1A1A] hover:bg-[#d4af5c]"
+              : variant === "grid"
+                ? "bg-[#2D5A4A] text-white hover:bg-[#3d7a64]"
+                : "bg-stone-800 text-white hover:bg-stone-700",
+          secondary:
+            variant === "editorial"
+              ? "bg-white/10 text-white hover:bg-white/20"
+              : variant === "grid"
+                ? "bg-[#E6A84D] text-white hover:bg-[#d49a45]"
+                : "bg-stone-100 text-stone-800 hover:bg-stone-200",
+          outline:
+            variant === "editorial"
+              ? "border-2 border-[#E6C068] text-[#E6C068] hover:bg-[#E6C068] hover:text-[#1A1A1A]"
+              : variant === "grid"
+                ? "border-2 border-[#2D5A4A] text-[#2D5A4A] hover:bg-[#2D5A4A] hover:text-white"
+                : "border-2 border-stone-300 text-stone-600 hover:bg-stone-100",
+        }
+        return (
+          <a
+            href={item.button_url || "#"}
+            className={`inline-block px-6 py-3 rounded-lg font-medium transition-colors ${buttonStyles[item.button_style || "primary"]}`}
+          >
+            {item.button_text || "Nút"}
+          </a>
+        )
+
+      case "text":
+        return (
+          <p
+            className={`leading-relaxed ${
+              variant === "editorial" ? "text-white/60" : "text-stone-600"
+            }`}
+          >
+            {item.text_content || ""}
+          </p>
+        )
+
+      case "divider":
+        return (
+          <hr
+            className={`border-t ${
+              variant === "editorial"
+                ? "border-white/10"
+                : variant === "grid"
+                  ? "border-stone-200"
+                  : "border-stone-100"
+            }`}
+          />
+        )
+
+      case "spacer":
+        return <div className={spacerSizes[item.spacer_size || "medium"]} />
+
+      default:
+        return null
+    }
   }
 
   // Filter visible blocks
@@ -217,6 +313,24 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                           )}
                         </div>
                       )}
+                    </div>
+                  </section>
+                )
+              }
+
+              case "creative": {
+                const content = block.content as CreativeContent
+                return (
+                  <section key={block.id} className="py-32 px-6">
+                    <div className="max-w-4xl mx-auto">
+                      {content.name && (
+                        <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-8">{content.name}</p>
+                      )}
+                      <div className="space-y-6">
+                        {content.items?.map((item) => (
+                          <div key={item.id}>{renderCreativeItem(item, "minimal")}</div>
+                        ))}
+                      </div>
                     </div>
                   </section>
                 )
@@ -465,6 +579,27 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                           )}
                         </div>
                       )}
+                    </div>
+                  </section>
+                )
+              }
+
+              case "creative": {
+                const content = block.content as CreativeContent
+                return (
+                  <section key={block.id} className="py-32 px-8 md:px-16 border-t border-white/10">
+                    <div className="max-w-4xl">
+                      {content.name && (
+                        <div className="flex items-center gap-4 mb-8">
+                          <div className="w-12 h-px bg-[#E6C068]" />
+                          <span className="text-[#E6C068] text-sm uppercase tracking-wider">{content.name}</span>
+                        </div>
+                      )}
+                      <div className="space-y-6">
+                        {content.items?.map((item) => (
+                          <div key={item.id}>{renderCreativeItem(item, "editorial")}</div>
+                        ))}
+                      </div>
                     </div>
                   </section>
                 )
@@ -737,6 +872,27 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                           <ArrowRight className="h-4 w-4" />
                         </a>
                       </div>
+                    </div>
+                  </div>
+                </section>
+              )
+            }
+
+            case "creative": {
+              const content = block.content as CreativeContent
+              return (
+                <section key={block.id} className="py-24 px-6">
+                  <div className="max-w-4xl mx-auto">
+                    {content.name && (
+                      <div className="flex items-center gap-3 mb-6">
+                        <div className="w-2 h-2 bg-[#E6A84D] rounded-full" />
+                        <span className="text-sm text-[#E6A84D] uppercase tracking-wider">{content.name}</span>
+                      </div>
+                    )}
+                    <div className="space-y-6">
+                      {content.items?.map((item) => (
+                        <div key={item.id}>{renderCreativeItem(item, "grid")}</div>
+                      ))}
                     </div>
                   </div>
                 </section>

@@ -8,8 +8,10 @@ import type {
   AboutContent,
   ServicesContent,
   ContactContent,
+  CreativeContent,
+  CreativeItem,
 } from "@/lib/types"
-import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight } from "lucide-react"
+import { Mail, Phone, MapPin, Facebook, Instagram, Linkedin, Twitter, ArrowRight, ExternalLink } from "lucide-react"
 
 interface WebsitePreviewProps {
   blocks: WebsiteBlock[]
@@ -34,6 +36,90 @@ export function WebsitePreview({
     if (type === "quote") return "Báo giá"
     if (!amount) return "Liên hệ"
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount)
+  }
+
+  const renderCreativeItem = (item: CreativeItem, variant: "minimal" | "editorial" | "grid") => {
+    const spacerSizes = { small: "h-2", medium: "h-4", large: "h-8" }
+
+    switch (item.type) {
+      case "image":
+        return item.image_url ? (
+          <img
+            src={item.image_url}
+            alt={item.image_alt || ""}
+            className="w-full rounded-lg object-cover"
+          />
+        ) : (
+          <div className="w-full h-24 bg-stone-200 rounded-lg flex items-center justify-center">
+            <span className="text-[10px] text-stone-400">Chưa có hình</span>
+          </div>
+        )
+
+      case "link":
+        return (
+          <a
+            href={item.link_url || "#"}
+            className={`flex items-center gap-1 text-xs ${
+              variant === "editorial" ? "text-[#E6C068]" : variant === "grid" ? "text-[#2D5A4A]" : "text-stone-600"
+            } hover:underline`}
+          >
+            <ExternalLink className="h-3 w-3" />
+            {item.link_text || "Liên kết"}
+          </a>
+        )
+
+      case "button":
+        const buttonStyles = {
+          primary:
+            variant === "editorial"
+              ? "bg-[#E6C068] text-[#1A1A1A]"
+              : variant === "grid"
+                ? "bg-[#2D5A4A] text-white"
+                : "bg-stone-800 text-white",
+          secondary:
+            variant === "editorial"
+              ? "bg-white/10 text-white"
+              : variant === "grid"
+                ? "bg-[#E6A84D] text-white"
+                : "bg-stone-100 text-stone-800",
+          outline:
+            variant === "editorial"
+              ? "border border-[#E6C068] text-[#E6C068]"
+              : variant === "grid"
+                ? "border border-[#2D5A4A] text-[#2D5A4A]"
+                : "border border-stone-300 text-stone-600",
+        }
+        return (
+          <a
+            href={item.button_url || "#"}
+            className={`inline-block px-3 py-1.5 rounded text-[10px] font-medium ${buttonStyles[item.button_style || "primary"]}`}
+          >
+            {item.button_text || "Nút"}
+          </a>
+        )
+
+      case "text":
+        return (
+          <p className={`text-[10px] leading-relaxed ${variant === "editorial" ? "text-white/60" : "text-stone-600"}`}>
+            {item.text_content || ""}
+          </p>
+        )
+
+      case "divider":
+        return (
+          <hr
+            className={`border-t ${
+              variant === "editorial" ? "border-white/10" : variant === "grid" ? "border-stone-200" : "border-stone-100"
+            }`}
+          />
+        )
+
+      case "spacer":
+        return <div className={spacerSizes[item.spacer_size || "medium"]} />
+
+      default:
+        return null
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -168,6 +254,22 @@ export function WebsitePreview({
                         {content.phone}
                       </div>
                     )}
+                  </div>
+                </section>
+              )
+            }
+
+            case "creative": {
+              const content = block.content as CreativeContent
+              return (
+                <section key={block.id} className="py-10 px-4">
+                  {content.name && (
+                    <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-3">{content.name}</p>
+                  )}
+                  <div className="space-y-3">
+                    {content.items?.map((item) => (
+                      <div key={item.id}>{renderCreativeItem(item, "minimal")}</div>
+                    ))}
                   </div>
                 </section>
               )
@@ -350,6 +452,25 @@ export function WebsitePreview({
                         {content.phone}
                       </div>
                     )}
+                  </div>
+                </section>
+              )
+            }
+
+            case "creative": {
+              const content = block.content as CreativeContent
+              return (
+                <section key={block.id} className="ml-6 px-3 py-6 border-t border-white/10">
+                  {content.name && (
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-6 h-px bg-[#E6C068]" />
+                      <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">{content.name}</span>
+                    </div>
+                  )}
+                  <div className="space-y-3">
+                    {content.items?.map((item) => (
+                      <div key={item.id}>{renderCreativeItem(item, "editorial")}</div>
+                    ))}
                   </div>
                 </section>
               )
@@ -566,6 +687,25 @@ export function WebsitePreview({
                 {/* CTA */}
                 <div className="mt-4 px-3 py-2 bg-gradient-to-r from-[#2D5A4A] to-[#3d7a64] text-white rounded text-center">
                   <span className="text-[10px] font-medium">Let's Work Together →</span>
+                </div>
+              </section>
+            )
+          }
+
+          case "creative": {
+            const content = block.content as CreativeContent
+            return (
+              <section key={block.id} className="px-3 py-6">
+                {content.name && (
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-1.5 h-1.5 bg-[#E6A84D] rounded-full" />
+                    <span className="text-[8px] text-[#E6A84D] uppercase tracking-wider">{content.name}</span>
+                  </div>
+                )}
+                <div className="space-y-3">
+                  {content.items?.map((item) => (
+                    <div key={item.id}>{renderCreativeItem(item, "grid")}</div>
+                  ))}
                 </div>
               </section>
             )
