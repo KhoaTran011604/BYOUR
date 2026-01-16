@@ -15,6 +15,7 @@ import { createClient } from "@/lib/supabase/client"
 import type { Profile } from "@/lib/types"
 import type { User } from "@supabase/supabase-js"
 import { ArrowLeft, Save, ExternalLink, Lock, Eye, EyeOff } from "lucide-react"
+import { BackButton } from "@/components/ui/back-button"
 
 interface ProfileFormProps {
   user: User
@@ -146,12 +147,7 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" asChild className="mb-4">
-        <Link href="/dashboard">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Quay lại Dashboard
-        </Link>
-      </Button>
+      <BackButton/>
 
       {/* Profile Card */}
       <Card>

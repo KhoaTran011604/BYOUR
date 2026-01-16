@@ -216,7 +216,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                     Tìm hiểu cách đăng ký kinh doanh cá nhân, thuế, và các thủ tục pháp lý cần thiết để hoạt động hợp pháp.
                   </p>
                   <Button asChild className="w-full">
-                    <Link href="/guides/business-registration">
+                    <Link href="/self/business-registration">
                       <FileText className="mr-2 h-4 w-4" />
                       Xem hướng dẫn
                     </Link>
@@ -238,7 +238,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                     Tham khảo các dự án freelance thực tế để học hỏi cách trình bày và báo giá.
                   </p>
                   <Button variant="outline" asChild className="w-full bg-transparent">
-                    <Link href="/examples/projects">
+                    <Link href="/self/projects">
                       <ExternalLink className="mr-2 h-4 w-4" />
                       Xem Projects
                     </Link>
@@ -259,7 +259,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                     Khám phá các website HQ chất lượng cao để lấy cảm hứng cho website của bạn.
                   </p>
                   <Button variant="outline" asChild className="w-full bg-transparent">
-                    <Link href="/examples/hq-websites">
+                    <Link href="/self/hq-websites">
                       <ExternalLink className="mr-2 h-4 w-4" />
                       Xem Websites
                     </Link>
@@ -280,7 +280,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                     Thông tin về visa, thuế, và cơ hội freelance tại Ireland.
                   </p>
                   <Button variant="outline" asChild className="w-full bg-transparent">
-                    <Link href="/guides/ireland">
+                    <Link href="/self/ireland">
                       <ExternalLink className="mr-2 h-4 w-4" />
                       Xem Guide
                     </Link>

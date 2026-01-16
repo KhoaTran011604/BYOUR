@@ -30,7 +30,7 @@ export default function LoginPage() {
         password,
       })
       if (error) throw error
-      router.push("/dashboard")
+      router.push("/self")
     } catch (error: unknown) {
       setError(error instanceof Error ? error.message : "Đã xảy ra lỗi")
     } finally {
