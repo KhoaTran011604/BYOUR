@@ -41,7 +41,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BossSuggestions } from "./boss-suggestions"
 import { InvitesList } from "./invites-list"
 import { InviteDialog } from "./invite-dialog"
-import { ProjectChat } from "./project-chat"
+import { ProjectGroupChat } from "@/components/shared/project-group-chat"
 import { createClient } from "@/lib/supabase/client"
 import type { HQProject, HQInvite, HQProjectStatus } from "@/lib/types"
 
@@ -83,22 +83,20 @@ export function ProjectDetail({
   const [selectedBossId, setSelectedBossId] = useState<string | null>(null)
   const [showInviteDialog, setShowInviteDialog] = useState(false)
   const [chatId, setChatId] = useState<string | null>(null)
-  const [bossInfo, setBossInfo] = useState<{ name: string; avatar: string | null } | null>(null)
 
   const status = statusConfig[project.status]
   const symbol = currencySymbols[project.currency] || project.currency
 
-  // Load chat and boss info when project is in_progress
+  // Load chat when project is in_progress
   useEffect(() => {
-    if (project.status === "in_progress" && project.assigned_boss_id) {
-      loadChatAndBossInfo()
+    if (project.status === "in_progress") {
+      loadChatId()
     }
-  }, [project.status, project.assigned_boss_id])
+  }, [project.status])
 
-  const loadChatAndBossInfo = async () => {
+  const loadChatId = async () => {
     const supabase = createClient()
 
-    // Get chat id
     const { data: chatData } = await supabase
       .from("hq_project_chats")
       .select("id")
@@ -107,22 +105,6 @@ export function ProjectDetail({
 
     if (chatData) {
       setChatId(chatData.id)
-    }
-
-    // Get boss profile info
-    if (project.assigned_boss_id) {
-      const { data: profileData } = await supabase
-        .from("profiles")
-        .select("full_name, avatar_url")
-        .eq("id", project.assigned_boss_id)
-        .single()
-
-      if (profileData) {
-        setBossInfo({
-          name: profileData.full_name || "Boss",
-          avatar: profileData.avatar_url,
-        })
-      }
     }
   }
 
@@ -260,14 +242,13 @@ export function ProjectDetail({
 
             {project.status === "in_progress" && (
               <TabsContent value="chat" className="mt-4">
-                <ProjectChat
+                <ProjectGroupChat
                   projectId={project.id}
                   chatId={chatId}
                   currentUserId={currentUserId}
                   currentUserName={currentUserName}
                   currentUserAvatar={currentUserAvatar}
-                  partnerName={bossInfo?.name || "Boss"}
-                  partnerAvatar={bossInfo?.avatar || null}
+                  userRole="hq"
                 />
               </TabsContent>
             )}
