@@ -14,7 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 import type { Profile } from "@/lib/types"
 import type { User } from "@supabase/supabase-js"
-import { ArrowLeft, Save, ExternalLink } from "lucide-react"
+import { ArrowLeft, Save, ExternalLink, Lock, Eye, EyeOff } from "lucide-react"
 
 interface ProfileFormProps {
   user: User
@@ -29,6 +29,17 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+
+  // Password change states
+  const [currentPassword, setCurrentPassword] = useState("")
+  const [newPassword, setNewPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
+  const [showNewPassword, setShowNewPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isPasswordLoading, setIsPasswordLoading] = useState(false)
+  const [passwordError, setPasswordError] = useState<string | null>(null)
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
 
   const displayName = fullName || user.email?.split("@")[0]
   const initials = displayName
@@ -76,6 +87,60 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
       }
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsPasswordLoading(true)
+    setPasswordError(null)
+    setPasswordSuccess(false)
+
+    // Validation
+    if (newPassword.length < 6) {
+      setPasswordError("Mật khẩu mới phải có ít nhất 6 ký tự")
+      setIsPasswordLoading(false)
+      return
+    }
+
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Mật khẩu xác nhận không khớp")
+      setIsPasswordLoading(false)
+      return
+    }
+
+    const supabase = createClient()
+
+    try {
+      // Verify current password by re-authenticating
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: user.email!,
+        password: currentPassword,
+      })
+
+      if (signInError) {
+        setPasswordError("Mật khẩu hiện tại không đúng")
+        setIsPasswordLoading(false)
+        return
+      }
+
+      // Update password
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: newPassword,
+      })
+
+      if (updateError) throw updateError
+
+      setPasswordSuccess(true)
+      setCurrentPassword("")
+      setNewPassword("")
+      setConfirmPassword("")
+    } catch (err) {
+      if (err instanceof Error) {
+        setPasswordError(err.message)
+      }
+    } finally {
+      setIsPasswordLoading(false)
     }
   }
 
@@ -139,6 +204,91 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
             <Button type="submit" disabled={isLoading}>
               <Save className="mr-2 h-4 w-4" />
               {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Password Change Card */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lock className="h-5 w-5" />
+            Đổi mật khẩu
+          </CardTitle>
+          <CardDescription>Cập nhật mật khẩu để bảo mật tài khoản của bạn</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handlePasswordChange} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="currentPassword">Mật khẩu hiện tại</Label>
+              <div className="relative">
+                <Input
+                  id="currentPassword"
+                  type={showCurrentPassword ? "text" : "password"}
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  placeholder="Nhập mật khẩu hiện tại"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showCurrentPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="newPassword">Mật khẩu mới</Label>
+              <div className="relative">
+                <Input
+                  id="newPassword"
+                  type={showNewPassword ? "text" : "password"}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showNewPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
+              <div className="relative">
+                <Input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Nhập lại mật khẩu mới"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
+            </div>
+
+            {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
+            {passwordSuccess && <p className="text-sm text-green-600">Đổi mật khẩu thành công!</p>}
+
+            <Button type="submit" disabled={isPasswordLoading}>
+              <Lock className="mr-2 h-4 w-4" />
+              {isPasswordLoading ? "Đang xử lý..." : "Đổi mật khẩu"}
             </Button>
           </form>
         </CardContent>
