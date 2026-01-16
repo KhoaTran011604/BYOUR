@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/supabase/client"
-import { HQProjectChat } from "@/components/boss/hq-project-chat"
+import { ProjectGroupChat } from "@/components/shared/project-group-chat"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -197,14 +197,13 @@ export default function HQProjectDetailPage({
         </TabsList>
 
         <TabsContent value="chat" className="mt-6">
-          <HQProjectChat
+          <ProjectGroupChat
             projectId={projectId}
             chatId={chatId}
             currentUserId={currentUser.id}
             currentUserName={currentUser.name}
             currentUserAvatar={currentUser.avatar}
-            partnerName={getClientName()}
-            partnerAvatar={getClientAvatar()}
+            userRole="boss"
           />
         </TabsContent>
 

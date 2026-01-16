@@ -10,34 +10,48 @@ import {
   Download,
   Loader2,
   RefreshCw,
+  Crown,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
-import type { HQChatMessage } from "@/lib/types"
+import { cn } from "@/lib/utils"
+import type { HQAttachment } from "@/lib/types"
 
-interface ProjectChatProps {
+interface ChatMessage {
+  id: string
+  chat_id: string
+  sender_id: string
+  sender_type: "hq" | "boss"
+  sender_name: string
+  sender_avatar: string | null
+  message: string
+  attachments: HQAttachment[]
+  is_read: boolean
+  created_at: string
+}
+
+interface ProjectGroupChatProps {
   projectId: string
   chatId: string | null
   currentUserId: string
   currentUserName: string
   currentUserAvatar: string | null
-  partnerName: string
-  partnerAvatar: string | null
+  userRole: "hq" | "boss" // Role of current user
 }
 
-export function ProjectChat({
+export function ProjectGroupChat({
   projectId,
   chatId,
   currentUserId,
   currentUserName,
   currentUserAvatar,
-  partnerName,
-  partnerAvatar,
-}: ProjectChatProps) {
-  const [messages, setMessages] = useState<HQChatMessage[]>([])
+  userRole,
+}: ProjectGroupChatProps) {
+  const [messages, setMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -66,23 +80,31 @@ export function ProjectChat({
     }
 
     const supabase = createClient()
+
+    // Fetch messages with sender profile info
     const { data, error } = await supabase
       .from("hq_chat_messages")
-      .select("*")
+      .select(`
+        *,
+        profiles:sender_id (
+          full_name,
+          avatar_url
+        )
+      `)
       .eq("chat_id", currentChatId)
       .order("created_at", { ascending: true })
 
     if (error) {
       console.error("Error loading messages:", error)
     } else {
-      // Transform data to match HQChatMessage type
-      const transformedMessages: HQChatMessage[] = (data || []).map((msg: any) => ({
+      // Transform data to match ChatMessage type
+      const transformedMessages: ChatMessage[] = (data || []).map((msg: any) => ({
         id: msg.id,
         chat_id: msg.chat_id,
         sender_id: msg.sender_id,
         sender_type: msg.sender_type,
-        sender_name: msg.sender_type === "hq" ? currentUserName : partnerName,
-        sender_avatar: msg.sender_type === "hq" ? currentUserAvatar : partnerAvatar,
+        sender_name: msg.profiles?.full_name || (msg.sender_type === "hq" ? "HQ" : "Boss"),
+        sender_avatar: msg.profiles?.avatar_url || null,
         message: msg.message,
         attachments: msg.attachments || [],
         is_read: msg.is_read,
@@ -131,7 +153,7 @@ export function ProjectChat({
       }
 
       // Upload attachments if any
-      const uploadedAttachments: any[] = []
+      const uploadedAttachments: HQAttachment[] = []
       for (const file of attachments) {
         const fileName = `${Date.now()}-${file.name}`
         const { data: uploadData, error: uploadError } = await supabase.storage
@@ -153,13 +175,13 @@ export function ProjectChat({
         }
       }
 
-      // Insert message
+      // Insert message with current user's role
       const { data: msgData, error: msgError } = await supabase
         .from("hq_chat_messages")
         .insert({
           chat_id: chatIdToUse,
           sender_id: currentUserId,
-          sender_type: "hq",
+          sender_type: userRole,
           message: newMessage.trim(),
           attachments: uploadedAttachments,
         })
@@ -169,11 +191,11 @@ export function ProjectChat({
       if (msgError) throw msgError
 
       // Add to local state
-      const newMsg: HQChatMessage = {
+      const newMsg: ChatMessage = {
         id: msgData.id,
         chat_id: chatIdToUse,
         sender_id: currentUserId,
-        sender_type: "hq",
+        sender_type: userRole,
         sender_name: currentUserName,
         sender_avatar: currentUserAvatar,
         message: newMessage.trim(),
@@ -222,11 +244,11 @@ export function ProjectChat({
     yesterday.setDate(yesterday.getDate() - 1)
 
     if (date.toDateString() === today.toDateString()) {
-      return "Today"
+      return "Hôm nay"
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday"
+      return "Hôm qua"
     } else {
-      return date.toLocaleDateString()
+      return date.toLocaleDateString("vi-VN")
     }
   }
 
@@ -238,21 +260,26 @@ export function ProjectChat({
     }
     groups[date].push(message)
     return groups
-  }, {} as Record<string, HQChatMessage[]>)
+  }, {} as Record<string, ChatMessage[]>)
 
   if (isLoading) {
     return (
-      <div className="flex h-[500px] items-center justify-center rounded-lg border">
+      <div className="flex h-[600px] items-center justify-center rounded-lg border">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     )
   }
 
   return (
-    <div className="flex h-[500px] flex-col rounded-lg border">
+    <div className="flex h-[600px] flex-col rounded-lg border">
       {/* Header with Refresh Button */}
       <div className="flex items-center justify-between border-b px-4 py-2">
-        <span className="text-sm font-medium">Chat với {partnerName}</span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Group Chat</span>
+          <Badge variant="outline" className="text-xs">
+            {messages.length} tin nhắn
+          </Badge>
+        </div>
         <Button
           variant="ghost"
           size="icon"
@@ -268,9 +295,9 @@ export function ProjectChat({
       <ScrollArea ref={scrollRef} className="min-h-0 flex-1 p-4">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <p className="text-muted-foreground">No messages yet</p>
+            <p className="text-muted-foreground">Chưa có tin nhắn nào</p>
             <p className="text-sm text-muted-foreground">
-              Start the conversation with {partnerName}
+              Bắt đầu cuộc trò chuyện ngay!
             </p>
           </div>
         ) : (
@@ -293,39 +320,73 @@ export function ProjectChat({
                 <div className="space-y-4">
                   {dateMessages.map((message) => {
                     const isOwn = message.sender_id === currentUserId
+                    const isHQ = message.sender_type === "hq"
 
                     return (
                       <div
                         key={message.id}
-                        className={`flex gap-3 ${isOwn ? "flex-row-reverse" : ""}`}
+                        className={cn(
+                          "flex gap-3",
+                          isOwn ? "flex-row-reverse" : ""
+                        )}
                       >
-                        <Avatar className="h-8 w-8 shrink-0">
-                          <AvatarImage src={message.sender_avatar || undefined} />
-                          <AvatarFallback>
-                            {message.sender_name.charAt(0).toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
+                        {/* Avatar with HQ indicator */}
+                        <div className="relative shrink-0">
+                          <Avatar className={cn(
+                            "h-8 w-8",
+                            isHQ && !isOwn && "ring-2 ring-amber-400 ring-offset-2"
+                          )}>
+                            <AvatarImage src={message.sender_avatar || undefined} />
+                            <AvatarFallback className={cn(
+                              isHQ && !isOwn && "bg-amber-100 text-amber-700"
+                            )}>
+                              {message.sender_name.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          {isHQ && !isOwn && (
+                            <div className="absolute -top-1 -right-1 rounded-full bg-amber-400 p-0.5">
+                              <Crown className="h-2.5 w-2.5 text-white" />
+                            </div>
+                          )}
+                        </div>
 
                         <div
-                          className={`max-w-[70%] space-y-1 ${
+                          className={cn(
+                            "max-w-[70%] space-y-1",
                             isOwn ? "items-end" : "items-start"
-                          }`}
+                          )}
                         >
-                          <div className={`flex items-center gap-2 ${isOwn ? "flex-row-reverse" : ""}`}>
-                            <span className="text-xs font-medium">
+                          {/* Sender name with HQ badge */}
+                          <div className={cn(
+                            "flex items-center gap-2",
+                            isOwn ? "flex-row-reverse" : ""
+                          )}>
+                            <span className={cn(
+                              "text-xs font-medium",
+                              isHQ && !isOwn && "text-amber-600"
+                            )}>
                               {message.sender_name}
                             </span>
+                            {isHQ && !isOwn && (
+                              <Badge variant="secondary" className="h-4 bg-amber-100 px-1 text-[10px] text-amber-700">
+                                HQ
+                              </Badge>
+                            )}
                             <span className="text-xs text-muted-foreground" suppressHydrationWarning>
                               {formatTime(message.created_at)}
                             </span>
                           </div>
 
+                          {/* Message bubble */}
                           <div
-                            className={`rounded-lg px-3 py-2 ${
+                            className={cn(
+                              "rounded-lg px-3 py-2",
                               isOwn
                                 ? "bg-primary text-primary-foreground"
-                                : "bg-muted"
-                            }`}
+                                : isHQ
+                                  ? "bg-amber-50 border border-amber-200 text-amber-900"
+                                  : "bg-muted"
+                            )}
                           >
                             <p className="text-sm whitespace-pre-wrap">
                               {message.message}
@@ -415,7 +476,7 @@ export function ProjectChat({
             <Paperclip className="h-4 w-4" />
           </Button>
           <Input
-            placeholder="Type a message..."
+            placeholder="Nhập tin nhắn..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => {
