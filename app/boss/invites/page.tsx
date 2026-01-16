@@ -29,7 +29,7 @@ export default function InvitesPage() {
       return
     }
 
-    // Get boss profile
+    // Check if user has boss profile
     const { data: bossProfile } = await supabase
       .from("boss_profiles")
       .select("id")
@@ -41,24 +41,90 @@ export default function InvitesPage() {
       return
     }
 
-    // Get invites
+    // Get invites from hq_invites with joined project and business profile data
+    // Note: hq_invites.boss_id references profiles(id) which is user_id
     const { data } = await supabase
-      .from("boss_invites")
-      .select("*")
-      .eq("boss_id", bossProfile.id)
+      .from("hq_invites")
+      .select(`
+        id,
+        hq_id,
+        project_id,
+        boss_id,
+        message,
+        proposed_budget,
+        proposed_deadline,
+        status,
+        created_at,
+        updated_at,
+        hq_projects!inner (
+          title,
+          description,
+          budget_min,
+          budget_max,
+          currency,
+          deadline
+        ),
+        hq_profiles!inner (
+          company_name,
+          hq_business_profiles (
+            display_name,
+            logo_url
+          )
+        )
+      `)
+      .eq("boss_id", user.id)
       .order("created_at", { ascending: false })
+    console.log("🚀 ~ loadInvites ~ user:", user)
+    console.log("🚀 ~ loadInvites ~ data:", data)
 
-    setInvites(data || [])
+    // Transform data to BossInvite format
+    const transformedInvites: BossInvite[] = (data || []).map((invite: any) => ({
+      id: invite.id,
+      boss_id: invite.boss_id,
+      hq_id: invite.hq_id,
+      hq_project_id: invite.project_id,
+      client_name: invite.hq_profiles?.hq_business_profiles?.display_name
+        || invite.hq_profiles?.company_name
+        || "Unknown Company",
+      client_avatar: invite.hq_profiles?.hq_business_profiles?.logo_url || null,
+      project_title: invite.hq_projects?.title || "Untitled Project",
+      project_description: invite.hq_projects?.description || null,
+      budget_min: invite.hq_projects?.budget_min || null,
+      budget_max: invite.hq_projects?.budget_max || null,
+      currency: invite.hq_projects?.currency || "EUR",
+      deadline: invite.hq_projects?.deadline || null,
+      message: invite.message,
+      proposed_budget: invite.proposed_budget,
+      proposed_deadline: invite.proposed_deadline,
+      status: invite.status,
+      created_at: invite.created_at,
+      updated_at: invite.updated_at,
+    }))
+
+    setInvites(transformedInvites)
     setIsLoading(false)
   }
 
   const handleAccept = async (inviteId: string) => {
     const supabase = createClient()
 
-    // Update invite status
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (!user) return
+
+    // Get invite details
+    const invite = invites.find((i) => i.id === inviteId)
+    if (!invite) return
+
+    // Update invite status in hq_invites
     const { error: inviteError } = await supabase
-      .from("boss_invites")
-      .update({ status: "accepted" })
+      .from("hq_invites")
+      .update({
+        status: "accepted",
+        responded_at: new Date().toISOString(),
+      })
       .eq("id", inviteId)
 
     if (inviteError) {
@@ -70,32 +136,19 @@ export default function InvitesPage() {
       return
     }
 
-    // Get invite details to create project
-    const invite = invites.find((i) => i.id === inviteId)
-    if (!invite) return
-
-    // Create project
-    const { data: project, error: projectError } = await supabase
-      .from("boss_projects")
-      .insert({
-        boss_id: invite.boss_id,
-        client_id: invite.client_id,
-        invite_id: invite.id,
-        title: invite.project_title,
-        description: invite.project_description,
+    // Update HQ project to assign this boss and change status to in_progress
+    const { error: projectError } = await supabase
+      .from("hq_projects")
+      .update({
+        assigned_boss_id: user.id,
         status: "in_progress",
-        budget: invite.budget_max || invite.budget_min,
-        currency: invite.currency,
-        deadline: invite.deadline,
-        started_at: new Date().toISOString(),
       })
-      .select()
-      .single()
+      .eq("id", invite.hq_project_id)
 
     if (projectError) {
       toast({
         title: "Error",
-        description: "Failed to create project. Please try again.",
+        description: "Failed to assign project. Please try again.",
         variant: "destructive",
       })
       return
@@ -103,24 +156,25 @@ export default function InvitesPage() {
 
     toast({
       title: "Invite Accepted",
-      description: "Project created successfully!",
+      description: "You have been assigned to this project!",
     })
 
     // Refresh invites
     await loadInvites()
 
-    // Navigate to project
-    if (project) {
-      router.push(`/boss/projects/${project.id}`)
-    }
+    // Navigate to HQ project view for boss
+    router.push(`/boss/hq-projects/${invite.hq_project_id}`)
   }
 
   const handleDecline = async (inviteId: string) => {
     const supabase = createClient()
 
     const { error } = await supabase
-      .from("boss_invites")
-      .update({ status: "declined" })
+      .from("hq_invites")
+      .update({
+        status: "declined",
+        responded_at: new Date().toISOString(),
+      })
       .eq("id", inviteId)
 
     if (error) {
