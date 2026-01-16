@@ -1,5 +1,7 @@
 export type UserMode = "boss" | "hq" | "self" | "shaper"
 
+export type ShaperStatus = "pending" | "approved" | "rejected"
+
 export type WebsiteTemplate = "minimal" | "editorial" | "grid"
 
 export type BlockType = "hero" | "about" | "services" | "contact" | "creative"
@@ -13,6 +15,7 @@ export interface Profile {
   handle: string | null
   avatar_url: string | null
   current_mode: UserMode
+  shaper_status: ShaperStatus | null
   created_at: string
   updated_at: string
 }
