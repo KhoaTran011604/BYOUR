@@ -43,7 +43,7 @@ export default function InvitesPage() {
 
     // Get invites from hq_invites with joined project and business profile data
     // Note: hq_invites.boss_id references profiles(id) which is user_id
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("hq_invites")
       .select(`
         id,
@@ -56,7 +56,7 @@ export default function InvitesPage() {
         status,
         created_at,
         updated_at,
-        hq_projects!inner (
+        hq_projects (
           title,
           description,
           budget_min,
@@ -64,7 +64,7 @@ export default function InvitesPage() {
           currency,
           deadline
         ),
-        hq_profiles!inner (
+        hq_profiles (
           company_name,
           hq_business_profiles (
             display_name,
@@ -74,8 +74,6 @@ export default function InvitesPage() {
       `)
       .eq("boss_id", user.id)
       .order("created_at", { ascending: false })
-    console.log("🚀 ~ loadInvites ~ user:", user)
-    console.log("🚀 ~ loadInvites ~ data:", data)
 
     // Transform data to BossInvite format
     const transformedInvites: BossInvite[] = (data || []).map((invite: any) => ({
