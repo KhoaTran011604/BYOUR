@@ -178,7 +178,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
       <header className="flex h-14 items-center justify-between border-b border-border bg-background px-4">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="sm" asChild>
-            <Link href="/dashboard">
+            <Link href="/boss">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Dashboard
             </Link>

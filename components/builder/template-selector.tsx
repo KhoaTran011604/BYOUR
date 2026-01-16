@@ -148,7 +148,7 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
     <div className="min-h-screen bg-muted/30">
       <header className="border-b border-border bg-background">
         <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
-          <Link href="/dashboard" className="flex items-center gap-2">
+          <Link href="/boss" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
             <span className="text-xl font-bold tracking-tight">TEST-002</span>
           </Link>

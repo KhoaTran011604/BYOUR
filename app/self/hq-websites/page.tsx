@@ -91,7 +91,7 @@ export default function ExampleHQWebsitesPage() {
         {/* Header */}
         <div className="mb-8">
           <Button variant="ghost" asChild className="mb-4">
-            <Link href="/dashboard">
+            <Link href="/self">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Quay lại Dashboard
             </Link>

@@ -115,3 +115,112 @@ export interface Service {
   created_at: string
   updated_at: string
 }
+
+// ==================== BOSS MODE TYPES ====================
+
+export type BossVerificationStatus = "pending" | "verifying" | "verified" | "failed"
+
+export type InviteStatus = "pending" | "accepted" | "declined" | "expired"
+
+export type ProjectStatus = "invited" | "in_progress" | "review" | "completed" | "cancelled"
+
+export type PaymentStatus = "pending" | "processing" | "completed" | "failed"
+
+export interface BossProfile {
+  id: string
+  user_id: string
+  registration_number: string
+  company_name: string | null
+  business_type: string | null
+  verification_status: BossVerificationStatus
+  verified_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface BossInvite {
+  id: string
+  boss_id: string
+  client_id: string
+  client_name: string
+  client_avatar: string | null
+  project_title: string
+  project_description: string | null
+  budget_min: number | null
+  budget_max: number | null
+  currency: string
+  deadline: string | null
+  status: InviteStatus
+  created_at: string
+  updated_at: string
+}
+
+export interface BossProject {
+  id: string
+  boss_id: string
+  client_id: string
+  invite_id: string
+  title: string
+  description: string | null
+  status: ProjectStatus
+  budget: number | null
+  currency: string
+  deadline: string | null
+  started_at: string | null
+  completed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ProjectMessage {
+  id: string
+  project_id: string
+  sender_id: string
+  sender_name: string
+  sender_avatar: string | null
+  message: string
+  attachments: ProjectAttachment[]
+  created_at: string
+}
+
+export interface ProjectAttachment {
+  id: string
+  name: string
+  url: string
+  type: string
+  size: number
+}
+
+export interface BossPayment {
+  id: string
+  project_id: string
+  boss_id: string
+  amount: number
+  currency: string
+  status: PaymentStatus
+  payment_method: string | null
+  transaction_id: string | null
+  paid_at: string | null
+  created_at: string
+}
+
+export interface BossEarnings {
+  total_earned: number
+  pending_amount: number
+  this_month: number
+  last_month: number
+  currency: string
+  projects_completed: number
+  average_rating: number | null
+}
+
+export interface EarningsTransaction {
+  id: string
+  project_id: string
+  project_title: string
+  client_name: string
+  amount: number
+  currency: string
+  status: PaymentStatus
+  date: string
+}

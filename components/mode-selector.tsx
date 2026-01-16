@@ -1,16 +1,17 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Briefcase, Building2, User, Sparkles, ChevronDown, Check } from "lucide-react"
 import type { UserMode } from "@/lib/types"
 
 const modeConfig = {
-  boss: { label: "Boss", icon: Briefcase, description: "Freelancer chuyên nghiệp" },
-  hq: { label: "HQ", icon: Building2, description: "Doanh nghiệp & Agency" },
-  self: { label: "Self", icon: User, description: "Đang tìm hiểu" },
-  shaper: { label: "Shaper", icon: Sparkles, description: "Đóng góp nội bộ" },
+  boss: { label: "Boss", icon: Briefcase, description: "Freelancer chuyên nghiệp", path: "/boss" },
+  hq: { label: "HQ", icon: Building2, description: "Doanh nghiệp & Agency", path: "/hq" },
+  self: { label: "Self", icon: User, description: "Đang tìm hiểu", path: "/self" },
+  shaper: { label: "Shaper", icon: Sparkles, description: "Đóng góp nội bộ", path: "/shaper" },
 }
 
 interface ModeSelectorProps {
@@ -20,7 +21,14 @@ interface ModeSelectorProps {
 
 export function ModeSelector({ currentMode, onModeChange }: ModeSelectorProps) {
   const [open, setOpen] = useState(false)
+  const router = useRouter()
   const current = modeConfig[currentMode]
+
+  const handleModeChange = (mode: UserMode) => {
+    onModeChange(mode)
+    setOpen(false)
+    router.push(modeConfig[mode].path)
+  }
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen}>
@@ -37,10 +45,7 @@ export function ModeSelector({ currentMode, onModeChange }: ModeSelectorProps) {
         {(Object.entries(modeConfig) as [UserMode, typeof modeConfig.boss][]).map(([mode, config]) => (
           <DropdownMenuItem
             key={mode}
-            onClick={() => {
-              onModeChange(mode)
-              setOpen(false)
-            }}
+            onClick={() => handleModeChange(mode)}
             className="flex items-center gap-3 py-3"
           >
             <config.icon className="h-4 w-4" />

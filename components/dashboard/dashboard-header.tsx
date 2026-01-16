@@ -44,7 +44,7 @@ export function DashboardHeader({ user, profile, currentMode, onModeChange }: Da
   return (
     <header className="border-b border-border bg-background sticky top-0 z-50">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/dashboard" className="flex items-center gap-2">
+        <Link href="/self" className="flex items-center gap-2">
           <span className="text-xl font-bold tracking-tight">TEST-002</span>
         </Link>
 
@@ -77,13 +77,13 @@ export function DashboardHeader({ user, profile, currentMode, onModeChange }: Da
               </div>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/profile" className="cursor-pointer">
+                <Link href="/profile" className="cursor-pointer">
                   <UserIcon className="mr-2 h-4 w-4" />
                   Hồ sơ
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/dashboard/settings" className="cursor-pointer">
+                <Link href="/settings" className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
                   Cài đặt
                 </Link>

@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
-import { DashboardContent } from "@/components/dashboard/dashboard-content"
+import { SelfContent } from "@/components/self/self-content"
 
-export default async function DashboardPage() {
+export default async function SelfPage() {
   const supabase = await createClient()
   const {
     data: { user },
@@ -13,11 +13,7 @@ export default async function DashboardPage() {
     redirect("/auth/login")
   }
 
-  // Get or create profile
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
 
-  // Get user's website if exists
-  const { data: website } = await supabase.from("websites").select("*").eq("user_id", user.id).single()
-
-  return <DashboardContent user={user} profile={profile} website={website} />
+  return <SelfContent user={user} profile={profile} />
 }

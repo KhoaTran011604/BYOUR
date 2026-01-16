@@ -13,6 +13,7 @@ import type { Profile } from "@/lib/types"
 import type { User } from "@supabase/supabase-js"
 import { ArrowLeft, Save } from "lucide-react"
 import Link from "next/link"
+import { BackButton } from "../ui/back-button"
 
 interface SettingsFormProps {
   user: User
@@ -83,12 +84,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
 
   return (
     <div className="space-y-6">
-      <Button variant="ghost" asChild className="mb-4">
-        <Link href="/dashboard">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Quay lại Dashboard
-        </Link>
-      </Button>
+      <BackButton/>
 
       <Card>
         <CardHeader>
