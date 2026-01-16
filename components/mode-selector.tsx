@@ -8,10 +8,10 @@ import { Briefcase, Building2, User, Sparkles, ChevronDown, Check } from "lucide
 import type { UserMode } from "@/lib/types"
 
 const modeConfig = {
-  boss: { label: "Boss", icon: Briefcase, description: "Freelancer chuyên nghiệp", path: "/boss" },
-  hq: { label: "HQ", icon: Building2, description: "Doanh nghiệp & Agency", path: "/hq" },
-  self: { label: "Self", icon: User, description: "Đang tìm hiểu", path: "/self" },
-  shaper: { label: "Shaper", icon: Sparkles, description: "Đóng góp nội bộ", path: "/shaper" },
+  boss: { label: "Boss", icon: Briefcase, description: "Professional freelancer", path: "/boss" },
+  hq: { label: "HQ", icon: Building2, description: "Business & Agency", path: "/hq" },
+  self: { label: "Self", icon: User, description: "Exploring", path: "/self" },
+  shaper: { label: "Shaper", icon: Sparkles, description: "Internal contributor", path: "/shaper" },
 }
 
 interface ModeSelectorProps {

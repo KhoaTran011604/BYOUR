@@ -6,30 +6,30 @@ const modes = [
   {
     id: "boss",
     title: "Boss",
-    description: "Dành cho freelancer chuyên nghiệp muốn xây dựng thương hiệu cá nhân và quản lý công việc độc lập",
+    description: "For professional freelancers who want to build their personal brand and manage independent work",
     icon: Briefcase,
-    features: ["Tạo microsite chuyên nghiệp", "Quản lý dịch vụ & giá cả", "Xây dựng portfolio"],
+    features: ["Create professional microsite", "Manage services & pricing", "Build portfolio"],
   },
   {
     id: "hq",
     title: "HQ",
-    description: "Dành cho doanh nghiệp và agency muốn có mặt online chuyên nghiệp với website được thiết kế sẵn",
+    description: "For businesses and agencies who want a professional online presence with pre-designed websites",
     icon: Building2,
-    features: ["3 mẫu thiết kế cao cấp", "Tùy chỉnh nội dung dễ dàng", "URL riêng: byour.co/handle"],
+    features: ["3 premium design templates", "Easy content customization", "Custom URL: byour.co/handle"],
   },
   {
     id: "self",
     title: "Self",
-    description: "Dành cho người đang tìm hiểu về freelance và muốn khám phá con đường làm việc độc lập",
+    description: "For those exploring freelancing and wanting to discover the path to independent work",
     icon: User,
-    features: ["Tài nguyên học tập", "Hướng dẫn bắt đầu", "Cộng đồng hỗ trợ"],
+    features: ["Learning resources", "Getting started guides", "Supportive community"],
   },
   {
     id: "shaper",
     title: "Shaper",
-    description: "Dành cho những người đóng góp nội bộ, giúp xây dựng và phát triển nền tảng TEST-002",
+    description: "For internal contributors helping to build and develop the TEST-002 platform",
     icon: Sparkles,
-    features: ["Đóng góp nội dung", "Xây dựng cộng đồng", "Phát triển nền tảng"],
+    features: ["Contribute content", "Build community", "Develop platform"],
   },
 ]
 
@@ -47,21 +47,21 @@ export default function HomePage() {
               href="#modes"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Chế độ
+              Modes
             </Link>
             <Link
               href="#features"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Tính năng
+              Features
             </Link>
           </nav>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild>
-              <Link href="/auth/login">Đăng nhập</Link>
+              <Link href="/auth/login">Log in</Link>
             </Button>
             <Button asChild>
-              <Link href="/auth/sign-up">Bắt đầu miễn phí</Link>
+              <Link href="/auth/sign-up">Start for free</Link>
             </Button>
           </div>
         </div>
@@ -73,22 +73,22 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-balance">
-              Văn phòng kỹ thuật số
-              <span className="block text-accent">cho thời đại mới</span>
+              Digital Office
+              <span className="block text-accent">for the new era</span>
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground text-pretty">
-              TEST-002 không chỉ là bảng tin việc làm - đây là không gian để các chuyên gia độc lập xây dựng cấu trúc công
-              việc riêng. Một đăng nhập, bốn chế độ linh hoạt.
+              TEST-002 is not just a job board - it&apos;s a space for independent professionals to build their own work
+              structure. One login, four flexible modes.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild className="w-full sm:w-auto">
                 <Link href="/auth/sign-up">
-                  Tạo văn phòng của bạn
+                  Create your office
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="w-full sm:w-auto bg-transparent">
-                <Link href="#modes">Khám phá các chế độ</Link>
+                <Link href="#modes">Explore modes</Link>
               </Button>
             </div>
           </div>
@@ -99,9 +99,9 @@ export default function HomePage() {
       <section id="modes" className="border-t border-border/50 bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Một tài khoản, bốn chế độ</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">One account, four modes</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Chuyển đổi linh hoạt giữa các vai trò tùy theo nhu cầu của bạn
+              Switch flexibly between roles according to your needs
             </p>
           </div>
 
@@ -136,27 +136,27 @@ export default function HomePage() {
           <div className="mx-auto max-w-2xl text-center">
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">HQ Website Builder</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Tạo microsite chuyên nghiệp trong vài phút với công cụ kéo-thả trực quan
+              Create a professional microsite in minutes with intuitive drag-and-drop tools
             </p>
           </div>
 
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
             <div className="rounded-xl border border-border bg-card p-8">
-              <h3 className="text-lg font-semibold">3 mẫu thiết kế</h3>
+              <h3 className="text-lg font-semibold">3 design templates</h3>
               <p className="mt-2 text-muted-foreground">
-                Minimal, Editorial, Grid - mỗi mẫu được thiết kế tỉ mỉ để đảm bảo thẩm mỹ cao cấp
+                Minimal, Editorial, Grid - each template is meticulously designed for premium aesthetics
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-8">
-              <h3 className="text-lg font-semibold">4 khối nội dung</h3>
+              <h3 className="text-lg font-semibold">4 content blocks</h3>
               <p className="mt-2 text-muted-foreground">
-                Hero, About, Services, Contact - kéo thả sắp xếp lại thứ tự theo ý muốn
+                Hero, About, Services, Contact - drag and drop to rearrange as you wish
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-8">
-              <h3 className="text-lg font-semibold">Phong cách khóa</h3>
+              <h3 className="text-lg font-semibold">Locked styling</h3>
               <p className="mt-2 text-muted-foreground">
-                Thiết kế được kiểm soát chặt chẽ để website của bạn luôn nhất quán và chuyên nghiệp
+                Tightly controlled design to keep your website consistent and professional
               </p>
             </div>
           </div>
@@ -166,13 +166,13 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="border-t border-border/50 bg-primary py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-primary-foreground">Sẵn sàng bắt đầu?</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-primary-foreground">Ready to start?</h2>
           <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
-            Tạo văn phòng kỹ thuật số của riêng bạn ngay hôm nay. Hoàn toàn miễn phí.
+            Create your own digital office today. Completely free.
           </p>
           <Button size="lg" variant="secondary" asChild className="mt-8">
             <Link href="/auth/sign-up">
-              Đăng ký miễn phí
+              Sign up for free
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
@@ -189,13 +189,13 @@ export default function HomePage() {
             </div>
             <nav className="flex gap-6 text-sm text-muted-foreground">
               <Link href="#" className="hover:text-foreground transition-colors">
-                Điều khoản
+                Terms
               </Link>
               <Link href="#" className="hover:text-foreground transition-colors">
-                Bảo mật
+                Privacy
               </Link>
               <Link href="#" className="hover:text-foreground transition-colors">
-                Liên hệ
+                Contact
               </Link>
             </nav>
           </div>

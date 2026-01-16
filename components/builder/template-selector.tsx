@@ -16,17 +16,17 @@ const templates: { id: WebsiteTemplate; name: string; description: string }[] = 
   {
     id: "minimal",
     name: "Minimal",
-    description: "Thiết kế tối giản, tập trung vào nội dung. Phù hợp với freelancer và cá nhân.",
+    description: "Minimalist design, content-focused. Perfect for freelancers and individuals.",
   },
   {
     id: "editorial",
     name: "Editorial",
-    description: "Phong cách báo chí, chữ lớn và hình ảnh nổi bật. Phù hợp với sáng tạo nội dung.",
+    description: "Editorial style, bold typography and striking images. Perfect for content creators.",
   },
   {
     id: "grid",
     name: "Grid",
-    description: "Bố cục lưới hiện đại, trình bày dịch vụ rõ ràng. Phù hợp với agency và studio.",
+    description: "Modern grid layout, clear service presentation. Perfect for agencies and studios.",
   },
 ]
 
@@ -46,12 +46,12 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
 
   const handleCreateWebsite = async () => {
     if (!handle) {
-      setError("Vui lòng nhập handle cho website")
+      setError("Please enter a handle for your website")
       return
     }
 
     if (!/^[a-z0-9-]+$/.test(handle)) {
-      setError("Handle chỉ được chứa chữ thường, số và dấu gạch ngang")
+      setError("Handle can only contain lowercase letters, numbers and hyphens")
       return
     }
 
@@ -81,10 +81,10 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
           block_type: "hero",
           order_index: 0,
           content: {
-            title: userName || "Chào mừng",
-            subtitle: "Tôi là một chuyên gia trong lĩnh vực của mình",
+            title: userName || "Welcome",
+            subtitle: "I am an expert in my field",
             image_url: null,
-            cta_text: "Liên hệ ngay",
+            cta_text: "Contact now",
             cta_link: "#contact",
           },
         },
@@ -93,9 +93,9 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
           block_type: "about",
           order_index: 1,
           content: {
-            heading: "Về tôi",
+            heading: "About me",
             description:
-              "Giới thiệu về bản thân và kinh nghiệm của bạn. Chia sẻ câu chuyện và giá trị mà bạn mang lại cho khách hàng.",
+              "Introduce yourself and your experience. Share your story and the value you bring to customers.",
             image_url: null,
           },
         },
@@ -104,8 +104,8 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
           block_type: "services",
           order_index: 2,
           content: {
-            heading: "Dịch vụ",
-            description: "Những gì tôi có thể giúp bạn",
+            heading: "Services",
+            description: "What I can help you with",
           },
         },
         {
@@ -113,7 +113,7 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
           block_type: "contact",
           order_index: 3,
           content: {
-            heading: "Liên hệ",
+            heading: "Contact",
             email: null,
             phone: null,
             address: null,
@@ -135,7 +135,7 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
     } catch (err) {
       if (err instanceof Error) {
         if (err.message.includes("duplicate") || err.message.includes("unique")) {
-          setError("Handle này đã được sử dụng. Vui lòng chọn handle khác.")
+          setError("This handle is already taken. Please choose another one.")
         } else {
           setError(err.message)
         }
@@ -159,8 +159,8 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
         {step === "template" ? (
           <>
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-bold">Chọn mẫu thiết kế</h1>
-              <p className="mt-2 text-muted-foreground">Chọn một trong ba mẫu cao cấp cho website của bạn</p>
+              <h1 className="text-3xl font-bold">Choose a template</h1>
+              <p className="mt-2 text-muted-foreground">Select one of three premium templates for your website</p>
             </div>
 
             <div className="grid gap-6 md:grid-cols-3">
@@ -195,7 +195,7 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
 
             <div className="mt-8 flex justify-center">
               <Button size="lg" onClick={() => setStep("handle")}>
-                Tiếp tục
+                Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -203,8 +203,8 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
         ) : (
           <>
             <div className="mb-8 text-center">
-              <h1 className="text-3xl font-bold">Đặt tên cho website</h1>
-              <p className="mt-2 text-muted-foreground">Chọn handle để tạo URL cho website của bạn</p>
+              <h1 className="text-3xl font-bold">Name your website</h1>
+              <p className="mt-2 text-muted-foreground">Choose a handle to create URL for your website</p>
             </div>
 
             <Card className="mx-auto max-w-md">
@@ -222,7 +222,7 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
                         className="border-0 p-0 focus-visible:ring-0"
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground">Chỉ sử dụng chữ thường, số và dấu gạch ngang</p>
+                    <p className="text-xs text-muted-foreground">Only use lowercase letters, numbers and hyphens</p>
                   </div>
 
                   {error && <p className="text-sm text-destructive">{error}</p>}
@@ -230,10 +230,10 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
                   <div className="flex gap-3">
                     <Button variant="outline" onClick={() => setStep("template")} className="flex-1 bg-transparent">
                       <ArrowLeft className="mr-2 h-4 w-4" />
-                      Quay lại
+                      Back
                     </Button>
                     <Button onClick={handleCreateWebsite} disabled={isLoading} className="flex-1">
-                      {isLoading ? "Đang tạo..." : "Tạo website"}
+                      {isLoading ? "Creating..." : "Create website"}
                     </Button>
                   </div>
                 </div>

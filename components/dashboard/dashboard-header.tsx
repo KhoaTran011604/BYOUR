@@ -79,13 +79,13 @@ export function DashboardHeader({ user, profile, currentMode, onModeChange }: Da
               <DropdownMenuItem asChild>
                 <Link href="/profile" className="cursor-pointer">
                   <UserIcon className="mr-2 h-4 w-4" />
-                  Hồ sơ
+                  Profile
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
-                  Cài đặt
+                  Settings
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -94,7 +94,7 @@ export function DashboardHeader({ user, profile, currentMode, onModeChange }: Da
                 className="text-destructive focus:text-destructive cursor-pointer"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Đăng xuất
+                Log out
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

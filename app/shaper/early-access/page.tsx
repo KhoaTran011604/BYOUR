@@ -22,12 +22,12 @@ import {
   Shield,
 } from "lucide-react"
 
-// Fake data - sẽ thay bằng dữ liệu từ DB sau
+// Fake data - will be replaced with DB data later
 const experimentalFeatures = [
   {
     id: 1,
     name: "AI Content Assistant",
-    description: "Sử dụng AI để gợi ý và tạo nội dung tự động cho website của bạn.",
+    description: "Use AI to suggest and auto-generate content for your website.",
     icon: Brain,
     status: "available",
     releaseDate: "2024-02-15",
@@ -37,7 +37,7 @@ const experimentalFeatures = [
   {
     id: 2,
     name: "Advanced Analytics",
-    description: "Dashboard analytics chi tiết với heatmaps và user journey tracking.",
+    description: "Detailed analytics dashboard with heatmaps and user journey tracking.",
     icon: Zap,
     status: "available",
     releaseDate: "2024-02-20",
@@ -47,7 +47,7 @@ const experimentalFeatures = [
   {
     id: 3,
     name: "Custom Themes",
-    description: "Tạo và chia sẻ custom themes với cộng đồng TEST-002.",
+    description: "Create and share custom themes with the community TEST-002.",
     icon: Palette,
     status: "available",
     releaseDate: "2024-03-01",
@@ -57,7 +57,7 @@ const experimentalFeatures = [
   {
     id: 4,
     name: "Multi-site Management",
-    description: "Quản lý nhiều websites từ một dashboard duy nhất.",
+    description: "Manage multiple websites from a single dashboard.",
     icon: Globe,
     status: "coming_soon",
     releaseDate: "2024-03-15",
@@ -67,7 +67,7 @@ const experimentalFeatures = [
   {
     id: 5,
     name: "Team Collaboration",
-    description: "Invite team members và cộng tác real-time trên website.",
+    description: "Invite team members and collaborate real-time on website.",
     icon: Users,
     status: "coming_soon",
     releaseDate: "2024-04-01",
@@ -77,7 +77,7 @@ const experimentalFeatures = [
   {
     id: 6,
     name: "Enterprise SSO",
-    description: "Single Sign-On integration cho doanh nghiệp.",
+    description: "Single Sign-On integration for enterprises.",
     icon: Shield,
     status: "locked",
     releaseDate: "2024-05-01",
@@ -105,9 +105,9 @@ const upcomingReleases = [
 ]
 
 const statusConfig = {
-  available: { label: "Có sẵn", color: "bg-green-500", icon: Unlock },
-  coming_soon: { label: "Sắp ra mắt", color: "bg-amber-500", icon: Calendar },
-  locked: { label: "Chưa mở", color: "bg-gray-500", icon: Lock },
+  available: { label: "Available", color: "bg-green-500", icon: Unlock },
+  coming_soon: { label: "Coming soon", color: "bg-amber-500", icon: Calendar },
+  locked: { label: "Not available", color: "bg-gray-500", icon: Lock },
 }
 
 export default function ShaperEarlyAccessPage() {
@@ -119,7 +119,7 @@ export default function ShaperEarlyAccessPage() {
           <Button variant="ghost" asChild className="mb-4">
             <Link href="/shaper">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại Dashboard
+              Back to Dashboard
             </Link>
           </Button>
           <div className="flex items-center gap-3 mb-2">
@@ -127,7 +127,7 @@ export default function ShaperEarlyAccessPage() {
             <h1 className="text-3xl font-bold">Early Access</h1>
           </div>
           <p className="text-muted-foreground">
-            Trải nghiệm sớm các tính năng thử nghiệm trước tất cả người dùng khác
+            Experience experimental features before everyone else
           </p>
         </div>
 
@@ -141,7 +141,7 @@ export default function ShaperEarlyAccessPage() {
               <div>
                 <h3 className="font-semibold text-lg">Shaper Status: Active</h3>
                 <p className="text-sm text-muted-foreground">
-                  Bạn có quyền truy cập sớm vào tất cả tính năng thử nghiệm. Cảm ơn bạn đã đồng hành cùng TEST-002!
+                  You have early access to all experimental features. Thank you for being part of TEST-002!
                 </p>
               </div>
               <Badge className="ml-auto bg-accent text-accent-foreground">
@@ -154,7 +154,7 @@ export default function ShaperEarlyAccessPage() {
 
         {/* Experimental Features */}
         <div className="mb-10">
-          <h2 className="text-xl font-semibold mb-4">Tính năng thử nghiệm</h2>
+          <h2 className="text-xl font-semibold mb-4">Experimental features</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {experimentalFeatures.map((feature) => {
               const status = statusConfig[feature.status as keyof typeof statusConfig]
@@ -191,7 +191,7 @@ export default function ShaperEarlyAccessPage() {
                         <>
                           <div className="flex items-center gap-1 text-xs text-muted-foreground">
                             <Users className="h-3 w-3" />
-                            <span>{feature.accessCount} người đang dùng</span>
+                            <span>{feature.accessCount} users</span>
                           </div>
                           <div className="flex items-center space-x-2">
                             <Switch
@@ -199,15 +199,15 @@ export default function ShaperEarlyAccessPage() {
                               defaultChecked={feature.enabled}
                             />
                             <Label htmlFor={`feature-${feature.id}`} className="text-sm">
-                              {feature.enabled ? "Đang bật" : "Đang tắt"}
+                              {feature.enabled ? "Enabled" : "Disabled"}
                             </Label>
                           </div>
                         </>
                       ) : (
                         <p className="text-xs text-muted-foreground italic">
                           {feature.status === "coming_soon"
-                            ? "Sẽ có sẵn cho Shapers sớm"
-                            : "Chưa mở cho early access"}
+                            ? "Coming soon for Shapers"
+                            : "Not yet available for early access"}
                         </p>
                       )}
                     </div>
@@ -222,7 +222,7 @@ export default function ShaperEarlyAccessPage() {
         <div className="mb-10">
           <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
             <Rocket className="h-5 w-5 text-accent" />
-            Lộ trình phát triển
+            Development roadmap
           </h2>
           <Card>
             <CardContent className="pt-6">
@@ -265,14 +265,14 @@ export default function ShaperEarlyAccessPage() {
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div>
-                <h3 className="font-semibold text-lg mb-1">Có góp ý về tính năng?</h3>
+                <h3 className="font-semibold text-lg mb-1">Have feedback on features?</h3>
                 <p className="text-sm text-muted-foreground">
-                  Feedback của bạn giúp chúng tôi cải thiện các tính năng trước khi release chính thức.
+                  Your feedback helps us improve features before official release.
                 </p>
               </div>
               <Button asChild>
                 <Link href="/shaper/feedback">
-                  Gửi Feedback
+                  Send Feedback
                 </Link>
               </Button>
             </div>

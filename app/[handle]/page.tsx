@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!website) {
     return {
-      title: "Không tìm thấy trang",
+      title: "Page not found",
     }
   }
 
@@ -28,10 +28,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: `${profileName} | TEST-002`,
-    description: `Website chuyên nghiệp của ${profileName} trên TEST-002`,
+    description: `Professional website of ${profileName} on TEST-002`,
     openGraph: {
       title: `${profileName} | TEST-002`,
-      description: `Website chuyên nghiệp của ${profileName}`,
+      description: `Professional website of ${profileName}`,
       url: `https://byour.co/${handle}`,
     },
   }

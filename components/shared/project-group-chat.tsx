@@ -244,11 +244,11 @@ export function ProjectGroupChat({
     yesterday.setDate(yesterday.getDate() - 1)
 
     if (date.toDateString() === today.toDateString()) {
-      return "Hôm nay"
+      return "Today"
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Hôm qua"
+      return "Yesterday"
     } else {
-      return date.toLocaleDateString("vi-VN")
+      return date.toLocaleDateString("en-US")
     }
   }
 
@@ -277,7 +277,7 @@ export function ProjectGroupChat({
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Group Chat</span>
           <Badge variant="outline" className="text-xs">
-            {messages.length} tin nhắn
+            {messages.length} messages
           </Badge>
         </div>
         <Button
@@ -295,9 +295,9 @@ export function ProjectGroupChat({
       <ScrollArea ref={scrollRef} className="min-h-0 flex-1 p-4">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <p className="text-muted-foreground">Chưa có tin nhắn nào</p>
+            <p className="text-muted-foreground">No messages yet</p>
             <p className="text-sm text-muted-foreground">
-              Bắt đầu cuộc trò chuyện ngay!
+              Start the conversation now!
             </p>
           </div>
         ) : (
@@ -476,7 +476,7 @@ export function ProjectGroupChat({
             <Paperclip className="h-4 w-4" />
           </Button>
           <Input
-            placeholder="Nhập tin nhắn..."
+            placeholder="Enter message..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             onKeyDown={(e) => {

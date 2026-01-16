@@ -48,31 +48,31 @@ export function BlockEditor({
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Tiêu đề</Label>
+          <Label htmlFor="title">Title</Label>
           <Input
             id="title"
             value={content.title || ""}
             onChange={(e) => handleChange("title", e.target.value)}
-            placeholder="Tiêu đề chính"
+            placeholder="Main title"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="subtitle">Phụ đề</Label>
+          <Label htmlFor="subtitle">Subtitle</Label>
           <Textarea
             id="subtitle"
             value={content.subtitle || ""}
             onChange={(e) => handleChange("subtitle", e.target.value)}
-            placeholder="Mô tả ngắn về bạn"
+            placeholder="Short description about you"
             rows={3}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="cta_text">Nút CTA</Label>
+          <Label htmlFor="cta_text">CTA Button</Label>
           <Input
             id="cta_text"
             value={content.cta_text || ""}
             onChange={(e) => handleChange("cta_text", e.target.value)}
-            placeholder="Liên hệ ngay"
+            placeholder="Contact now"
           />
         </div>
         <div className="space-y-2">
@@ -93,21 +93,21 @@ export function BlockEditor({
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="heading">Tiêu đề</Label>
+          <Label htmlFor="heading">Title</Label>
           <Input
             id="heading"
             value={content.heading || ""}
             onChange={(e) => handleChange("heading", e.target.value)}
-            placeholder="Về tôi"
+            placeholder="About me"
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="description">Nội dung</Label>
+          <Label htmlFor="description">Content</Label>
           <Textarea
             id="description"
             value={content.description || ""}
             onChange={(e) => handleChange("description", e.target.value)}
-            placeholder="Giới thiệu về bản thân và kinh nghiệm của bạn..."
+            placeholder="Introduce yourself and your experience..."
             rows={6}
           />
         </div>
@@ -121,21 +121,21 @@ export function BlockEditor({
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="heading">Tiêu đề</Label>
+            <Label htmlFor="heading">Title</Label>
             <Input
               id="heading"
               value={content.heading || ""}
               onChange={(e) => handleChange("heading", e.target.value)}
-              placeholder="Dịch vụ"
+              placeholder="Services"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Mô tả</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
               value={content.description || ""}
               onChange={(e) => handleChange("description", e.target.value)}
-              placeholder="Những gì tôi có thể giúp bạn"
+              placeholder="What I can help you with"
               rows={2}
             />
           </div>
@@ -143,10 +143,10 @@ export function BlockEditor({
 
         <div className="border-t border-border pt-4">
           <div className="flex items-center justify-between mb-4">
-            <Label>Danh sách dịch vụ</Label>
+            <Label>Service list</Label>
             <Button variant="outline" size="sm" onClick={onServiceAdd} className="bg-transparent">
               <Plus className="mr-2 h-4 w-4" />
-              Thêm dịch vụ
+              Add service
             </Button>
           </div>
 
@@ -158,12 +158,12 @@ export function BlockEditor({
                     <Input
                       value={service.title}
                       onChange={(e) => onServiceUpdate(service.id, { title: e.target.value })}
-                      placeholder="Tên dịch vụ"
+                      placeholder="Service name"
                     />
                     <Textarea
                       value={service.description || ""}
                       onChange={(e) => onServiceUpdate(service.id, { description: e.target.value })}
-                      placeholder="Mô tả dịch vụ"
+                      placeholder="Service description"
                       rows={2}
                     />
                     <div className="flex gap-2">
@@ -175,8 +175,8 @@ export function BlockEditor({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="fixed">Giá cố định</SelectItem>
-                          <SelectItem value="quote">Báo giá</SelectItem>
+                          <SelectItem value="fixed">Fixed price</SelectItem>
+                          <SelectItem value="quote">Quote</SelectItem>
                         </SelectContent>
                       </Select>
                       {service.price_type === "fixed" && (
@@ -188,7 +188,7 @@ export function BlockEditor({
                               price_amount: e.target.value ? Number.parseFloat(e.target.value) : null,
                             })
                           }
-                          placeholder="Giá (VND)"
+                          placeholder="Price (VND)"
                           className="flex-1"
                         />
                       )}
@@ -208,7 +208,7 @@ export function BlockEditor({
 
             {services.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
-                Chưa có dịch vụ nào. Nhấn "Thêm dịch vụ" để bắt đầu.
+                No services yet. Click "Add service" to get started.
               </p>
             )}
           </div>
@@ -222,12 +222,12 @@ export function BlockEditor({
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="heading">Tiêu đề</Label>
+          <Label htmlFor="heading">Title</Label>
           <Input
             id="heading"
             value={content.heading || ""}
             onChange={(e) => handleChange("heading", e.target.value)}
-            placeholder="Liên hệ"
+            placeholder="Contact"
           />
         </div>
         <div className="space-y-2">
@@ -241,7 +241,7 @@ export function BlockEditor({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phone">Số điện thoại</Label>
+          <Label htmlFor="phone">Phone number</Label>
           <Input
             id="phone"
             value={content.phone || ""}
@@ -250,17 +250,17 @@ export function BlockEditor({
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="address">Địa chỉ</Label>
+          <Label htmlFor="address">Address</Label>
           <Textarea
             id="address"
             value={content.address || ""}
             onChange={(e) => handleChange("address", e.target.value)}
-            placeholder="Địa chỉ của bạn"
+            placeholder="Your address"
             rows={2}
           />
         </div>
         <div className="space-y-2">
-          <Label>Mạng xã hội</Label>
+          <Label>Social media</Label>
           <div className="space-y-2">
             <Input
               value={content.social_links?.facebook || ""}
@@ -285,9 +285,9 @@ export function BlockEditor({
 
   const blockTitles: Record<string, string> = {
     hero: "Hero Section",
-    about: "Giới thiệu",
-    services: "Dịch vụ",
-    contact: "Liên hệ",
+    about: "About",
+    services: "Services",
+    contact: "Contact",
     creative: "Creative Block",
   }
 

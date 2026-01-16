@@ -26,13 +26,13 @@ import {
   Send,
 } from "lucide-react"
 
-// Fake data - sẽ thay bằng dữ liệu từ DB sau
+// Fake data - will be replaced with DB data later
 const myFeedbacks = [
   {
     id: 1,
     type: "feature",
-    title: "Thêm dark mode cho dashboard",
-    description: "Mong muốn có option dark mode để làm việc ban đêm dễ chịu hơn.",
+    title: "Add dark mode for dashboard",
+    description: "Would like dark mode option for more comfortable night work.",
     status: "reviewing",
     votes: 24,
     createdAt: "2024-01-10",
@@ -40,8 +40,8 @@ const myFeedbacks = [
   {
     id: 2,
     type: "bug",
-    title: "Lỗi không save được block Creative",
-    description: "Khi thêm nhiều items vào creative block, đôi khi không save được.",
+    title: "Cannot save Creative block",
+    description: "When adding many items to creative block, sometimes cannot save.",
     status: "in_progress",
     votes: 8,
     createdAt: "2024-01-08",
@@ -49,8 +49,8 @@ const myFeedbacks = [
   {
     id: 3,
     type: "improvement",
-    title: "Cải thiện tốc độ load trang builder",
-    description: "Builder hơi chậm khi có nhiều blocks, mong team optimize.",
+    title: "Improve builder page load speed",
+    description: "Builder is slow with many blocks, hope team can optimize.",
     status: "completed",
     votes: 45,
     createdAt: "2024-01-05",
@@ -61,7 +61,7 @@ const popularFeedbacks = [
   {
     id: 101,
     type: "feature",
-    title: "Tích hợp Google Analytics",
+    title: "Google Analytics integration",
     author: "Minh Tran",
     votes: 89,
     status: "planned",
@@ -69,7 +69,7 @@ const popularFeedbacks = [
   {
     id: 102,
     type: "feature",
-    title: "Export website thành PDF portfolio",
+    title: "Export website as PDF portfolio",
     author: "Linh Nguyen",
     votes: 67,
     status: "reviewing",
@@ -85,7 +85,7 @@ const popularFeedbacks = [
   {
     id: 104,
     type: "improvement",
-    title: "Thêm nhiều template hơn",
+    title: "Add more templates",
     author: "Hoa Le",
     votes: 78,
     status: "planned",
@@ -93,17 +93,17 @@ const popularFeedbacks = [
 ]
 
 const statusConfig = {
-  pending: { label: "Đang chờ", color: "bg-gray-500" },
-  reviewing: { label: "Đang xem xét", color: "bg-blue-500" },
-  planned: { label: "Đã lên kế hoạch", color: "bg-purple-500" },
-  in_progress: { label: "Đang thực hiện", color: "bg-amber-500" },
-  completed: { label: "Hoàn thành", color: "bg-green-500" },
+  pending: { label: "Pending", color: "bg-gray-500" },
+  reviewing: { label: "Reviewing", color: "bg-blue-500" },
+  planned: { label: "Planned", color: "bg-purple-500" },
+  in_progress: { label: "In progress", color: "bg-amber-500" },
+  completed: { label: "Completed", color: "bg-green-500" },
 }
 
 const typeConfig = {
   bug: { label: "Bug", icon: Bug, color: "text-red-500" },
   feature: { label: "Feature", icon: Lightbulb, color: "text-blue-500" },
-  improvement: { label: "Cải thiện", icon: ThumbsUp, color: "text-green-500" },
+  improvement: { label: "Improvement", icon: ThumbsUp, color: "text-green-500" },
 }
 
 export default function ShaperFeedbackPage() {
@@ -117,7 +117,7 @@ export default function ShaperFeedbackPage() {
           <Button variant="ghost" asChild className="mb-4">
             <Link href="/shaper">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại Dashboard
+              Back to Dashboard
             </Link>
           </Button>
           <div className="flex items-center gap-3 mb-2">
@@ -125,7 +125,7 @@ export default function ShaperFeedbackPage() {
             <h1 className="text-3xl font-bold">Feedback Hub</h1>
           </div>
           <p className="text-muted-foreground">
-            Đóng góp ý kiến để giúp TEST-002 trở nên tốt hơn
+            Contribute feedback to help make TEST-002 better
           </p>
         </div>
 
@@ -134,35 +134,35 @@ export default function ShaperFeedbackPage() {
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Gửi Feedback mới</CardTitle>
+                <CardTitle>Submit new Feedback</CardTitle>
                 <CardDescription>
-                  Chia sẻ ý tưởng, báo cáo lỗi hoặc đề xuất cải thiện
+                  Share ideas, report bugs, or suggest improvements
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="type">Loại feedback</Label>
+                  <Label htmlFor="type">Feedback type</Label>
                   <Select value={feedbackType} onValueChange={setFeedbackType}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Chọn loại feedback" />
+                      <SelectValue placeholder="Select feedback type" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="bug">
                         <div className="flex items-center gap-2">
                           <Bug className="h-4 w-4 text-red-500" />
-                          Bug - Báo cáo lỗi
+                          Bug - Report an issue
                         </div>
                       </SelectItem>
                       <SelectItem value="feature">
                         <div className="flex items-center gap-2">
                           <Lightbulb className="h-4 w-4 text-blue-500" />
-                          Feature - Đề xuất tính năng mới
+                          Feature - Suggest new feature
                         </div>
                       </SelectItem>
                       <SelectItem value="improvement">
                         <div className="flex items-center gap-2">
                           <ThumbsUp className="h-4 w-4 text-green-500" />
-                          Improvement - Cải thiện tính năng có sẵn
+                          Improvement - Improve existing feature
                         </div>
                       </SelectItem>
                     </SelectContent>
@@ -170,29 +170,29 @@ export default function ShaperFeedbackPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="title">Tiêu đề</Label>
-                  <Input id="title" placeholder="Mô tả ngắn gọn feedback của bạn" />
+                  <Label htmlFor="title">Title</Label>
+                  <Input id="title" placeholder="Brief description of your feedback" />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="description">Chi tiết</Label>
+                  <Label htmlFor="description">Details</Label>
                   <Textarea
                     id="description"
-                    placeholder="Mô tả chi tiết feedback của bạn. Nếu là bug, vui lòng cung cấp các bước để tái hiện lỗi."
+                    placeholder="Describe your feedback in detail. If it's a bug, please provide steps to reproduce."
                     rows={5}
                   />
                 </div>
 
                 <Button className="w-full">
                   <Send className="mr-2 h-4 w-4" />
-                  Gửi Feedback
+                  Submit Feedback
                 </Button>
               </CardContent>
             </Card>
 
             {/* My Feedbacks */}
             <div className="mt-8">
-              <h2 className="text-xl font-semibold mb-4">Feedback của tôi</h2>
+              <h2 className="text-xl font-semibold mb-4">My Feedback</h2>
               <div className="space-y-4">
                 {myFeedbacks.map((feedback) => {
                   const TypeIcon = typeConfig[feedback.type as keyof typeof typeConfig].icon
@@ -241,8 +241,8 @@ export default function ShaperFeedbackPage() {
           <div>
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Feedback phổ biến</CardTitle>
-                <CardDescription>Upvote những ý tưởng bạn thích</CardDescription>
+                <CardTitle className="text-base">Popular Feedback</CardTitle>
+                <CardDescription>Upvote ideas you like</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 {popularFeedbacks.map((feedback) => {
@@ -276,7 +276,7 @@ export default function ShaperFeedbackPage() {
             {/* Stats */}
             <Card className="mt-4">
               <CardHeader>
-                <CardTitle className="text-base">Thống kê của bạn</CardTitle>
+                <CardTitle className="text-base">Your statistics</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 gap-4">

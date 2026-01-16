@@ -7,9 +7,9 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin", "vietnamese"] })
 
 export const metadata: Metadata = {
-  title: "TEST-002 - Văn phòng kỹ thuật số",
-  description: "Nền tảng xây dựng văn phòng kỹ thuật số cho chuyên gia độc lập và doanh nghiệp Việt Nam",
-  keywords: ["freelancer", "văn phòng kỹ thuật số", "website builder", "TEST-002", "Vietnam"],
+  title: "TEST-002 - Digital Office",
+  description: "A platform for building digital offices for independent professionals and Vietnamese businesses",
+  keywords: ["freelancer", "digital office", "website builder", "TEST-002", "Vietnam"],
     generator: 'v0.app'
 }
 
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="vi">
+    <html lang="en">
       <body className={`${inter.className} antialiased`}>
         {children}
         <Analytics />

@@ -45,31 +45,31 @@ export function SelfContent({ user, profile }: SelfContentProps) {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">Xin chào, {displayName}</h1>
-          <p className="text-muted-foreground">Khám phá và tìm hiểu về freelancing</p>
+          <h1 className="text-2xl font-bold">Hello, {displayName}</h1>
+          <p className="text-muted-foreground">Explore and learn about freelancing</p>
         </div>
 
         {/* Main Cards Grid */}
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Hướng dẫn Đăng ký KD */}
+          {/* Business Registration Guide */}
           <Card className="md:col-span-2 lg:col-span-2 border-accent/20 bg-accent/5">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Building2 className="h-5 w-5 text-accent" />
-                <CardTitle className="text-lg">Hướng dẫn Đăng ký Kinh doanh</CardTitle>
+                <CardTitle className="text-lg">Business Registration Guide</CardTitle>
               </div>
               <CardDescription>
-                Bước đầu tiên để trở thành freelancer chuyên nghiệp
+                First step to becoming a professional freelancer
               </CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Tìm hiểu cách đăng ký kinh doanh cá nhân, thuế, và các thủ tục pháp lý cần thiết để hoạt động hợp pháp.
+                Learn how to register your personal business, taxes, and necessary legal procedures to operate legally.
               </p>
               <Button asChild className="w-full">
                 <Link href="/self/business-registration">
                   <FileText className="mr-2 h-4 w-4" />
-                  Xem hướng dẫn
+                  View guide
                 </Link>
               </Button>
             </CardContent>
@@ -82,16 +82,16 @@ export function SelfContent({ user, profile }: SelfContentProps) {
                 <Lightbulb className="h-5 w-5 text-accent" />
                 <CardTitle className="text-lg">Example Projects</CardTitle>
               </div>
-              <CardDescription>Xem các dự án mẫu</CardDescription>
+              <CardDescription>View sample projects</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Tham khảo các dự án freelance thực tế để học hỏi cách trình bày và báo giá.
+                Reference real freelance projects to learn how to present and quote.
               </p>
               <Button variant="outline" asChild className="w-full bg-transparent">
                 <Link href="/self/projects">
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  Xem Projects
+                  View Projects
                 </Link>
               </Button>
             </CardContent>
@@ -103,16 +103,16 @@ export function SelfContent({ user, profile }: SelfContentProps) {
                 <Globe className="h-5 w-5 text-accent" />
                 <CardTitle className="text-lg">Example HQ Websites</CardTitle>
               </div>
-              <CardDescription>Website doanh nghiệp mẫu</CardDescription>
+              <CardDescription>Sample business websites</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Khám phá các website HQ chất lượng cao để lấy cảm hứng cho website của bạn.
+                Explore high-quality HQ websites for inspiration for your website.
               </p>
               <Button variant="outline" asChild className="w-full bg-transparent">
                 <Link href="/self/hq-websites">
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  Xem Websites
+                  View Websites
                 </Link>
               </Button>
             </CardContent>
@@ -124,16 +124,16 @@ export function SelfContent({ user, profile }: SelfContentProps) {
                 <MapPin className="h-5 w-5 text-accent" />
                 <CardTitle className="text-lg">Ireland Guide</CardTitle>
               </div>
-              <CardDescription>Hướng dẫn làm việc tại Ireland</CardDescription>
+              <CardDescription>Guide to working in Ireland</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-sm text-muted-foreground mb-4">
-                Thông tin về visa, thuế, và cơ hội freelance tại Ireland.
+                Information about visas, taxes, and freelance opportunities in Ireland.
               </p>
               <Button variant="outline" asChild className="w-full bg-transparent">
                 <Link href="/self/ireland">
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  Xem Guide
+                  View Guide
                 </Link>
               </Button>
             </CardContent>
@@ -148,15 +148,15 @@ export function SelfContent({ user, profile }: SelfContentProps) {
                     <ArrowUpCircle className="h-8 w-8 text-primary" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-lg">Sẵn sàng Upgrade?</h3>
+                    <h3 className="font-semibold text-lg">Ready to Upgrade?</h3>
                     <p className="text-sm text-muted-foreground">
-                      Nâng cấp lên Boss Mode để mở khóa đầy đủ tính năng quản lý công việc freelance.
+                      Upgrade to Boss Mode to unlock full freelance work management features.
                     </p>
                   </div>
                 </div>
                 <Button size="lg" className="shrink-0">
                   <Zap className="mr-2 h-4 w-4" />
-                  Upgrade ngay
+                  Upgrade now
                 </Button>
               </div>
             </CardContent>

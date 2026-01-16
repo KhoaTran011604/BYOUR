@@ -16,9 +16,9 @@ const blockIcons: Record<BlockType, React.ElementType> = {
 
 const blockLabels: Record<BlockType, string> = {
   hero: "Hero",
-  about: "Giới thiệu",
-  services: "Dịch vụ",
-  contact: "Liên hệ",
+  about: "About",
+  services: "Services",
+  contact: "Contact",
   creative: "Creative",
 }
 
@@ -71,7 +71,7 @@ export function BlockList({
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-muted-foreground">Khối nội dung</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground">Content blocks</h3>
         <Button
           variant="outline"
           size="sm"
@@ -135,7 +135,7 @@ export function BlockList({
           )
         })}
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">Kéo thả để sắp xếp lại thứ tự các khối</p>
+      <p className="mt-4 text-xs text-muted-foreground">Drag and drop to reorder blocks</p>
     </div>
   )
 }

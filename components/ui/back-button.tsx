@@ -10,7 +10,7 @@ export function BackButton() {
   return (
     <Button variant="ghost" className="mb-4"  onClick={() => router.back()}>
         <ArrowLeft className="mr-2 h-4 w-4" />
-        Quay lại Dashboard
+        Back to Dashboard
     </Button>
   )
 }

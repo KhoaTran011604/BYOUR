@@ -18,27 +18,27 @@ import {
   CheckCircle2,
 } from "lucide-react"
 
-// Fake data - sẽ thay bằng dữ liệu từ DB sau
+// Fake data - will be replaced with DB data later
 const visaTypes = [
   {
     name: "Working Holiday Visa",
-    duration: "1 năm",
-    requirements: ["18-30 tuổi", "Hộ chiếu VN", "Chứng minh tài chính €3,000", "Bảo hiểm y tế"],
-    processing: "4-8 tuần",
+    duration: "1 year",
+    requirements: ["18-30 years old", "Vietnamese passport", "Proof of funds €3,000", "Health insurance"],
+    processing: "4-8 weeks",
     fee: "€100",
   },
   {
     name: "Critical Skills Employment Permit",
-    duration: "2 năm",
-    requirements: ["Job offer từ Irish company", "Lương tối thiểu €32,000/năm", "Bằng cấp liên quan", "Kinh nghiệm"],
-    processing: "8-12 tuần",
+    duration: "2 years",
+    requirements: ["Job offer from Irish company", "Minimum salary €32,000/year", "Relevant qualifications", "Experience"],
+    processing: "8-12 weeks",
     fee: "€1,000",
   },
   {
     name: "Stamp 1G (Graduate Visa)",
-    duration: "1-2 năm",
-    requirements: ["Tốt nghiệp từ trường Irish", "Bằng Level 8+", "Apply trong vòng 6 tháng sau tốt nghiệp"],
-    processing: "2-4 tuần",
+    duration: "1-2 years",
+    requirements: ["Graduate from Irish institution", "Level 8+ degree", "Apply within 6 months after graduation"],
+    processing: "2-4 weeks",
     fee: "€300",
   },
 ]
@@ -47,40 +47,40 @@ const taxInfo = [
   {
     title: "Income Tax",
     rate: "20% - 40%",
-    description: "20% cho €40,000 đầu tiên, 40% cho phần còn lại",
+    description: "20% for the first €40,000, 40% for the remainder",
   },
   {
     title: "USC (Universal Social Charge)",
     rate: "0.5% - 8%",
-    description: "Phụ thu xã hội dựa trên thu nhập",
+    description: "Social charge based on income",
   },
   {
     title: "PRSI (Social Insurance)",
     rate: "4%",
-    description: "Bảo hiểm xã hội bắt buộc",
+    description: "Mandatory social insurance",
   },
 ]
 
 const cities = [
   {
     name: "Dublin",
-    description: "Thủ đô và trung tâm tech lớn nhất",
+    description: "Capital city and largest tech hub",
     avgSalary: "€50,000 - €80,000",
-    costOfLiving: "Cao",
-    highlights: ["Google, Meta, LinkedIn HQ", "Startup ecosystem mạnh", "Networking opportunities"],
+    costOfLiving: "High",
+    highlights: ["Google, Meta, LinkedIn HQ", "Strong startup ecosystem", "Networking opportunities"],
   },
   {
     name: "Cork",
-    description: "Thành phố lớn thứ hai với tech scene đang phát triển",
+    description: "Second largest city with growing tech scene",
     avgSalary: "€45,000 - €70,000",
-    costOfLiving: "Trung bình - Cao",
-    highlights: ["Apple European HQ", "Chi phí thấp hơn Dublin", "Chất lượng sống tốt"],
+    costOfLiving: "Medium - High",
+    highlights: ["Apple European HQ", "Lower cost than Dublin", "Good quality of life"],
   },
   {
     name: "Galway",
-    description: "Thành phố văn hóa với ngành medtech phát triển",
+    description: "Cultural city with thriving medtech industry",
     avgSalary: "€40,000 - €65,000",
-    costOfLiving: "Trung bình",
+    costOfLiving: "Medium",
     highlights: ["Medtech hub", "University town", "Coastal lifestyle"],
   },
 ]
@@ -88,26 +88,26 @@ const cities = [
 const freelanceOpportunities = [
   {
     field: "Software Development",
-    demand: "Rất cao",
-    avgRate: "€50-100/giờ",
+    demand: "Very high",
+    avgRate: "€50-100/hour",
     platforms: ["Toptal", "Upwork", "LinkedIn"],
   },
   {
     field: "UI/UX Design",
-    demand: "Cao",
-    avgRate: "€40-80/giờ",
+    demand: "High",
+    avgRate: "€40-80/hour",
     platforms: ["Dribbble", "Behance", "99designs"],
   },
   {
     field: "Digital Marketing",
-    demand: "Cao",
-    avgRate: "€35-70/giờ",
+    demand: "High",
+    avgRate: "€35-70/hour",
     platforms: ["Fiverr", "Upwork", "PeoplePerHour"],
   },
   {
     field: "Content & Translation",
-    demand: "Trung bình",
-    avgRate: "€25-50/giờ",
+    demand: "Medium",
+    avgRate: "€25-50/hour",
     platforms: ["ProZ", "TranslatorsCafe", "Upwork"],
   },
 ]
@@ -121,7 +121,7 @@ export default function IrelandGuidePage() {
           <Button variant="ghost" asChild className="mb-4">
             <Link href="/self">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại Dashboard
+              Back to Dashboard
             </Link>
           </Button>
           <div className="flex items-center gap-3 mb-2">
@@ -129,7 +129,7 @@ export default function IrelandGuidePage() {
             <h1 className="text-3xl font-bold">Ireland Guide</h1>
           </div>
           <p className="text-muted-foreground">
-            Hướng dẫn toàn diện về làm việc và freelance tại Ireland
+            Comprehensive guide to working and freelancing in Ireland
           </p>
         </div>
 
@@ -137,19 +137,19 @@ export default function IrelandGuidePage() {
         <section className="mb-10">
           <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
             <Plane className="h-5 w-5 text-accent" />
-            Các loại Visa phổ biến
+            Common Visa types
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
             {visaTypes.map((visa) => (
               <Card key={visa.name}>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">{visa.name}</CardTitle>
-                  <CardDescription>Thời hạn: {visa.duration}</CardDescription>
+                  <CardDescription>Duration: {visa.duration}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div>
-                      <p className="text-xs text-muted-foreground mb-1">Yêu cầu:</p>
+                      <p className="text-xs text-muted-foreground mb-1">Requirements:</p>
                       <ul className="text-xs space-y-1">
                         {visa.requirements.map((req, idx) => (
                           <li key={idx} className="flex items-start gap-1">
@@ -160,7 +160,7 @@ export default function IrelandGuidePage() {
                       </ul>
                     </div>
                     <div className="flex justify-between text-xs pt-2 border-t">
-                      <span>Xử lý: {visa.processing}</span>
+                      <span>Processing: {visa.processing}</span>
                       <span className="font-medium">{visa.fee}</span>
                     </div>
                   </div>
@@ -174,7 +174,7 @@ export default function IrelandGuidePage() {
         <section className="mb-10">
           <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
             <Euro className="h-5 w-5 text-accent" />
-            Thông tin về Thuế
+            Tax Information
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
             {taxInfo.map((tax) => (
@@ -192,8 +192,8 @@ export default function IrelandGuidePage() {
           <Card className="mt-4 border-amber-500/30 bg-amber-500/5">
             <CardContent className="pt-4">
               <p className="text-sm">
-                <strong>Lưu ý:</strong> Freelancer có thể đăng ký làm Sole Trader hoặc thành lập Limited Company.
-                Tham khảo Revenue.ie để biết thêm chi tiết về nghĩa vụ thuế.
+                <strong>Note:</strong> Freelancers can register as Sole Trader or set up a Limited Company.
+                Refer to Revenue.ie for more details on tax obligations.
               </p>
             </CardContent>
           </Card>
@@ -203,7 +203,7 @@ export default function IrelandGuidePage() {
         <section className="mb-10">
           <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
             <Building2 className="h-5 w-5 text-accent" />
-            Các thành phố nên cân nhắc
+            Cities to consider
           </h2>
           <div className="grid gap-4 md:grid-cols-3">
             {cities.map((city) => (
@@ -215,11 +215,11 @@ export default function IrelandGuidePage() {
                 <CardContent>
                   <div className="space-y-2 text-sm mb-3">
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Lương TB:</span>
+                      <span className="text-muted-foreground">Avg. salary:</span>
                       <span className="font-medium">{city.avgSalary}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-muted-foreground">Chi phí:</span>
+                      <span className="text-muted-foreground">Cost:</span>
                       <Badge variant="outline">{city.costOfLiving}</Badge>
                     </div>
                   </div>
@@ -241,7 +241,7 @@ export default function IrelandGuidePage() {
         <section className="mb-10">
           <h2 className="text-xl font-semibold flex items-center gap-2 mb-4">
             <Briefcase className="h-5 w-5 text-accent" />
-            Cơ hội Freelance
+            Freelance Opportunities
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             {freelanceOpportunities.map((opp) => (
@@ -249,12 +249,12 @@ export default function IrelandGuidePage() {
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-base">{opp.field}</CardTitle>
-                    <Badge variant={opp.demand === "Rất cao" ? "default" : "secondary"}>{opp.demand}</Badge>
+                    <Badge variant={opp.demand === "Very high" ? "default" : "secondary"}>{opp.demand}</Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-muted-foreground">Rate trung bình:</span>
+                    <span className="text-sm text-muted-foreground">Average rate:</span>
                     <span className="font-semibold text-accent">{opp.avgRate}</span>
                   </div>
                   <div>
@@ -278,22 +278,22 @@ export default function IrelandGuidePage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GraduationCap className="h-5 w-5 text-accent" />
-              Tài nguyên hữu ích
+              Useful resources
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <h4 className="font-medium mb-2">Chính thức</h4>
+                <h4 className="font-medium mb-2">Official</h4>
                 <ul className="space-y-1 text-sm">
-                  <li>• citizensinformation.ie - Thông tin công dân</li>
-                  <li>• revenue.ie - Cơ quan thuế</li>
-                  <li>• enterprise-ireland.com - Hỗ trợ doanh nghiệp</li>
+                  <li>• citizensinformation.ie - Citizen information</li>
+                  <li>• revenue.ie - Tax authority</li>
+                  <li>• enterprise-ireland.com - Business support</li>
                   <li>• dbei.gov.ie - Work permits</li>
                 </ul>
               </div>
               <div>
-                <h4 className="font-medium mb-2">Cộng đồng</h4>
+                <h4 className="font-medium mb-2">Community</h4>
                 <ul className="space-y-1 text-sm">
                   <li>• Vietnamese in Ireland (Facebook)</li>
                   <li>• Tech Ireland Slack</li>

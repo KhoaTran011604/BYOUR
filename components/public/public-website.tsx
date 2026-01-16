@@ -24,8 +24,8 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
   const { template } = website
 
   const formatPrice = (amount: number | null, type: string) => {
-    if (type === "quote") return "Báo giá"
-    if (!amount) return "Liên hệ"
+    if (type === "quote") return "Quote"
+    if (!amount) return "Contact"
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount)
   }
 
@@ -73,7 +73,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
             } transition-colors`}
           >
             <ExternalLink className="h-4 w-4" />
-            {item.link_text || "Liên kết"}
+            {item.link_text || "Link"}
           </a>
         )
 
@@ -103,7 +103,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
             href={item.button_url || "#"}
             className={`inline-block px-6 py-3 rounded-lg font-medium transition-colors ${buttonStyles[item.button_style || "primary"]}`}
           >
-            {item.button_text || "Nút"}
+            {item.button_text || "Button"}
           </a>
         )
 
@@ -223,9 +223,9 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                   <section key={block.id} id="about" className="py-32 px-6">
                     <div className="max-w-4xl mx-auto">
                       <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-4">About</p>
-                      <h2 className="text-3xl md:text-4xl font-light mb-8">{content.heading || "Về tôi"}</h2>
+                      <h2 className="text-3xl md:text-4xl font-light mb-8">{content.heading || "About me"}</h2>
                       <p className="text-lg text-stone-500 leading-relaxed whitespace-pre-line">
-                        {content.description || "Thông tin giới thiệu về bản thân và công việc của bạn."}
+                        {content.description || "Information about yourself and your work."}
                       </p>
                     </div>
                   </section>
@@ -238,7 +238,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                   <section key={block.id} id="services" className="py-32 px-6 bg-white/50">
                     <div className="max-w-4xl mx-auto">
                       <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-4">Services</p>
-                      <h2 className="text-3xl md:text-4xl font-light mb-4">{content.heading || "Dịch vụ"}</h2>
+                      <h2 className="text-3xl md:text-4xl font-light mb-4">{content.heading || "Services"}</h2>
                       {content.description && (
                         <p className="text-stone-500 mb-12">{content.description}</p>
                       )}
@@ -277,7 +277,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                   <section key={block.id} id="contact" className="py-32 px-6">
                     <div className="max-w-4xl mx-auto text-center">
                       <p className="text-sm text-stone-400 tracking-[0.3em] uppercase mb-4">Contact</p>
-                      <h2 className="text-3xl md:text-4xl font-light mb-12">{content.heading || "Liên hệ"}</h2>
+                      <h2 className="text-3xl md:text-4xl font-light mb-12">{content.heading || "Contact"}</h2>
                       <div className="inline-flex flex-col items-center gap-4">
                         {content.email && (
                           <a
@@ -488,9 +488,9 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                         <div className="w-12 h-px bg-[#E6C068]" />
                         <span className="text-[#E6C068] text-sm uppercase tracking-wider">About</span>
                       </div>
-                      <h2 className="text-3xl md:text-4xl font-bold mb-8">{content.heading || "Về tôi"}</h2>
+                      <h2 className="text-3xl md:text-4xl font-bold mb-8">{content.heading || "About me"}</h2>
                       <p className="text-white/60 text-lg leading-relaxed whitespace-pre-line">
-                        {content.description || "Thông tin giới thiệu về bản thân và công việc của bạn."}
+                        {content.description || "Information about yourself and your work."}
                       </p>
                     </div>
                   </section>
@@ -506,7 +506,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                         <div className="w-12 h-px bg-[#E6C068]" />
                         <span className="text-[#E6C068] text-sm uppercase tracking-wider">Services</span>
                       </div>
-                      <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.heading || "Dịch vụ"}</h2>
+                      <h2 className="text-3xl md:text-4xl font-bold mb-4">{content.heading || "Services"}</h2>
                       {content.description && (
                         <p className="text-white/50 mb-12 max-w-2xl">{content.description}</p>
                       )}
@@ -692,7 +692,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                     <div className="grid md:grid-cols-3 gap-8 items-center">
                       {/* Left content */}
                       <div className="md:col-span-1">
-                        <p className="text-stone-400 mb-2">Xin chào! Tôi là</p>
+                        <p className="text-stone-400 mb-2">Hello! I am</p>
                         <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1]">
                           {content.title || profileName || "John Deo"}.
                         </h1>
@@ -795,9 +795,9 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                       <div className="w-2 h-2 bg-[#2D5A4A] rounded-full" />
                       <span className="text-sm text-[#2D5A4A] uppercase tracking-wider">About Me</span>
                     </div>
-                    <h2 className="text-3xl font-bold mb-6">{content.heading || "Về tôi"}</h2>
+                    <h2 className="text-3xl font-bold mb-6">{content.heading || "About me"}</h2>
                     <p className="text-stone-600 text-lg leading-relaxed whitespace-pre-line">
-                      {content.description || "Thông tin giới thiệu về bản thân và công việc của bạn."}
+                      {content.description || "Information about yourself and your work."}
                     </p>
                   </div>
                 </section>
@@ -813,7 +813,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                       <div className="w-2 h-2 bg-[#E6A84D] rounded-full" />
                       <span className="text-sm text-[#E6A84D] uppercase tracking-wider">Services</span>
                     </div>
-                    <h2 className="text-3xl font-bold mb-4">{content.heading || "Dịch vụ"}</h2>
+                    <h2 className="text-3xl font-bold mb-4">{content.heading || "Services"}</h2>
                     {content.description && (
                       <p className="text-stone-500 mb-12">{content.description}</p>
                     )}
@@ -851,7 +851,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
                       <div className="w-2 h-2 bg-[#2D5A4A] rounded-full" />
                       <span className="text-sm text-[#2D5A4A] uppercase tracking-wider">Contact</span>
                     </div>
-                    <h2 className="text-3xl font-bold mb-12">{content.heading || "Liên hệ với tôi"}</h2>
+                    <h2 className="text-3xl font-bold mb-12">{content.heading || "Contact me"}</h2>
                     <div className="grid md:grid-cols-2 gap-12">
                       <div className="space-y-4">
                         {content.email && (

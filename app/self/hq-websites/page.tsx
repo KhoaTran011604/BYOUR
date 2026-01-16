@@ -6,14 +6,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, ExternalLink, Globe, Users, Briefcase, Star } from "lucide-react"
 
-// Fake data - sẽ thay bằng dữ liệu từ DB sau
+// Fake data - will be replaced with DB data later
 const websites = [
   {
     id: 1,
     name: "Studio Minimal",
     handle: "studiominimal",
     industry: "Design Agency",
-    description: "Agency thiết kế với phong cách tối giản, chuyên về branding và UI/UX cho các startup công nghệ.",
+    description: "Design agency with minimalist style, specializing in branding and UI/UX for tech startups.",
     features: ["Portfolio showcase", "Case studies", "Team page", "Contact form"],
     template: "Minimal",
     teamSize: "5-10",
@@ -25,7 +25,7 @@ const websites = [
     name: "TechCorp Vietnam",
     handle: "techcorp",
     industry: "Software Development",
-    description: "Công ty phát triển phần mềm với đội ngũ hơn 50 developer, chuyên về enterprise solutions.",
+    description: "Software development company with a team of over 50 developers, specializing in enterprise solutions.",
     features: ["Services showcase", "Portfolio", "Blog", "Careers page"],
     template: "Editorial",
     teamSize: "50+",
@@ -37,7 +37,7 @@ const websites = [
     name: "Green Marketing",
     handle: "greenmarketing",
     industry: "Marketing Agency",
-    description: "Agency marketing digital với focus vào sustainable brands và social impact.",
+    description: "Digital marketing agency with focus on sustainable brands and social impact.",
     features: ["Case studies", "Client testimonials", "Service packages", "Blog"],
     template: "Grid",
     teamSize: "10-20",
@@ -49,7 +49,7 @@ const websites = [
     name: "Legal Partners",
     handle: "legalpartners",
     industry: "Law Firm",
-    description: "Văn phòng luật sư chuyên về luật doanh nghiệp, startup và sở hữu trí tuệ.",
+    description: "Law firm specializing in corporate law, startups, and intellectual property.",
     features: ["Practice areas", "Attorney profiles", "Publications", "Contact"],
     template: "Minimal",
     teamSize: "10-20",
@@ -61,7 +61,7 @@ const websites = [
     name: "Creative Lab",
     handle: "creativelab",
     industry: "Creative Studio",
-    description: "Studio sáng tạo đa ngành: video production, animation, và interactive experiences.",
+    description: "Multi-disciplinary creative studio: video production, animation, and interactive experiences.",
     features: ["Showreel", "Project gallery", "Services", "Collaboration form"],
     template: "Grid",
     teamSize: "5-10",
@@ -73,7 +73,7 @@ const websites = [
     name: "Finance Advisory",
     handle: "financeadvisory",
     industry: "Financial Services",
-    description: "Công ty tư vấn tài chính cho SMEs và startups, chuyên về fundraising và M&A.",
+    description: "Financial consulting firm for SMEs and startups, specializing in fundraising and M&A.",
     features: ["Services", "Team expertise", "Success stories", "Resources"],
     template: "Editorial",
     teamSize: "20-50",
@@ -82,7 +82,7 @@ const websites = [
   },
 ]
 
-const industries = ["Tất cả", "Design Agency", "Software Development", "Marketing Agency", "Law Firm", "Creative Studio", "Financial Services"]
+const industries = ["All", "Design Agency", "Software Development", "Marketing Agency", "Law Firm", "Creative Studio", "Financial Services"]
 
 export default function ExampleHQWebsitesPage() {
   return (
@@ -93,7 +93,7 @@ export default function ExampleHQWebsitesPage() {
           <Button variant="ghost" asChild className="mb-4">
             <Link href="/self">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại Dashboard
+              Back to Dashboard
             </Link>
           </Button>
           <div className="flex items-center gap-3 mb-2">
@@ -101,7 +101,7 @@ export default function ExampleHQWebsitesPage() {
             <h1 className="text-3xl font-bold">Example HQ Websites</h1>
           </div>
           <p className="text-muted-foreground">
-            Khám phá các website doanh nghiệp chất lượng cao để lấy cảm hứng cho website của bạn
+            Explore high-quality business websites for inspiration for your website
           </p>
         </div>
 
@@ -110,7 +110,7 @@ export default function ExampleHQWebsitesPage() {
           {industries.map((industry) => (
             <Badge
               key={industry}
-              variant={industry === "Tất cả" ? "default" : "outline"}
+              variant={industry === "All" ? "default" : "outline"}
               className="cursor-pointer hover:bg-accent hover:text-accent-foreground"
             >
               {industry}
@@ -172,7 +172,7 @@ export default function ExampleHQWebsitesPage() {
                 <Button variant="outline" asChild className="w-full bg-transparent">
                   <Link href={`/khoa-tran`} target="_blank">
                     <ExternalLink className="mr-2 h-4 w-4" />
-                    Xem Preview
+                    View Preview
                   </Link>
                 </Button>
               </CardContent>
@@ -185,9 +185,9 @@ export default function ExampleHQWebsitesPage() {
           <CardContent className="pt-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
               <div>
-                <h3 className="font-semibold text-lg mb-1">Muốn có website như thế này?</h3>
+                <h3 className="font-semibold text-lg mb-1">Want a website like this?</h3>
                 <p className="text-sm text-muted-foreground">
-                  Upgrade lên HQ Mode để tạo website chuyên nghiệp cho doanh nghiệp của bạn.
+                  Upgrade to HQ Mode to create a professional website for your business.
                 </p>
               </div>
               <Button size="lg" disabled>

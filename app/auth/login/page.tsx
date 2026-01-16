@@ -32,7 +32,7 @@ export default function LoginPage() {
       if (error) throw error
       router.push("/self")
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Đã xảy ra lỗi")
+      setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
     }
@@ -45,13 +45,13 @@ export default function LoginPage() {
           <Link href="/" className="inline-block">
             <h1 className="text-3xl font-bold tracking-tight">TEST-002</h1>
           </Link>
-          <p className="mt-2 text-muted-foreground">Văn phòng kỹ thuật số của bạn</p>
+          <p className="mt-2 text-muted-foreground">Your digital office</p>
         </div>
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Đăng nhập</CardTitle>
-            <CardDescription>Nhập thông tin để truy cập văn phòng của bạn</CardDescription>
+            <CardTitle className="text-2xl">Log in</CardTitle>
+            <CardDescription>Enter your credentials to access your office</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin}>
@@ -68,7 +68,7 @@ export default function LoginPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Mật khẩu</Label>
+                  <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
                     type="password"
@@ -79,13 +79,13 @@ export default function LoginPage() {
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Đang đăng nhập..." : "Đăng nhập"}
+                  {isLoading ? "Logging in..." : "Log in"}
                 </Button>
               </div>
               <div className="mt-6 text-center text-sm">
-                Chưa có tài khoản?{" "}
+                Don&apos;t have an account?{" "}
                 <Link href="/auth/sign-up" className="font-medium underline underline-offset-4 hover:text-primary">
-                  Đăng ký ngay
+                  Sign up now
                 </Link>
               </div>
             </form>

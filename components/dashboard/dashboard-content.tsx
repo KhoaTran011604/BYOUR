@@ -57,8 +57,8 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">Xin chào, {displayName}</h1>
-          <p className="text-muted-foreground">Chào mừng đến văn phòng kỹ thuật số của bạn</p>
+          <h1 className="text-2xl font-bold">Hello, {displayName}</h1>
+          <p className="text-muted-foreground">Welcome to your digital office</p>
         </div>
 
         {/* Mobile Mode Info */}
@@ -66,7 +66,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
           <Card>
             <CardContent className="pt-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Chế độ hiện tại</span>
+                <span className="text-sm text-muted-foreground">Current mode</span>
                 <span className="font-medium capitalize">{currentMode}</span>
               </div>
             </CardContent>
@@ -81,34 +81,34 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Globe className="h-5 w-5 text-accent" />
-                <CardTitle className="text-lg">Website của bạn</CardTitle>
+                <CardTitle className="text-lg">Your Website</CardTitle>
               </div>
               <CardDescription>
-                {website ? `byour.co/${website.handle}` : "Tạo microsite chuyên nghiệp"}
+                {website ? `byour.co/${website.handle}` : "Create a professional microsite"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {website ? (
                 <div className="flex flex-col gap-2">
                   <div className="mb-2 flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Trạng thái</span>
+                    <span className="text-muted-foreground">Status</span>
                     <span
                       className={website.is_published ? "text-green-600 font-medium" : "text-amber-600 font-medium"}
                     >
-                      {website.is_published ? "Đã xuất bản" : "Bản nháp"}
+                      {website.is_published ? "Published" : "Draft"}
                     </span>
                   </div>
                   <Button asChild className="w-full">
                     <Link href={`/builder/${website.id}`}>
                       <Pencil className="mr-2 h-4 w-4" />
-                      Chỉnh sửa website
+                      Edit website
                     </Link>
                   </Button>
                   {website.is_published && (
                     <Button variant="outline" asChild className="w-full bg-transparent">
                       <Link href={`/${website.handle}`} target="_blank">
                         <ExternalLink className="mr-2 h-4 w-4" />
-                        Xem website
+                        View website
                       </Link>
                     </Button>
                   )}
@@ -117,7 +117,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                 <Button asChild className="w-full">
                   <Link href="/builder/new">
                     <Plus className="mr-2 h-4 w-4" />
-                    Tạo website mới
+                    Create new website
                   </Link>
                 </Button>
               )}
@@ -132,16 +132,16 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <Zap className="h-5 w-5 text-accent" />
-                    <CardTitle className="text-lg">Quản lý công việc</CardTitle>
+                    <CardTitle className="text-lg">Work Management</CardTitle>
                   </div>
-                  <CardDescription>Theo dõi dự án và khách hàng</CardDescription>
+                  <CardDescription>Track projects and clients</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Quản lý công việc freelance của bạn một cách chuyên nghiệp
+                    Manage your freelance work professionally
                   </p>
                   <Button variant="outline" className="w-full bg-transparent" disabled>
-                    Sắp ra mắt
+                    Coming soon
                   </Button>
                 </CardContent>
               </Card>
@@ -149,14 +149,14 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-accent" />
-                    <CardTitle className="text-lg">Khách hàng</CardTitle>
+                    <CardTitle className="text-lg">Clients</CardTitle>
                   </div>
-                  <CardDescription>Danh sách và quan hệ khách hàng</CardDescription>
+                  <CardDescription>Client list and relationships</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">Xây dựng mối quan hệ với khách hàng tiềm năng</p>
+                  <p className="text-sm text-muted-foreground mb-4">Build relationships with potential clients</p>
                   <Button variant="outline" className="w-full bg-transparent" disabled>
-                    Sắp ra mắt
+                    Coming soon
                   </Button>
                 </CardContent>
               </Card>
@@ -169,14 +169,14 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-accent" />
-                    <CardTitle className="text-lg">Đội ngũ</CardTitle>
+                    <CardTitle className="text-lg">Team</CardTitle>
                   </div>
-                  <CardDescription>Quản lý thành viên team</CardDescription>
+                  <CardDescription>Manage team members</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">Mời và quản lý thành viên trong doanh nghiệp</p>
+                  <p className="text-sm text-muted-foreground mb-4">Invite and manage members in your business</p>
                   <Button variant="outline" className="w-full bg-transparent" disabled>
-                    Sắp ra mắt
+                    Coming soon
                   </Button>
                 </CardContent>
               </Card>
@@ -184,14 +184,14 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <Zap className="h-5 w-5 text-accent" />
-                    <CardTitle className="text-lg">Dự án</CardTitle>
+                    <CardTitle className="text-lg">Projects</CardTitle>
                   </div>
-                  <CardDescription>Quản lý dự án của công ty</CardDescription>
+                  <CardDescription>Manage company projects</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">Theo dõi và quản lý các dự án đang thực hiện</p>
+                  <p className="text-sm text-muted-foreground mb-4">Track and manage ongoing projects</p>
                   <Button variant="outline" className="w-full bg-transparent" disabled>
-                    Sắp ra mắt
+                    Coming soon
                   </Button>
                 </CardContent>
               </Card>
@@ -200,25 +200,25 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
 
           {currentMode === "self" && (
             <>
-              {/* Hướng dẫn Đăng ký KD */}
+              {/* Business Registration Guide */}
               <Card className="md:col-span-2 lg:col-span-2 border-accent/20 bg-accent/5">
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <Building2 className="h-5 w-5 text-accent" />
-                    <CardTitle className="text-lg">Hướng dẫn Đăng ký Kinh doanh</CardTitle>
+                    <CardTitle className="text-lg">Business Registration Guide</CardTitle>
                   </div>
                   <CardDescription>
-                    Bước đầu tiên để trở thành freelancer chuyên nghiệp
+                    The first step to becoming a professional freelancer
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Tìm hiểu cách đăng ký kinh doanh cá nhân, thuế, và các thủ tục pháp lý cần thiết để hoạt động hợp pháp.
+                    Learn how to register your individual business, taxes, and the necessary legal procedures to operate legally.
                   </p>
                   <Button asChild className="w-full">
                     <Link href="/self/business-registration">
                       <FileText className="mr-2 h-4 w-4" />
-                      Xem hướng dẫn
+                      View guide
                     </Link>
                   </Button>
                 </CardContent>
@@ -231,16 +231,16 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                     <Lightbulb className="h-5 w-5 text-accent" />
                     <CardTitle className="text-lg">Example Projects</CardTitle>
                   </div>
-                  <CardDescription>Xem các dự án mẫu</CardDescription>
+                  <CardDescription>View sample projects</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Tham khảo các dự án freelance thực tế để học hỏi cách trình bày và báo giá.
+                    Reference real freelance projects to learn presentation and pricing.
                   </p>
                   <Button variant="outline" asChild className="w-full bg-transparent">
                     <Link href="/self/projects">
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      Xem Projects
+                      View Projects
                     </Link>
                   </Button>
                 </CardContent>
@@ -252,16 +252,16 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                     <Globe className="h-5 w-5 text-accent" />
                     <CardTitle className="text-lg">Example HQ Websites</CardTitle>
                   </div>
-                  <CardDescription>Website doanh nghiệp mẫu</CardDescription>
+                  <CardDescription>Sample business websites</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Khám phá các website HQ chất lượng cao để lấy cảm hứng cho website của bạn.
+                    Explore high-quality HQ websites for inspiration for your website.
                   </p>
                   <Button variant="outline" asChild className="w-full bg-transparent">
                     <Link href="/self/hq-websites">
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      Xem Websites
+                      View Websites
                     </Link>
                   </Button>
                 </CardContent>
@@ -273,16 +273,16 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                     <MapPin className="h-5 w-5 text-accent" />
                     <CardTitle className="text-lg">Ireland Guide</CardTitle>
                   </div>
-                  <CardDescription>Hướng dẫn làm việc tại Ireland</CardDescription>
+                  <CardDescription>Guide to working in Ireland</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Thông tin về visa, thuế, và cơ hội freelance tại Ireland.
+                    Information about visas, taxes, and freelance opportunities in Ireland.
                   </p>
                   <Button variant="outline" asChild className="w-full bg-transparent">
                     <Link href="/self/ireland">
                       <ExternalLink className="mr-2 h-4 w-4" />
-                      Xem Guide
+                      View Guide
                     </Link>
                   </Button>
                 </CardContent>
@@ -297,15 +297,15 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                         <ArrowUpCircle className="h-8 w-8 text-primary" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-lg">Sẵn sàng Upgrade?</h3>
+                        <h3 className="font-semibold text-lg">Ready to Upgrade?</h3>
                         <p className="text-sm text-muted-foreground">
-                          Nâng cấp lên Boss Mode để mở khóa đầy đủ tính năng quản lý công việc freelance.
+                          Upgrade to Boss Mode to unlock full freelance work management features.
                         </p>
                       </div>
                     </div>
                     <Button size="lg" className="shrink-0">
                       <Zap className="mr-2 h-4 w-4" />
-                      Upgrade ngay
+                      Upgrade now
                     </Button>
                   </div>
                 </CardContent>
@@ -324,14 +324,14 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                         <Clock className="h-12 w-12 text-amber-500" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-xl mb-2">Đang chờ phê duyệt</h3>
+                        <h3 className="font-semibold text-xl mb-2">Pending Approval</h3>
                         <p className="text-muted-foreground max-w-md">
-                          Đơn đăng ký Shaper của bạn đang được Admin xem xét. Chúng tôi sẽ thông báo qua email khi có kết quả.
+                          Your Shaper application is being reviewed by Admin. We will notify you via email when there is a result.
                         </p>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                         <CheckCircle2 className="h-4 w-4 text-green-500" />
-                        <span>Đơn đăng ký đã được gửi thành công</span>
+                        <span>Application submitted successfully</span>
                       </div>
                     </div>
                   </CardContent>
@@ -348,11 +348,11 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                         <MessageSquare className="h-5 w-5 text-accent" />
                         <CardTitle className="text-lg">Feedback Hub</CardTitle>
                       </div>
-                      <CardDescription>Đóng góp ý kiến cho </CardDescription>
+                      <CardDescription>Contribute your feedback</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Gửi phản hồi, đề xuất tính năng mới và báo cáo lỗi để cải thiện nền tảng.
+                        Send feedback, suggest new features, and report bugs to improve the platform.
                       </p>
                       <Button asChild className="w-full">
                         <Link href="/shaper/feedback">
@@ -370,11 +370,11 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                         <TestTube className="h-5 w-5 text-accent" />
                         <CardTitle className="text-lg">Testing Environment</CardTitle>
                       </div>
-                      <CardDescription>Thử nghiệm tính năng mới</CardDescription>
+                      <CardDescription>Test new features</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Truy cập môi trường thử nghiệm để test các tính năng trước khi phát hành chính thức.
+                        Access the testing environment to test features before official release.
                       </p>
                       <Button asChild className="w-full">
                         <Link href="/shaper/testing">
@@ -392,11 +392,11 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                         <Sparkles className="h-5 w-5 text-accent" />
                         <CardTitle className="text-lg">Experimental Features</CardTitle>
                       </div>
-                      <CardDescription>Trải nghiệm sớm nhất</CardDescription>
+                      <CardDescription>Earliest experience</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Được quyền truy cập sớm vào các tính năng thử nghiệm trước tất cả người dùng khác.
+                        Get early access to experimental features before all other users.
                       </p>
                       <Button asChild className="w-full">
                         <Link href="/shaper/early-access">
@@ -418,13 +418,13 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                         <Users className="h-12 w-12 text-red-500" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-xl mb-2">Đơn đăng ký chưa được duyệt</h3>
+                        <h3 className="font-semibold text-xl mb-2">Application Not Approved</h3>
                         <p className="text-muted-foreground max-w-md">
-                          Rất tiếc, đơn đăng ký Shaper của bạn chưa được phê duyệt lần này. Bạn có thể đăng ký lại sau.
+                          Unfortunately, your Shaper application was not approved this time. You can apply again later.
                         </p>
                       </div>
                       <Button variant="outline" className="mt-2">
-                        Đăng ký lại
+                        Apply again
                       </Button>
                     </div>
                   </CardContent>
@@ -448,7 +448,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
             <CardContent className="pt-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-accent">0</div>
-                <div className="text-sm text-muted-foreground">Lượt xem</div>
+                <div className="text-sm text-muted-foreground">Views</div>
               </div>
             </CardContent>
           </Card>
@@ -456,7 +456,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
             <CardContent className="pt-6">
               <div className="text-center">
                 <div className="text-3xl font-bold text-accent capitalize">{currentMode}</div>
-                <div className="text-sm text-muted-foreground">Chế độ</div>
+                <div className="text-sm text-muted-foreground">Mode</div>
               </div>
             </CardContent>
           </Card>

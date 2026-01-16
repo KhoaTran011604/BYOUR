@@ -16,12 +16,12 @@ import {
   Bug,
 } from "lucide-react"
 
-// Fake data - sẽ thay bằng dữ liệu từ DB sau
+// Fake data - will be replaced with DB data later
 const testingFeatures = [
   {
     id: 1,
     name: "New Template: Portfolio Pro",
-    description: "Template mới cho portfolio với nhiều layouts và animations đẹp mắt.",
+    description: "New portfolio template with beautiful layouts and animations.",
     version: "v2.5.0-beta",
     status: "testing",
     dueDate: "2024-01-20",
@@ -32,7 +32,7 @@ const testingFeatures = [
   {
     id: 2,
     name: "Drag & Drop Reordering",
-    description: "Tính năng kéo thả để sắp xếp lại thứ tự các blocks trong builder.",
+    description: "Drag and drop feature to reorder blocks in builder.",
     version: "v2.5.0-beta",
     status: "testing",
     dueDate: "2024-01-18",
@@ -43,7 +43,7 @@ const testingFeatures = [
   {
     id: 3,
     name: "AI Content Generator",
-    description: "Sử dụng AI để tạo nội dung tự động cho các blocks.",
+    description: "Use AI to auto-generate content for blocks.",
     version: "v2.6.0-alpha",
     status: "alpha",
     dueDate: "2024-02-01",
@@ -54,7 +54,7 @@ const testingFeatures = [
   {
     id: 4,
     name: "Multi-language Support",
-    description: "Hỗ trợ đa ngôn ngữ cho website với translation management.",
+    description: "Multi-language support for website with translation management.",
     version: "v2.5.0-beta",
     status: "ready",
     dueDate: "2024-01-15",
@@ -69,7 +69,7 @@ const myTestHistory = [
     id: 1,
     feature: "New Template: Portfolio Pro",
     date: "2024-01-12",
-    duration: "45 phút",
+    duration: "45 minutes",
     bugsFound: 2,
     status: "completed",
   },
@@ -77,7 +77,7 @@ const myTestHistory = [
     id: 2,
     feature: "Drag & Drop Reordering",
     date: "2024-01-10",
-    duration: "30 phút",
+    duration: "30 minutes",
     bugsFound: 1,
     status: "completed",
   },
@@ -85,16 +85,16 @@ const myTestHistory = [
     id: 3,
     feature: "Dark Mode",
     date: "2024-01-05",
-    duration: "1 giờ",
+    duration: "1 hour",
     bugsFound: 0,
     status: "completed",
   },
 ]
 
 const statusConfig = {
-  alpha: { label: "Alpha", color: "bg-purple-500", description: "Rất sớm, nhiều bug" },
-  testing: { label: "Beta Testing", color: "bg-amber-500", description: "Đang test" },
-  ready: { label: "Ready", color: "bg-green-500", description: "Sẵn sàng release" },
+  alpha: { label: "Alpha", color: "bg-purple-500", description: "Very early, many bugs" },
+  testing: { label: "Beta Testing", color: "bg-amber-500", description: "Testing" },
+  ready: { label: "Ready", color: "bg-green-500", description: "Ready for release" },
 }
 
 export default function ShaperTestingPage() {
@@ -106,7 +106,7 @@ export default function ShaperTestingPage() {
           <Button variant="ghost" asChild className="mb-4">
             <Link href="/shaper">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Quay lại Dashboard
+              Back to Dashboard
             </Link>
           </Button>
           <div className="flex items-center gap-3 mb-2">
@@ -114,7 +114,7 @@ export default function ShaperTestingPage() {
             <h1 className="text-3xl font-bold">Testing Environment</h1>
           </div>
           <p className="text-muted-foreground">
-            Thử nghiệm các tính năng mới trước khi chúng được phát hành chính thức
+            Test new features before they are officially released
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export default function ShaperTestingPage() {
             <CardContent className="pt-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-accent">4</div>
-                <div className="text-sm text-muted-foreground">Features đang test</div>
+                <div className="text-sm text-muted-foreground">Features being tested</div>
               </div>
             </CardContent>
           </Card>
@@ -132,7 +132,7 @@ export default function ShaperTestingPage() {
             <CardContent className="pt-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-amber-500">11</div>
-                <div className="text-sm text-muted-foreground">Bugs được báo cáo</div>
+                <div className="text-sm text-muted-foreground">Bugs reported</div>
               </div>
             </CardContent>
           </Card>
@@ -140,7 +140,7 @@ export default function ShaperTestingPage() {
             <CardContent className="pt-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-green-500">3</div>
-                <div className="text-sm text-muted-foreground">Bugs bạn tìm thấy</div>
+                <div className="text-sm text-muted-foreground">Bugs you found</div>
               </div>
             </CardContent>
           </Card>
@@ -148,7 +148,7 @@ export default function ShaperTestingPage() {
             <CardContent className="pt-4">
               <div className="text-center">
                 <div className="text-3xl font-bold text-blue-500">2h 15m</div>
-                <div className="text-sm text-muted-foreground">Thời gian test</div>
+                <div className="text-sm text-muted-foreground">Testing time</div>
               </div>
             </CardContent>
           </Card>
@@ -156,7 +156,7 @@ export default function ShaperTestingPage() {
 
         {/* Features to Test */}
         <div className="mb-10">
-          <h2 className="text-xl font-semibold mb-4">Tính năng đang cần test</h2>
+          <h2 className="text-xl font-semibold mb-4">Features needing testing</h2>
           <div className="grid gap-4 md:grid-cols-2">
             {testingFeatures.map((feature) => {
               const status = statusConfig[feature.status as keyof typeof statusConfig]
@@ -192,7 +192,7 @@ export default function ShaperTestingPage() {
                     <div className="flex gap-2">
                       <Button size="sm" className="flex-1" disabled>
                         <Play className="mr-1 h-3 w-3" />
-                        Bắt đầu Test
+                        Start Testing
                       </Button>
                       <Button size="sm" variant="outline" disabled>
                         <FileText className="mr-1 h-3 w-3" />
@@ -209,38 +209,38 @@ export default function ShaperTestingPage() {
         {/* Testing Guidelines */}
         <Card className="mb-10 border-accent/20 bg-accent/5">
           <CardHeader>
-            <CardTitle>Hướng dẫn Testing</CardTitle>
+            <CardTitle>Testing Guidelines</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <h4 className="font-medium mb-2">Quy trình test</h4>
+                <h4 className="font-medium mb-2">Testing process</h4>
                 <ol className="space-y-1 text-sm list-decimal list-inside">
-                  <li>Đọc mô tả tính năng và documentation</li>
-                  <li>Click "Bắt đầu Test" để mở môi trường test</li>
-                  <li>Thử nghiệm các use cases khác nhau</li>
-                  <li>Báo cáo bug nếu tìm thấy lỗi</li>
-                  <li>Ghi nhận feedback về UX/UI</li>
+                  <li>Read feature description and documentation</li>
+                  <li>Click 'Start Testing' to open test environment</li>
+                  <li>Try different use cases</li>
+                  <li>Report bugs if you find issues</li>
+                  <li>Record feedback on UX/UI</li>
                 </ol>
               </div>
               <div>
-                <h4 className="font-medium mb-2">Khi báo cáo bug</h4>
+                <h4 className="font-medium mb-2">When reporting bugs</h4>
                 <ul className="space-y-1 text-sm">
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>Mô tả các bước để tái hiện bug</span>
+                    <span>Describe steps to reproduce the bug</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>Chụp screenshot hoặc quay video</span>
+                    <span>Take screenshot or record video</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>Ghi nhận browser và device</span>
+                    <span>Note browser and device</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
-                    <span>Đánh giá mức độ nghiêm trọng</span>
+                    <span>Assess severity level</span>
                   </li>
                 </ul>
               </div>
@@ -250,7 +250,7 @@ export default function ShaperTestingPage() {
 
         {/* My Test History */}
         <div>
-          <h2 className="text-xl font-semibold mb-4">Lịch sử test của tôi</h2>
+          <h2 className="text-xl font-semibold mb-4">My testing history</h2>
           <Card>
             <CardContent className="pt-4">
               <div className="space-y-4">
@@ -274,7 +274,7 @@ export default function ShaperTestingPage() {
                     </div>
                     <Badge variant="outline" className="text-green-600 border-green-600">
                       <CheckCircle2 className="mr-1 h-3 w-3" />
-                      Hoàn thành
+                      Completed
                     </Badge>
                   </div>
                 ))}

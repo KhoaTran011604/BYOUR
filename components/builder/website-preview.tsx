@@ -33,8 +33,8 @@ export function WebsitePreview({
   const visibleBlocks = blocks.filter((b) => b.is_visible)
 
   const formatPrice = (amount: number | null, type: string) => {
-    if (type === "quote") return "Báo giá"
-    if (!amount) return "Liên hệ"
+    if (type === "quote") return "Quote"
+    if (!amount) return "Contact"
     return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(amount)
   }
 
@@ -67,7 +67,7 @@ export function WebsitePreview({
           />
         ) : (
           <div className="w-full h-24 bg-stone-200 rounded-lg flex items-center justify-center">
-            <span className="text-[10px] text-stone-400">Chưa có hình</span>
+            <span className="text-[10px] text-stone-400">No image</span>
           </div>
         )
 
@@ -80,7 +80,7 @@ export function WebsitePreview({
             } hover:underline`}
           >
             <ExternalLink className="h-3 w-3" />
-            {item.link_text || "Liên kết"}
+            {item.link_text || "Link"}
           </a>
         )
 
@@ -110,7 +110,7 @@ export function WebsitePreview({
             href={item.button_url || "#"}
             className={`inline-block px-3 py-1.5 rounded text-[10px] font-medium ${buttonStyles[item.button_style || "primary"]}`}
           >
-            {item.button_text || "Nút"}
+            {item.button_text || "Button"}
           </a>
         )
 
@@ -208,9 +208,9 @@ export function WebsitePreview({
               return (
                 <section key={block.id} className="py-10 px-4">
                   <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">About</p>
-                  <h2 className="text-lg font-light mb-3">{content.heading || "Về tôi"}</h2>
+                  <h2 className="text-lg font-light mb-3">{content.heading || "About me"}</h2>
                   <p className="text-xs text-stone-500 leading-relaxed">
-                    {content.description || "Thông tin giới thiệu."}
+                    {content.description || "Introduction information."}
                   </p>
                 </section>
               )
@@ -221,7 +221,7 @@ export function WebsitePreview({
               return (
                 <section key={block.id} className="py-10 px-4 bg-white/50">
                   <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Services</p>
-                  <h2 className="text-lg font-light mb-3">{content.heading || "Dịch vụ"}</h2>
+                  <h2 className="text-lg font-light mb-3">{content.heading || "Services"}</h2>
                   <div className="grid gap-3 grid-cols-2">
                     {services.length > 0 ? (
                       services.map((service, i) => (
@@ -244,7 +244,7 @@ export function WebsitePreview({
                         </div>
                       ))
                     ) : (
-                      <p className="text-xs text-stone-400 col-span-2">Chưa có dịch vụ</p>
+                      <p className="text-xs text-stone-400 col-span-2">No services yet</p>
                     )}
                   </div>
                 </section>
@@ -256,7 +256,7 @@ export function WebsitePreview({
               return (
                 <section key={block.id} className="py-10 px-4 text-center">
                   <p className="text-[10px] text-stone-400 tracking-[0.2em] uppercase mb-2">Contact</p>
-                  <h2 className="text-lg font-light mb-4">{content.heading || "Liên hệ"}</h2>
+                  <h2 className="text-lg font-light mb-4">{content.heading || "Contact"}</h2>
                   <div className="space-y-2 text-xs text-stone-600">
                     {content.email && (
                       <div className="flex items-center justify-center gap-2">
@@ -403,9 +403,9 @@ export function WebsitePreview({
                     <div className="w-6 h-px bg-[#E6C068]" />
                     <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">About</span>
                   </div>
-                  <h2 className="text-base font-bold mb-2">{content.heading || "Về tôi"}</h2>
+                  <h2 className="text-base font-bold mb-2">{content.heading || "About me"}</h2>
                   <p className="text-[10px] text-white/50 leading-relaxed">
-                    {content.description || "Thông tin giới thiệu."}
+                    {content.description || "Introduction information."}
                   </p>
                 </section>
               )
@@ -419,7 +419,7 @@ export function WebsitePreview({
                     <div className="w-6 h-px bg-[#E6C068]" />
                     <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Services</span>
                   </div>
-                  <h2 className="text-base font-bold mb-3">{content.heading || "Dịch vụ"}</h2>
+                  <h2 className="text-base font-bold mb-3">{content.heading || "Services"}</h2>
                   <div className="space-y-0">
                     {services.length > 0 ? (
                       services.map((service, i) => (
@@ -439,7 +439,7 @@ export function WebsitePreview({
                         </div>
                       ))
                     ) : (
-                      <p className="text-[10px] text-white/40">Chưa có dịch vụ</p>
+                      <p className="text-[10px] text-white/40">No services yet</p>
                     )}
                   </div>
                 </section>
@@ -454,7 +454,7 @@ export function WebsitePreview({
                     <div className="w-6 h-px bg-[#E6C068]" />
                     <span className="text-[8px] text-[#E6C068] uppercase tracking-wider">Contact</span>
                   </div>
-                  <h2 className="text-base font-bold mb-3">{content.heading || "Liên hệ"}</h2>
+                  <h2 className="text-base font-bold mb-3">{content.heading || "Contact"}</h2>
                   <div className="space-y-2">
                     {content.email && (
                       <div className="flex items-center gap-2 text-[10px] text-white/60">
@@ -548,7 +548,7 @@ export function WebsitePreview({
                 <div className="flex items-start gap-3">
                   {/* Left */}
                   <div className="flex-1">
-                    <p className="text-[10px] text-stone-400 mb-1">Xin chào! Tôi là</p>
+                    <p className="text-[10px] text-stone-400 mb-1">Hello! I am</p>
                     <h1 className="text-xl font-bold tracking-tight leading-[1.1]">
                       {content.title || profileName || "John Deo"}.
                     </h1>
@@ -632,9 +632,9 @@ export function WebsitePreview({
                   <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
                   <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">About</span>
                 </div>
-                <h2 className="text-base font-bold mb-2">{content.heading || "Về tôi"}</h2>
+                <h2 className="text-base font-bold mb-2">{content.heading || "About me"}</h2>
                 <p className="text-[10px] text-stone-600 leading-relaxed">
-                  {content.description || "Thông tin giới thiệu."}
+                  {content.description || "Introduction information."}
                 </p>
               </section>
             )
@@ -648,7 +648,7 @@ export function WebsitePreview({
                   <div className="w-1.5 h-1.5 bg-[#E6A84D] rounded-full" />
                   <span className="text-[8px] text-[#E6A84D] uppercase tracking-wider">Services</span>
                 </div>
-                <h2 className="text-base font-bold mb-3">{content.heading || "Dịch vụ"}</h2>
+                <h2 className="text-base font-bold mb-3">{content.heading || "Services"}</h2>
                 <div className="grid gap-2 grid-cols-2">
                   {services.length > 0 ? (
                     services.map((service, i) => (
@@ -665,7 +665,7 @@ export function WebsitePreview({
                       </div>
                     ))
                   ) : (
-                    <p className="text-[10px] text-stone-400 col-span-2">Chưa có dịch vụ</p>
+                    <p className="text-[10px] text-stone-400 col-span-2">No services yet</p>
                   )}
                 </div>
               </section>
@@ -680,7 +680,7 @@ export function WebsitePreview({
                   <div className="w-1.5 h-1.5 bg-[#2D5A4A] rounded-full" />
                   <span className="text-[8px] text-[#2D5A4A] uppercase tracking-wider">Contact</span>
                 </div>
-                <h2 className="text-base font-bold mb-3">{content.heading || "Liên hệ"}</h2>
+                <h2 className="text-base font-bold mb-3">{content.heading || "Contact"}</h2>
                 <div className="space-y-2">
                   {content.email && (
                     <div className="flex items-center gap-2 text-[10px] text-stone-600">

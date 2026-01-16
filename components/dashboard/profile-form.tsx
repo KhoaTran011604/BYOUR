@@ -99,13 +99,13 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
 
     // Validation
     if (newPassword.length < 6) {
-      setPasswordError("Mật khẩu mới phải có ít nhất 6 ký tự")
+      setPasswordError("New password must be at least 6 characters")
       setIsPasswordLoading(false)
       return
     }
 
     if (newPassword !== confirmPassword) {
-      setPasswordError("Mật khẩu xác nhận không khớp")
+      setPasswordError("Confirm password does not match")
       setIsPasswordLoading(false)
       return
     }
@@ -120,7 +120,7 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
       })
 
       if (signInError) {
-        setPasswordError("Mật khẩu hiện tại không đúng")
+        setPasswordError("Current password is incorrect")
         setIsPasswordLoading(false)
         return
       }
@@ -152,8 +152,8 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
       {/* Profile Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin cá nhân</CardTitle>
-          <CardDescription>Cập nhật ảnh đại diện và thông tin hiển thị</CardDescription>
+          <CardTitle>Personal Information</CardTitle>
+          <CardDescription>Update your avatar and display information</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -164,7 +164,7 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
                 <AvatarFallback className="bg-accent text-accent-foreground text-xl">{initials || "U"}</AvatarFallback>
               </Avatar>
               <div className="flex-1 space-y-2">
-                <Label htmlFor="avatarUrl">URL ảnh đại diện</Label>
+                <Label htmlFor="avatarUrl">Avatar URL</Label>
                 <div className="flex gap-2">
                   <Input
                     id="avatarUrl"
@@ -174,18 +174,18 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
                     className="flex-1"
                   />
                 </div>
-                <p className="text-xs text-muted-foreground">Nhập URL hình ảnh hoặc sử dụng dịch vụ lưu trữ ảnh</p>
+                <p className="text-xs text-muted-foreground">Enter an image URL or use a photo hosting service</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={user.email || ""} disabled className="bg-muted" />
-              <p className="text-xs text-muted-foreground">Email không thể thay đổi</p>
+              <p className="text-xs text-muted-foreground">Email cannot be changed</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fullName">Họ và tên</Label>
+              <Label htmlFor="fullName">Full name</Label>
               <Input
                 id="fullName"
                 value={fullName}
@@ -195,11 +195,11 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
-            {success && <p className="text-sm text-green-600">Đã lưu thay đổi thành công!</p>}
+            {success && <p className="text-sm text-green-600">Changes saved successfully!</p>}
 
             <Button type="submit" disabled={isLoading}>
               <Save className="mr-2 h-4 w-4" />
-              {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+              {isLoading ? "Saving..." : "Save changes"}
             </Button>
           </form>
         </CardContent>
@@ -210,21 +210,21 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Lock className="h-5 w-5" />
-            Đổi mật khẩu
+            Change Password
           </CardTitle>
-          <CardDescription>Cập nhật mật khẩu để bảo mật tài khoản của bạn</CardDescription>
+          <CardDescription>Update your password to secure your account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handlePasswordChange} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="currentPassword">Mật khẩu hiện tại</Label>
+              <Label htmlFor="currentPassword">Current password</Label>
               <div className="relative">
                 <Input
                   id="currentPassword"
                   type={showCurrentPassword ? "text" : "password"}
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  placeholder="Nhập mật khẩu hiện tại"
+                  placeholder="Enter current password"
                   required
                 />
                 <button
@@ -238,14 +238,14 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="newPassword">Mật khẩu mới</Label>
+              <Label htmlFor="newPassword">New password</Label>
               <div className="relative">
                 <Input
                   id="newPassword"
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="Nhập mật khẩu mới (ít nhất 6 ký tự)"
+                  placeholder="Enter new password (at least 6 characters)"
                   required
                 />
                 <button
@@ -259,14 +259,14 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Xác nhận mật khẩu mới</Label>
+              <Label htmlFor="confirmPassword">Confirm new password</Label>
               <div className="relative">
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  placeholder="Nhập lại mật khẩu mới"
+                  placeholder="Re-enter new password"
                   required
                 />
                 <button
@@ -280,11 +280,11 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
             </div>
 
             {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
-            {passwordSuccess && <p className="text-sm text-green-600">Đổi mật khẩu thành công!</p>}
+            {passwordSuccess && <p className="text-sm text-green-600">Password changed successfully!</p>}
 
             <Button type="submit" disabled={isPasswordLoading}>
               <Lock className="mr-2 h-4 w-4" />
-              {isPasswordLoading ? "Đang xử lý..." : "Đổi mật khẩu"}
+              {isPasswordLoading ? "Processing..." : "Change password"}
             </Button>
           </form>
         </CardContent>
@@ -295,12 +295,12 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
         <CardHeader>
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle>Website của bạn</CardTitle>
-              <CardDescription>{website ? `byour.co/${website.handle}` : "Chưa tạo website"}</CardDescription>
+              <CardTitle>Your Website</CardTitle>
+              <CardDescription>{website ? `byour.co/${website.handle}` : "No website created yet"}</CardDescription>
             </div>
             {website && (
               <Badge variant={website.is_published ? "default" : "secondary"}>
-                {website.is_published ? "Đã xuất bản" : "Bản nháp"}
+                {website.is_published ? "Published" : "Draft"}
               </Badge>
             )}
           </div>
@@ -311,13 +311,13 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
               <Button asChild variant="outline" className="bg-transparent">
                 <Link href={`/${website.handle}`} target="_blank">
                   <ExternalLink className="mr-2 h-4 w-4" />
-                  Xem website
+                  View website
                 </Link>
               </Button>
             </div>
           ) : (
             <Button asChild>
-              <Link href="/builder/new">Tạo website mới</Link>
+              <Link href="/builder/new">Create new website</Link>
             </Button>
           )}
         </CardContent>
@@ -326,20 +326,20 @@ export function ProfileForm({ user, profile, website }: ProfileFormProps) {
       {/* Account Info Card */}
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin tài khoản</CardTitle>
+          <CardTitle>Account Information</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">Handle</span>
-              <span className="font-medium">{profile?.handle || "Chưa đặt"}</span>
+              <span className="font-medium">{profile?.handle || "Not set"}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Chế độ hiện tại</span>
+              <span className="text-muted-foreground">Current mode</span>
               <span className="font-medium capitalize">{profile?.current_mode || "self"}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-muted-foreground">Ngày tham gia</span>
+              <span className="text-muted-foreground">Joined date</span>
               <span className="font-medium">
                 {profile?.created_at
                   ? new Date(profile.created_at).toLocaleDateString("vi-VN")

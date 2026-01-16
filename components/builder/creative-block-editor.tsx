@@ -26,13 +26,13 @@ interface CreativeBlockEditorProps {
 }
 
 const itemTypeLabels: Record<CreativeItemType, string> = {
-  heading: "Tiêu đề",
-  image: "Hình ảnh",
-  link: "Liên kết",
-  divider: "Đường kẻ",
-  spacer: "Khoảng cách",
-  button: "Nút bấm",
-  text: "Văn bản",
+  heading: "Heading",
+  image: "Image",
+  link: "Link",
+  divider: "Divider",
+  spacer: "Spacer",
+  button: "Button",
+  text: "Text",
 }
 
 const itemTypeIcons: Record<CreativeItemType, React.ElementType> = {
@@ -56,8 +56,8 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
       type,
       ...(type === "heading" && { heading_text: "", heading_size: "medium" as const }),
       ...(type === "image" && { image_url: "", image_alt: "" }),
-      ...(type === "link" && { link_text: "Liên kết mới", link_url: "" }),
-      ...(type === "button" && { button_text: "Nút mới", button_url: "", button_style: "primary" as const }),
+      ...(type === "link" && { link_text: "New link", link_url: "" }),
+      ...(type === "button" && { button_text: "New button", button_url: "", button_style: "primary" as const }),
       ...(type === "text" && { text_content: "" }),
       ...(type === "spacer" && { spacer_size: "medium" as const }),
     }
@@ -105,7 +105,7 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
             <Input
               value={item.heading_text || ""}
               onChange={(e) => handleUpdateItem(item.id, { heading_text: e.target.value })}
-              placeholder="Nhập tiêu đề..."
+              placeholder="Enter heading..."
             />
             <Select
               value={item.heading_size || "medium"}
@@ -117,9 +117,9 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="large">Lớn</SelectItem>
-                <SelectItem value="medium">Vừa</SelectItem>
-                <SelectItem value="small">Nhỏ</SelectItem>
+                <SelectItem value="large">Large</SelectItem>
+                <SelectItem value="medium">Medium</SelectItem>
+                <SelectItem value="small">Small</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -131,12 +131,12 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
             <Input
               value={item.image_url || ""}
               onChange={(e) => handleUpdateItem(item.id, { image_url: e.target.value })}
-              placeholder="URL hình ảnh"
+              placeholder="Image URL"
             />
             <Input
               value={item.image_alt || ""}
               onChange={(e) => handleUpdateItem(item.id, { image_alt: e.target.value })}
-              placeholder="Mô tả hình ảnh (alt)"
+              placeholder="Image description (alt)"
             />
           </div>
         )
@@ -147,12 +147,12 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
             <Input
               value={item.link_text || ""}
               onChange={(e) => handleUpdateItem(item.id, { link_text: e.target.value })}
-              placeholder="Văn bản hiển thị"
+              placeholder="Display text"
             />
             <Input
               value={item.link_url || ""}
               onChange={(e) => handleUpdateItem(item.id, { link_url: e.target.value })}
-              placeholder="URL liên kết"
+              placeholder="Link URL"
             />
           </div>
         )
@@ -163,12 +163,12 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
             <Input
               value={item.button_text || ""}
               onChange={(e) => handleUpdateItem(item.id, { button_text: e.target.value })}
-              placeholder="Văn bản nút"
+              placeholder="Button text"
             />
             <Input
               value={item.button_url || ""}
               onChange={(e) => handleUpdateItem(item.id, { button_url: e.target.value })}
-              placeholder="URL khi click"
+              placeholder="URL on click"
             />
             <Select
               value={item.button_style || "primary"}
@@ -193,7 +193,7 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
           <Textarea
             value={item.text_content || ""}
             onChange={(e) => handleUpdateItem(item.id, { text_content: e.target.value })}
-            placeholder="Nhập nội dung văn bản..."
+            placeholder="Enter text content..."
             rows={3}
           />
         )
@@ -210,15 +210,15 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="small">Nhỏ (8px)</SelectItem>
-              <SelectItem value="medium">Vừa (16px)</SelectItem>
-              <SelectItem value="large">Lớn (32px)</SelectItem>
+              <SelectItem value="small">Small (8px)</SelectItem>
+              <SelectItem value="medium">Medium (16px)</SelectItem>
+              <SelectItem value="large">Large (32px)</SelectItem>
             </SelectContent>
           </Select>
         )
 
       case "divider":
-        return <p className="text-xs text-muted-foreground">Đường kẻ ngang phân cách nội dung</p>
+        return <p className="text-xs text-muted-foreground">Horizontal line to separate content</p>
 
       default:
         return null
@@ -229,18 +229,18 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
     <div className="space-y-6">
       {/* Block Name */}
       <div className="space-y-2">
-        <Label htmlFor="name">Tên khối</Label>
+        <Label htmlFor="name">Block name</Label>
         <Input
           id="name"
           value={content.name || ""}
           onChange={(e) => handleNameChange(e.target.value)}
-          placeholder="VD: Gallery, Links, Social..."
+          placeholder="E.g.: Gallery, Links, Social..."
         />
       </div>
 
       {/* Add Item Buttons */}
       <div className="space-y-2">
-        <Label>Thêm nội dung</Label>
+        <Label>Add content</Label>
         <div className="flex flex-wrap gap-2">
           {(Object.keys(itemTypeLabels) as CreativeItemType[]).map((type) => {
             const Icon = itemTypeIcons[type]
@@ -262,7 +262,7 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
 
       {/* Items List */}
       <div className="space-y-2">
-        <Label>Danh sách nội dung</Label>
+        <Label>Content list</Label>
         <div className="space-y-2">
           {content.items.map((item, index) => {
             const Icon = itemTypeIcons[item.type]
@@ -302,7 +302,7 @@ export function CreativeBlockEditor({ content, onContentChange }: CreativeBlockE
 
           {content.items.length === 0 && (
             <p className="text-sm text-muted-foreground text-center py-4">
-              Chưa có nội dung nào. Nhấn các nút phía trên để thêm.
+              No content yet. Click the buttons above to add.
             </p>
           )}
         </div>

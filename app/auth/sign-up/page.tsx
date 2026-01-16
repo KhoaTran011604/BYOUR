@@ -27,13 +27,13 @@ export default function SignUpPage() {
     setError(null)
 
     if (password !== confirmPassword) {
-      setError("Mật khẩu không khớp")
+      setError("Passwords do not match")
       setIsLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError("Mật khẩu phải có ít nhất 6 ký tự")
+      setError("Password must be at least 6 characters")
       setIsLoading(false)
       return
     }
@@ -52,7 +52,7 @@ export default function SignUpPage() {
       if (error) throw error
       router.push("/auth/sign-up-success")
     } catch (error: unknown) {
-      setError(error instanceof Error ? error.message : "Đã xảy ra lỗi")
+      setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
     }
@@ -65,23 +65,23 @@ export default function SignUpPage() {
           <Link href="/" className="inline-block">
             <h1 className="text-3xl font-bold tracking-tight">TEST-002</h1>
           </Link>
-          <p className="mt-2 text-muted-foreground">Văn phòng kỹ thuật số của bạn</p>
+          <p className="mt-2 text-muted-foreground">Your digital office</p>
         </div>
 
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl">Tạo tài khoản</CardTitle>
-            <CardDescription>Bắt đầu xây dựng văn phòng kỹ thuật số của riêng bạn</CardDescription>
+            <CardTitle className="text-2xl">Create account</CardTitle>
+            <CardDescription>Start building your own digital office</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSignUp}>
               <div className="flex flex-col gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="fullName">Họ và tên</Label>
+                  <Label htmlFor="fullName">Full name</Label>
                   <Input
                     id="fullName"
                     type="text"
-                    placeholder="Nguyễn Văn A"
+                    placeholder="John Doe"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
@@ -99,7 +99,7 @@ export default function SignUpPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="password">Mật khẩu</Label>
+                  <Label htmlFor="password">Password</Label>
                   <Input
                     id="password"
                     type="password"
@@ -109,7 +109,7 @@ export default function SignUpPage() {
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="confirmPassword">Xác nhận mật khẩu</Label>
+                  <Label htmlFor="confirmPassword">Confirm password</Label>
                   <Input
                     id="confirmPassword"
                     type="password"
@@ -120,13 +120,13 @@ export default function SignUpPage() {
                 </div>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Đang tạo tài khoản..." : "Đăng ký"}
+                  {isLoading ? "Creating account..." : "Sign up"}
                 </Button>
               </div>
               <div className="mt-6 text-center text-sm">
-                Đã có tài khoản?{" "}
+                Already have an account?{" "}
                 <Link href="/auth/login" className="font-medium underline underline-offset-4 hover:text-primary">
-                  Đăng nhập
+                  Log in
                 </Link>
               </div>
             </form>

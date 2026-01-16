@@ -44,8 +44,8 @@ export function ShaperContent({ user, profile }: ShaperContentProps) {
       <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-2xl font-bold">Xin chào, {displayName}</h1>
-          <p className="text-muted-foreground">Đóng góp nội bộ và phát triển sản phẩm</p>
+          <h1 className="text-2xl font-bold">Hello, {displayName}</h1>
+          <p className="text-muted-foreground">Internal contribution and product development</p>
         </div>
 
         {/* Main Cards Grid */}
@@ -59,14 +59,14 @@ export function ShaperContent({ user, profile }: ShaperContentProps) {
                     <Clock className="h-12 w-12 text-amber-500" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-xl mb-2">Đang chờ phê duyệt</h3>
+                    <h3 className="font-semibold text-xl mb-2">Pending approval</h3>
                     <p className="text-muted-foreground max-w-md">
-                      Đơn đăng ký Shaper của bạn đang được Admin xem xét. Chúng tôi sẽ thông báo qua email khi có kết quả.
+                      Your Shaper application is being reviewed by Admin. We will notify you via email when there is a result.
                     </p>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
                     <CheckCircle2 className="h-4 w-4 text-green-500" />
-                    <span>Đơn đăng ký đã được gửi thành công</span>
+                    <span>Application submitted successfully</span>
                   </div>
                 </div>
               </CardContent>
@@ -83,11 +83,11 @@ export function ShaperContent({ user, profile }: ShaperContentProps) {
                     <MessageSquare className="h-5 w-5 text-accent" />
                     <CardTitle className="text-lg">Feedback Hub</CardTitle>
                   </div>
-                  <CardDescription>Đóng góp ý kiến cho sản phẩm</CardDescription>
+                  <CardDescription>Contribute feedback for the product</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Gửi phản hồi, đề xuất tính năng mới và báo cáo lỗi để cải thiện nền tảng.
+                    Send feedback, suggest new features, and report bugs to improve the platform.
                   </p>
                   <Button asChild className="w-full">
                     <Link href="/shaper/feedback">
@@ -105,11 +105,11 @@ export function ShaperContent({ user, profile }: ShaperContentProps) {
                     <TestTube className="h-5 w-5 text-accent" />
                     <CardTitle className="text-lg">Testing Environment</CardTitle>
                   </div>
-                  <CardDescription>Thử nghiệm tính năng mới</CardDescription>
+                  <CardDescription>Test new features</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Truy cập môi trường thử nghiệm để test các tính năng trước khi phát hành chính thức.
+                    Access testing environment to test features before official release.
                   </p>
                   <Button asChild className="w-full">
                     <Link href="/shaper/testing">
@@ -127,11 +127,11 @@ export function ShaperContent({ user, profile }: ShaperContentProps) {
                     <Sparkles className="h-5 w-5 text-accent" />
                     <CardTitle className="text-lg">Experimental Features</CardTitle>
                   </div>
-                  <CardDescription>Trải nghiệm sớm nhất</CardDescription>
+                  <CardDescription>Earliest experience</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Được quyền truy cập sớm vào các tính năng thử nghiệm trước tất cả người dùng khác.
+                    Get early access to experimental features before all other users.
                   </p>
                   <Button asChild className="w-full">
                     <Link href="/shaper/early-access">
@@ -153,13 +153,13 @@ export function ShaperContent({ user, profile }: ShaperContentProps) {
                     <Users className="h-12 w-12 text-red-500" />
                   </div>
                   <div>
-                    <h3 className="font-semibold text-xl mb-2">Đơn đăng ký chưa được duyệt</h3>
+                    <h3 className="font-semibold text-xl mb-2">Application not approved</h3>
                     <p className="text-muted-foreground max-w-md">
-                      Rất tiếc, đơn đăng ký Shaper của bạn chưa được phê duyệt lần này. Bạn có thể đăng ký lại sau.
+                      Sorry, your Shaper application was not approved this time. You can apply again later.
                     </p>
                   </div>
                   <Button variant="outline" className="mt-2">
-                    Đăng ký lại
+                    Apply again
                   </Button>
                 </div>
               </CardContent>

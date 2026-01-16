@@ -18,15 +18,15 @@ export default function SignUpSuccessPage() {
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
               <Mail className="h-8 w-8 text-primary" />
             </div>
-            <CardTitle className="text-2xl">Kiểm tra email của bạn</CardTitle>
+            <CardTitle className="text-2xl">Check your email</CardTitle>
             <CardDescription>
-              Chúng tôi đã gửi một liên kết xác nhận đến email của bạn. Vui lòng kiểm tra hộp thư và nhấp vào liên kết
-              để kích hoạt tài khoản.
+              We&apos;ve sent a confirmation link to your email. Please check your inbox and click the link
+              to activate your account.
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center">
             <Button asChild variant="outline" className="w-full bg-transparent">
-              <Link href="/auth/login">Quay lại đăng nhập</Link>
+              <Link href="/auth/login">Back to login</Link>
             </Button>
           </CardContent>
         </Card>

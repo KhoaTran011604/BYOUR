@@ -38,7 +38,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
 
     // Validate handle format
     if (handle && !/^[a-z0-9-]+$/.test(handle)) {
-      setError("Handle chỉ được chứa chữ thường, số và dấu gạch ngang")
+      setError("Handle can only contain lowercase letters, numbers, and hyphens")
       setIsLoading(false)
       return
     }
@@ -72,7 +72,7 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
     } catch (err) {
       if (err instanceof Error) {
         if (err.message.includes("duplicate")) {
-          setError("Handle này đã được sử dụng. Vui lòng chọn handle khác.")
+          setError("This handle is already taken. Please choose a different handle.")
         } else {
           setError(err.message)
         }
@@ -88,19 +88,19 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Thông tin cá nhân</CardTitle>
-          <CardDescription>Cập nhật thông tin hiển thị của bạn</CardDescription>
+          <CardTitle>Personal Information</CardTitle>
+          <CardDescription>Update your display information</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
               <Input id="email" type="email" value={user.email || ""} disabled className="bg-muted" />
-              <p className="text-xs text-muted-foreground">Email không thể thay đổi</p>
+              <p className="text-xs text-muted-foreground">Email cannot be changed</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="fullName">Họ và tên</Label>
+              <Label htmlFor="fullName">Full name</Label>
               <Input
                 id="fullName"
                 value={fullName}
@@ -122,16 +122,16 @@ export function SettingsForm({ user, profile }: SettingsFormProps) {
                 />
               </div>
               <p className="text-xs text-muted-foreground">
-                Chỉ sử dụng chữ thường, số và dấu gạch ngang. Đây sẽ là URL website của bạn.
+                Only use lowercase letters, numbers, and hyphens. This will be your website URL.
               </p>
             </div>
 
             {error && <p className="text-sm text-destructive">{error}</p>}
-            {success && <p className="text-sm text-green-600">Đã lưu thay đổi thành công!</p>}
+            {success && <p className="text-sm text-green-600">Changes saved successfully!</p>}
 
             <Button type="submit" disabled={isLoading}>
               <Save className="mr-2 h-4 w-4" />
-              {isLoading ? "Đang lưu..." : "Lưu thay đổi"}
+              {isLoading ? "Saving..." : "Save changes"}
             </Button>
           </form>
         </CardContent>

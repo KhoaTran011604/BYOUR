@@ -13,16 +13,16 @@ interface TemplateSettingsProps {
 }
 
 const templates: { id: WebsiteTemplate; name: string; description: string }[] = [
-  { id: "minimal", name: "Minimal", description: "Thiết kế tối giản, tập trung nội dung" },
-  { id: "editorial", name: "Editorial", description: "Phong cách báo chí, chữ lớn nổi bật" },
-  { id: "grid", name: "Grid", description: "Bố cục lưới hiện đại, rõ ràng" },
+  { id: "minimal", name: "Minimal", description: "Minimalist design, content-focused" },
+  { id: "editorial", name: "Editorial", description: "Editorial style, bold typography" },
+  { id: "grid", name: "Grid", description: "Modern grid layout, clear and organized" },
 ]
 
 export function TemplateSettings({ template, onTemplateChange, onClose }: TemplateSettingsProps) {
   return (
     <div className="w-72 flex-shrink-0 border-r border-border bg-background p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold">Cài đặt mẫu</h3>
+        <h3 className="font-semibold">Template settings</h3>
         <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onClose}>
           <X className="h-4 w-4" />
         </Button>
@@ -30,7 +30,7 @@ export function TemplateSettings({ template, onTemplateChange, onClose }: Templa
 
       <div className="space-y-4">
         <div>
-          <Label className="text-sm text-muted-foreground">Chọn mẫu thiết kế</Label>
+          <Label className="text-sm text-muted-foreground">Select template</Label>
           <RadioGroup value={template} onValueChange={(v) => onTemplateChange(v as WebsiteTemplate)} className="mt-3">
             {templates.map((t) => (
               <div

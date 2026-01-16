@@ -80,8 +80,8 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
     const supabase = createClient()
     const newService = {
       website_id: website.id,
-      title: "Dịch vụ mới",
-      description: "Mô tả dịch vụ của bạn",
+      title: "New service",
+      description: "Your service description",
       price_type: "fixed" as const,
       price_amount: null,
       order_index: services.length,
@@ -114,9 +114,9 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
 
       const defaultContent: Record<BlockType, object> = {
         hero: { title: "", subtitle: "", image_url: null, cta_text: null, cta_link: null },
-        about: { heading: "Về tôi", description: "", image_url: null },
-        services: { heading: "Dịch vụ", description: null },
-        contact: { heading: "Liên hệ", email: null, phone: null, address: null, social_links: {} },
+        about: { heading: "About me", description: "", image_url: null },
+        services: { heading: "Services", description: null },
+        contact: { heading: "Contact", email: null, phone: null, address: null, social_links: {} },
         creative: { name: "Creative Block", items: [] },
       }
 
@@ -216,7 +216,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
               className="h-7 px-3"
               onClick={() => setViewMode("edit")}
             >
-              Chỉnh sửa
+              Edit
             </Button>
             <Button
               variant={viewMode === "preview" ? "secondary" : "ghost"}
@@ -225,7 +225,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
               onClick={() => setViewMode("preview")}
             >
               <Eye className="mr-1 h-4 w-4" />
-              Xem trước
+              Preview
             </Button>
           </div>
 
@@ -235,7 +235,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
 
           <Button variant={isPublished ? "outline" : "default"} size="sm" onClick={handlePublish} disabled={isSaving}>
             <Globe className="mr-2 h-4 w-4" />
-            {isSaving ? "Đang lưu..." : isPublished ? "Gỡ xuất bản" : "Xuất bản"}
+            {isSaving ? "Saving..." : isPublished ? "Unpublish" : "Publish"}
           </Button>
         </div>
       </header>
