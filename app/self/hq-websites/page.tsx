@@ -18,7 +18,7 @@ const websites = [
     template: "Minimal",
     teamSize: "5-10",
     rating: 4.9,
-    preview: "/examples/studio-minimal",
+    preview: "/self/studio-minimal",
   },
   {
     id: 2,
@@ -30,7 +30,7 @@ const websites = [
     template: "Editorial",
     teamSize: "50+",
     rating: 4.8,
-    preview: "/examples/techcorp",
+    preview: "/self/techcorp",
   },
   {
     id: 3,
@@ -42,7 +42,7 @@ const websites = [
     template: "Grid",
     teamSize: "10-20",
     rating: 4.7,
-    preview: "/examples/green-marketing",
+    preview: "/self/green-marketing",
   },
   {
     id: 4,
@@ -54,7 +54,7 @@ const websites = [
     template: "Minimal",
     teamSize: "10-20",
     rating: 4.9,
-    preview: "/examples/legal-partners",
+    preview: "/self/legal-partners",
   },
   {
     id: 5,
@@ -66,7 +66,7 @@ const websites = [
     template: "Grid",
     teamSize: "5-10",
     rating: 4.8,
-    preview: "/examples/creative-lab",
+    preview: "/self/creative-lab",
   },
   {
     id: 6,
@@ -78,7 +78,7 @@ const websites = [
     template: "Editorial",
     teamSize: "20-50",
     rating: 4.6,
-    preview: "/examples/finance-advisory",
+    preview: "/self/finance-advisory",
   },
 ]
 
