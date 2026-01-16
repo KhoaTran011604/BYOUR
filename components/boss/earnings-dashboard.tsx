@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import {
   DollarSign,
   TrendingUp,
@@ -12,6 +13,7 @@ import {
   Filter,
   ArrowUpRight,
   ArrowDownRight,
+  ArrowLeft,
   Briefcase,
   Star,
 } from "lucide-react"
@@ -86,11 +88,18 @@ export function EarningsDashboard({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold">Earnings</h1>
-        <p className="text-muted-foreground">
-          Track your income and payment history
-        </p>
+      <div className="flex items-center gap-4">
+        <Button variant="ghost" size="icon" asChild>
+          <Link href="/boss/dashboard">
+            <ArrowLeft className="h-5 w-5" />
+          </Link>
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold">Earnings</h1>
+          <p className="text-muted-foreground">
+            Track your income and payment history
+          </p>
+        </div>
       </div>
 
       {/* Stats Cards */}

@@ -6,6 +6,7 @@ import {
   Clock,
   CheckCircle2,
   ArrowRight,
+  ArrowLeft,
   Search,
   Filter,
 } from "lucide-react"
@@ -76,9 +77,16 @@ export default async function ProjectsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Projects</h1>
-          <p className="text-muted-foreground">Manage your active and past projects</p>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/boss/dashboard">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">Projects</h1>
+            <p className="text-muted-foreground">Manage your active and past projects</p>
+          </div>
         </div>
       </div>
 

@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { Mail, Filter, Search, Inbox } from "lucide-react"
+import Link from "next/link"
+import { Mail, Filter, Search, Inbox, ArrowLeft } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -60,11 +61,18 @@ export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) 
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Invites</h1>
-          <p className="text-muted-foreground">
-            Manage project invitations from clients
-          </p>
+        <div className="flex items-center gap-4">
+          <Button variant="ghost" size="icon" asChild>
+            <Link href="/boss/dashboard">
+              <ArrowLeft className="h-5 w-5" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold">Invites</h1>
+            <p className="text-muted-foreground">
+              Manage project invitations from clients
+            </p>
+          </div>
         </div>
       </div>
 
