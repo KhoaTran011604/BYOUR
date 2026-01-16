@@ -106,47 +106,21 @@ export default function InvitesPage() {
   const handleAccept = async (inviteId: string) => {
     const supabase = createClient()
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    if (!user) return
-
-    // Get invite details
+    // Get invite details for navigation
     const invite = invites.find((i) => i.id === inviteId)
     if (!invite) return
 
-    // Update invite status in hq_invites
-    const { error: inviteError } = await supabase
-      .from("hq_invites")
-      .update({
-        status: "accepted",
-        responded_at: new Date().toISOString(),
-      })
-      .eq("id", inviteId)
+    // Call the accept_hq_invite function (handles everything server-side)
+    const { data, error } = await supabase.rpc("accept_hq_invite", {
+      invite_uuid: inviteId,
+    })
 
-    if (inviteError) {
+    console.log("🚀 accept_hq_invite result:", data, error)
+
+    if (error || !data?.success) {
       toast({
         title: "Error",
-        description: "Failed to accept invite. Please try again.",
-        variant: "destructive",
-      })
-      return
-    }
-
-    // Update HQ project to assign this boss and change status to in_progress
-    const { error: projectError } = await supabase
-      .from("hq_projects")
-      .update({
-        assigned_boss_id: user.id,
-        status: "in_progress",
-      })
-      .eq("id", invite.hq_project_id)
-
-    if (projectError) {
-      toast({
-        title: "Error",
-        description: "Failed to assign project. Please try again.",
+        description: data?.error || "Failed to accept invite. Please try again.",
         variant: "destructive",
       })
       return
@@ -161,24 +135,23 @@ export default function InvitesPage() {
     await loadInvites()
 
     // Navigate to HQ project view for boss
-    router.push(`/boss/hq-projects/${invite.hq_project_id}`)
+    router.push(`/boss/hq-projects/${data.project_id}`)
   }
 
   const handleDecline = async (inviteId: string) => {
     const supabase = createClient()
 
-    const { error } = await supabase
-      .from("hq_invites")
-      .update({
-        status: "declined",
-        responded_at: new Date().toISOString(),
-      })
-      .eq("id", inviteId)
+    // Call the decline_hq_invite function
+    const { data, error } = await supabase.rpc("decline_hq_invite", {
+      invite_uuid: inviteId,
+    })
 
-    if (error) {
+    console.log("🚀 decline_hq_invite result:", data, error)
+
+    if (error || !data?.success) {
       toast({
         title: "Error",
-        description: "Failed to decline invite. Please try again.",
+        description: data?.error || "Failed to decline invite. Please try again.",
         variant: "destructive",
       })
       return

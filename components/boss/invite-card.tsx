@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import {
   Calendar,
   DollarSign,
@@ -213,9 +214,11 @@ export function InviteCard({ invite, onAccept, onDecline }: InviteCardProps) {
 
       {invite.status === "accepted" && (
         <CardFooter className="pt-0">
-          <Button variant="outline" size="sm" className="w-full">
-            <MessageSquare className="h-4 w-4" />
-            Open Project Chat
+          <Button variant="outline" size="sm" className="w-full" asChild>
+            <Link href={`/boss/hq-projects/${invite.hq_project_id}`}>
+              <MessageSquare className="h-4 w-4" />
+              Open Project Chat
+            </Link>
           </Button>
         </CardFooter>
       )}
