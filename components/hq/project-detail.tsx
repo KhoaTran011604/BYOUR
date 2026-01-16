@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import {
@@ -41,6 +41,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { BossSuggestions } from "./boss-suggestions"
 import { InvitesList } from "./invites-list"
 import { InviteDialog } from "./invite-dialog"
+import { ProjectChat } from "./project-chat"
+import { createClient } from "@/lib/supabase/client"
 import type { HQProject, HQInvite, HQProjectStatus } from "@/lib/types"
 
 interface ProjectDetailProps {
@@ -48,6 +50,9 @@ interface ProjectDetailProps {
   invites: HQInvite[]
   suggestedBosses: any[]
   hqId: string
+  currentUserId: string
+  currentUserName: string
+  currentUserAvatar: string | null
 }
 
 const statusConfig: Record<HQProjectStatus, { label: string; color: string; bgColor: string }> = {
@@ -70,13 +75,56 @@ export function ProjectDetail({
   invites,
   suggestedBosses,
   hqId,
+  currentUserId,
+  currentUserName,
+  currentUserAvatar,
 }: ProjectDetailProps) {
   const router = useRouter()
   const [selectedBossId, setSelectedBossId] = useState<string | null>(null)
   const [showInviteDialog, setShowInviteDialog] = useState(false)
+  const [chatId, setChatId] = useState<string | null>(null)
+  const [bossInfo, setBossInfo] = useState<{ name: string; avatar: string | null } | null>(null)
 
   const status = statusConfig[project.status]
   const symbol = currencySymbols[project.currency] || project.currency
+
+  // Load chat and boss info when project is in_progress
+  useEffect(() => {
+    if (project.status === "in_progress" && project.assigned_boss_id) {
+      loadChatAndBossInfo()
+    }
+  }, [project.status, project.assigned_boss_id])
+
+  const loadChatAndBossInfo = async () => {
+    const supabase = createClient()
+
+    // Get chat id
+    const { data: chatData } = await supabase
+      .from("hq_project_chats")
+      .select("id")
+      .eq("project_id", project.id)
+      .single()
+
+    if (chatData) {
+      setChatId(chatData.id)
+    }
+
+    // Get boss profile info
+    if (project.assigned_boss_id) {
+      const { data: profileData } = await supabase
+        .from("profiles")
+        .select("full_name, avatar_url")
+        .eq("id", project.assigned_boss_id)
+        .single()
+
+      if (profileData) {
+        setBossInfo({
+          name: profileData.full_name || "Boss",
+          avatar: profileData.avatar_url,
+        })
+      }
+    }
+  }
 
   const pendingInvites = invites.filter((i) => i.status === "pending")
   const acceptedInvites = invites.filter((i) => i.status === "accepted")
@@ -212,14 +260,15 @@ export function ProjectDetail({
 
             {project.status === "in_progress" && (
               <TabsContent value="chat" className="mt-4">
-                <Card>
-                  <CardContent className="py-8 text-center">
-                    <MessageSquare className="mx-auto mb-4 h-12 w-12 text-muted-foreground/50" />
-                    <p className="text-muted-foreground">
-                      Chat will be available here
-                    </p>
-                  </CardContent>
-                </Card>
+                <ProjectChat
+                  projectId={project.id}
+                  chatId={chatId}
+                  currentUserId={currentUserId}
+                  currentUserName={currentUserName}
+                  currentUserAvatar={currentUserAvatar}
+                  partnerName={bossInfo?.name || "Boss"}
+                  partnerAvatar={bossInfo?.avatar || null}
+                />
               </TabsContent>
             )}
           </Tabs>

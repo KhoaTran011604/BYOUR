@@ -9,6 +9,7 @@ import {
   X,
   Download,
   Loader2,
+  RefreshCw,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -40,6 +41,7 @@ export function HQProjectChat({
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentChatId, setCurrentChatId] = useState<string | null>(chatId)
   const [attachments, setAttachments] = useState<File[]>([])
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -229,6 +231,12 @@ export function HQProjectChat({
     setAttachments(attachments.filter((_, i) => i !== index))
   }
 
+  const handleRefresh = async () => {
+    setIsRefreshing(true)
+    await loadMessages()
+    setIsRefreshing(false)
+  }
+
   const formatTime = (dateString: string) => {
     const date = new Date(dateString)
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
@@ -269,8 +277,22 @@ export function HQProjectChat({
 
   return (
     <div className="flex h-[600px] flex-col rounded-lg border">
+      {/* Header with Refresh Button */}
+      <div className="flex items-center justify-between border-b px-4 py-2">
+        <span className="text-sm font-medium">Chat với {partnerName}</span>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          title="Refresh messages"
+        >
+          <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+        </Button>
+      </div>
+
       {/* Messages Area */}
-      <ScrollArea ref={scrollRef} className="flex-1 p-4">
+      <ScrollArea ref={scrollRef} className="min-h-0 flex-1 p-4">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
             <p className="text-muted-foreground">No messages yet</p>
