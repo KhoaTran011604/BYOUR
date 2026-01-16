@@ -150,7 +150,7 @@ export function TemplateSelector({ userId, userHandle, userName }: TemplateSelec
         <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           <Link href="/dashboard" className="flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
-            <span className="text-xl font-bold tracking-tight">BYOUR</span>
+            <span className="text-xl font-bold tracking-tight">TEST-002</span>
           </Link>
         </div>
       </header>

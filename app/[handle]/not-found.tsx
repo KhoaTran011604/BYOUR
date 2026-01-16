@@ -12,7 +12,7 @@ export default function NotFound() {
         </p>
         <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center">
           <Button asChild>
-            <Link href="/">Về trang chủ BYOUR</Link>
+            <Link href="/">Về trang chủ TEST-002</Link>
           </Button>
           <Button variant="outline" asChild className="bg-transparent">
             <Link href="/auth/sign-up">Tạo website của bạn</Link>

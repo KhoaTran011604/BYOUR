@@ -6,7 +6,7 @@ export default function GlobalNotFound() {
     <div className="min-h-screen flex items-center justify-center bg-muted/30 px-4">
       <div className="text-center">
         <div className="mb-6">
-          <span className="text-2xl font-bold">BYOUR</span>
+          <span className="text-2xl font-bold">TEST-002</span>
         </div>
         <h1 className="text-6xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-2xl font-semibold">Trang không tồn tại</h2>

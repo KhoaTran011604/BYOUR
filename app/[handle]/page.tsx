@@ -27,10 +27,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const profileName = (website.profiles as { full_name: string | null })?.full_name || handle
 
   return {
-    title: `${profileName} | BYOUR`,
-    description: `Website chuyên nghiệp của ${profileName} trên BYOUR`,
+    title: `${profileName} | TEST-002`,
+    description: `Website chuyên nghiệp của ${profileName} trên TEST-002`,
     openGraph: {
-      title: `${profileName} | BYOUR`,
+      title: `${profileName} | TEST-002`,
       description: `Website chuyên nghiệp của ${profileName}`,
       url: `https://byour.co/${handle}`,
     },

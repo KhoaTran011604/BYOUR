@@ -364,7 +364,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
             <p>www.{website.handle}.byour.co</p>
             <p>
               © {new Date().getFullYear()} {profileName || website.handle} · Powered by{" "}
-              <Link href="/" className="hover:text-stone-600">BYOUR</Link>
+              <Link href="/" className="hover:text-stone-600">TEST-002</Link>
             </p>
             <p>Stay Creative</p>
           </div>
@@ -633,7 +633,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
             <p>© {new Date().getFullYear()} {profileName || website.handle}</p>
             <p>
               Powered by{" "}
-              <Link href="/" className="text-[#E6C068] hover:underline">BYOUR</Link>
+              <Link href="/" className="text-[#E6C068] hover:underline">TEST-002</Link>
             </p>
           </div>
         </footer>
@@ -932,7 +932,7 @@ export function PublicWebsite({ website, blocks, services, profileName, profileA
           <p>© {new Date().getFullYear()} {profileName || website.handle}</p>
           <p>
             Powered by{" "}
-            <Link href="/" className="text-[#2D5A4A] hover:underline">BYOUR</Link>
+            <Link href="/" className="text-[#2D5A4A] hover:underline">TEST-002</Link>
           </p>
         </div>
       </footer>
