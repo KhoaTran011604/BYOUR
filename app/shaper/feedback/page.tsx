@@ -125,7 +125,7 @@ export default function ShaperFeedbackPage() {
             <h1 className="text-3xl font-bold">Feedback Hub</h1>
           </div>
           <p className="text-muted-foreground">
-            Đóng góp ý kiến để giúp BYOUR trở nên tốt hơn
+            Đóng góp ý kiến để giúp TEST-002 trở nên tốt hơn
           </p>
         </div>
 

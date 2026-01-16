@@ -63,7 +63,7 @@ export default function SignUpPage() {
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
           <Link href="/" className="inline-block">
-            <h1 className="text-3xl font-bold tracking-tight">BYOUR</h1>
+            <h1 className="text-3xl font-bold tracking-tight">TEST-002</h1>
           </Link>
           <p className="mt-2 text-muted-foreground">Văn phòng kỹ thuật số của bạn</p>
         </div>

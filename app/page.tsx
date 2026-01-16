@@ -27,7 +27,7 @@ const modes = [
   {
     id: "shaper",
     title: "Shaper",
-    description: "Dành cho những người đóng góp nội bộ, giúp xây dựng và phát triển nền tảng BYOUR",
+    description: "Dành cho những người đóng góp nội bộ, giúp xây dựng và phát triển nền tảng TEST-002",
     icon: Sparkles,
     features: ["Đóng góp nội dung", "Xây dựng cộng đồng", "Phát triển nền tảng"],
   },
@@ -40,7 +40,7 @@ export default function HomePage() {
       <header className="border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold tracking-tight">BYOUR</span>
+            <span className="text-2xl font-bold tracking-tight">TEST-002</span>
           </Link>
           <nav className="hidden items-center gap-6 md:flex">
             <Link
@@ -77,7 +77,7 @@ export default function HomePage() {
               <span className="block text-accent">cho thời đại mới</span>
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground text-pretty">
-              BYOUR không chỉ là bảng tin việc làm - đây là không gian để các chuyên gia độc lập xây dựng cấu trúc công
+              TEST-002 không chỉ là bảng tin việc làm - đây là không gian để các chuyên gia độc lập xây dựng cấu trúc công
               việc riêng. Một đăng nhập, bốn chế độ linh hoạt.
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
@@ -184,7 +184,7 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             <div className="flex items-center gap-2">
-              <span className="text-xl font-bold">BYOUR</span>
+              <span className="text-xl font-bold">TEST-002</span>
               <span className="text-sm text-muted-foreground">© 2026</span>
             </div>
             <nav className="flex gap-6 text-sm text-muted-foreground">

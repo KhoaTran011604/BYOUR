@@ -499,7 +499,7 @@ export function WebsitePreview({
 
         {/* Footer */}
         <footer className="ml-6 py-3 px-3 border-t border-white/10">
-          <p className="text-[8px] text-white/30">Powered by BYOUR</p>
+          <p className="text-[8px] text-white/30">Powered by TEST-002</p>
         </footer>
       </div>
     )
@@ -739,7 +739,7 @@ export function WebsitePreview({
 
       {/* Footer */}
       <footer className="py-3 px-3 bg-[#F5F0E8] text-center">
-        <p className="text-[8px] text-stone-400">Powered by BYOUR</p>
+        <p className="text-[8px] text-stone-400">Powered by TEST-002</p>
       </footer>
     </div>
   )

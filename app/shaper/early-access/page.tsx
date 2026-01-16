@@ -47,7 +47,7 @@ const experimentalFeatures = [
   {
     id: 3,
     name: "Custom Themes",
-    description: "Tạo và chia sẻ custom themes với cộng đồng BYOUR.",
+    description: "Tạo và chia sẻ custom themes với cộng đồng TEST-002.",
     icon: Palette,
     status: "available",
     releaseDate: "2024-03-01",
@@ -141,7 +141,7 @@ export default function ShaperEarlyAccessPage() {
               <div>
                 <h3 className="font-semibold text-lg">Shaper Status: Active</h3>
                 <p className="text-sm text-muted-foreground">
-                  Bạn có quyền truy cập sớm vào tất cả tính năng thử nghiệm. Cảm ơn bạn đã đồng hành cùng BYOUR!
+                  Bạn có quyền truy cập sớm vào tất cả tính năng thử nghiệm. Cảm ơn bạn đã đồng hành cùng TEST-002!
                 </p>
               </div>
               <Badge className="ml-auto bg-accent text-accent-foreground">

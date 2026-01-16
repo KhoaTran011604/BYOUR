@@ -26,7 +26,7 @@ export default async function ProfilePage() {
       <header className="border-b border-border bg-background sticky top-0 z-50">
         <div className="mx-auto flex h-16 max-w-7xl items-center px-4 sm:px-6 lg:px-8">
           <a href="/dashboard" className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight">BYOUR</span>
+            <span className="text-xl font-bold tracking-tight">TEST-002</span>
           </a>
         </div>
       </header>

@@ -348,7 +348,7 @@ export function DashboardContent({ user, profile, website }: DashboardContentPro
                         <MessageSquare className="h-5 w-5 text-accent" />
                         <CardTitle className="text-lg">Feedback Hub</CardTitle>
                       </div>
-                      <CardDescription>Đóng góp ý kiến cho BYOUR</CardDescription>
+                      <CardDescription>Đóng góp ý kiến cho </CardDescription>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-muted-foreground mb-4">
