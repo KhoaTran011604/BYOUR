@@ -59,8 +59,10 @@ export function ProjectGroupChat({
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
   const [recipientIds, setRecipientIds] = useState<string[]>([])
   const scrollRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const typingStartRef = useRef<boolean>(false)
+  const isInitialLoad = useRef(true)
 
   const { socket, isConnected, joinChat, leaveChat, sendMessage: emitMessage, startTyping, stopTyping } = useSocket()
 
@@ -137,12 +139,28 @@ export function ProjectGroupChat({
     }
   }, [socket, currentUserId])
 
+  // Scroll to bottom function
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior })
+    }
+  }, [])
+
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    if (messages.length > 0) {
+      // Use instant scroll on initial load, smooth scroll for new messages
+      if (isInitialLoad.current) {
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          scrollToBottom("instant")
+          isInitialLoad.current = false
+        }, 100)
+      } else {
+        scrollToBottom("smooth")
+      }
     }
-  }, [messages])
+  }, [messages, scrollToBottom])
 
   // Load project participants for notifications (separate from messages)
   const loadProjectParticipants = async () => {
@@ -531,6 +549,8 @@ export function ProjectGroupChat({
                 </div>
               </div>
             ))}
+            {/* Scroll anchor - always at the bottom */}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </ScrollArea>

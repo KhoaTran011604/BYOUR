@@ -283,7 +283,7 @@ export function HQDashboard({
           <CardContent className="space-y-3">
             <Button variant="outline" className="w-full justify-start" asChild>
               <Link href="/hq/hq-chats">
-                <Plus className="h-4 w-4" />
+                <MessageSquare className="h-4 w-4" />
                 Chats
               </Link>
             </Button>
