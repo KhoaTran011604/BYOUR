@@ -9,13 +9,6 @@ export interface ChatMessage {
   sender_name: string
   sender_avatar: string | null
   message: string
-  attachments: Array<{
-    id: string
-    name: string
-    url: string
-    type: string
-    size: number
-  }>
   is_read: boolean
   created_at: string
 }

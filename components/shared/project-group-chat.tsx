@@ -4,10 +4,6 @@ import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import {
   Send,
   Paperclip,
-  Image,
-  File,
-  X,
-  Download,
   Loader2,
   RefreshCw,
   Crown,
@@ -22,7 +18,7 @@ import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
 import { useSocket } from "@/components/providers/socket-provider"
-import type { HQAttachment } from "@/lib/types"
+import { useToast } from "@/hooks/use-toast"
 
 interface ChatMessage {
   id: string
@@ -33,7 +29,6 @@ interface ChatMessage {
   sender_name: string
   sender_avatar: string | null
   message: string
-  attachments: HQAttachment[]
   is_read: boolean
   created_at: string
 }
@@ -61,11 +56,9 @@ export function ProjectGroupChat({
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentChatId, setCurrentChatId] = useState<string | null>(chatId)
-  const [attachments, setAttachments] = useState<File[]>([])
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
   const [recipientIds, setRecipientIds] = useState<string[]>([])
   const scrollRef = useRef<HTMLDivElement>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const typingStartRef = useRef<boolean>(false)
 
@@ -222,7 +215,6 @@ export function ProjectGroupChat({
         sender_name: msg.profiles?.full_name || (msg.sender_type === "hq" ? "HQ" : "Boss"),
         sender_avatar: msg.profiles?.avatar_url || null,
         message: msg.message,
-        attachments: msg.attachments || [],
         is_read: msg.is_read,
         created_at: msg.created_at,
       }))
@@ -255,8 +247,10 @@ export function ProjectGroupChat({
     return data.id
   }
 
+  const { toast } = useToast()
+
   const handleSend = async () => {
-    if (!newMessage.trim() && attachments.length === 0) return
+    if (!newMessage.trim()) return
 
     setIsSending(true)
 
@@ -269,29 +263,6 @@ export function ProjectGroupChat({
         throw new Error("Could not create chat")
       }
 
-      // Upload attachments if any
-      const uploadedAttachments: HQAttachment[] = []
-      for (const file of attachments) {
-        const fileName = `${Date.now()}-${file.name}`
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from("chat-attachments")
-          .upload(`${projectId}/${fileName}`, file)
-
-        if (!uploadError && uploadData) {
-          const { data: urlData } = supabase.storage
-            .from("chat-attachments")
-            .getPublicUrl(uploadData.path)
-
-          uploadedAttachments.push({
-            id: Date.now().toString(),
-            name: file.name,
-            url: urlData.publicUrl,
-            type: file.type,
-            size: file.size,
-          })
-        }
-      }
-
       // Insert message with current user's role
       const { data: msgData, error: msgError } = await supabase
         .from("hq_chat_messages")
@@ -300,7 +271,6 @@ export function ProjectGroupChat({
           sender_id: currentUserId,
           sender_type: userRole,
           message: newMessage.trim(),
-          attachments: uploadedAttachments,
         })
         .select()
         .single()
@@ -317,14 +287,12 @@ export function ProjectGroupChat({
         sender_name: currentUserName,
         sender_avatar: currentUserAvatar,
         message: newMessage.trim(),
-        attachments: uploadedAttachments,
         is_read: false,
         created_at: msgData.created_at,
       }
 
       setMessages([...messages, newMsg])
       setNewMessage("")
-      setAttachments([])
 
       // Emit message to socket for real-time delivery (with recipientIds for dashboard notifications)
       emitMessage({ ...newMsg, chatId: chatIdToUse, recipientIds })
@@ -340,16 +308,11 @@ export function ProjectGroupChat({
     }
   }
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || [])
-    setAttachments([...attachments, ...files])
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
-  }
-
-  const removeAttachment = (index: number) => {
-    setAttachments(attachments.filter((_, i) => i !== index))
+  const handleAttachmentClick = () => {
+    toast({
+      title: "Coming soon!",
+      description: "File attachment feature will be available soon.",
+    })
   }
 
   const handleRefresh = async () => {
@@ -561,30 +524,6 @@ export function ProjectGroupChat({
                             </p>
                           </div>
 
-                          {/* Attachments */}
-                          {message.attachments.length > 0 && (
-                            <div className="flex flex-wrap gap-2 mt-2">
-                              {message.attachments.map((attachment) => (
-                                <a
-                                  key={attachment.id}
-                                  href={attachment.url}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="flex items-center gap-2 rounded-lg border bg-background px-3 py-2 text-sm hover:bg-muted"
-                                >
-                                  {attachment.type.startsWith("image/") ? (
-                                    <Image className="h-4 w-4" />
-                                  ) : (
-                                    <File className="h-4 w-4" />
-                                  )}
-                                  <span className="max-w-[150px] truncate">
-                                    {attachment.name}
-                                  </span>
-                                  <Download className="h-3 w-3" />
-                                </a>
-                              ))}
-                            </div>
-                          )}
                         </div>
                       </div>
                     )
@@ -595,35 +534,6 @@ export function ProjectGroupChat({
           </div>
         )}
       </ScrollArea>
-
-      {/* Attachments Preview */}
-      {attachments.length > 0 && (
-        <div className="border-t px-4 py-2">
-          <div className="flex flex-wrap gap-2">
-            {attachments.map((file, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 rounded-lg bg-muted px-3 py-1.5"
-              >
-                {file.type.startsWith("image/") ? (
-                  <Image className="h-4 w-4" />
-                ) : (
-                  <File className="h-4 w-4" />
-                )}
-                <span className="max-w-[150px] truncate text-sm">
-                  {file.name}
-                </span>
-                <button
-                  onClick={() => removeAttachment(index)}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Typing Indicator */}
       {typingUsers.size > 0 && (
@@ -638,18 +548,11 @@ export function ProjectGroupChat({
       {/* Input Area */}
       <div className="border-t p-4">
         <div className="flex gap-2">
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            className="hidden"
-            onChange={handleFileSelect}
-          />
           <Button
             type="button"
             variant="outline"
             size="icon"
-            onClick={() => fileInputRef.current?.click()}
+            onClick={handleAttachmentClick}
           >
             <Paperclip className="h-4 w-4" />
           </Button>
