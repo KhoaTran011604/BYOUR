@@ -225,6 +225,12 @@ export function HQDashboard({
           </CardHeader>
           <CardContent className="space-y-3">
             <Button variant="outline" className="w-full justify-start" asChild>
+              <Link href="/hq/hq-chats">
+                <Plus className="h-4 w-4" />
+                Chats
+              </Link>
+            </Button>
+            <Button variant="outline" className="w-full justify-start" asChild>
               <Link href="/hq/projects/create">
                 <Plus className="h-4 w-4" />
                 Create New Project

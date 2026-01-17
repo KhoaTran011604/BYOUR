@@ -281,12 +281,21 @@ export function BossDashboard({
             )}
           </CardContent>
           <CardFooter>
-            <Button asChild variant="outline" className="w-full">
+            <div className="flex w-full gap-2">
+
+              <Button asChild variant="outline" className="flex-1">
               <Link href="/boss/invites">
                 View All Invites
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
+            <Button asChild  className="flex-1">
+              <Link href="/boss/boss-chats">
+                View All Messages
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            </div>
           </CardFooter>
         </Card>
 
