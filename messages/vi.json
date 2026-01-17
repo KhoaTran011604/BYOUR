@@ -1,0 +1,92 @@
+{
+  "common": {
+    "welcome": "Chào mừng",
+    "login": "Đăng nhập",
+    "logout": "Đăng xuất",
+    "signUp": "Đăng ký",
+    "dashboard": "Bảng điều khiển",
+    "settings": "Cài đặt",
+    "profile": "Hồ sơ",
+    "projects": "Dự án",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "delete": "Xóa",
+    "edit": "Sửa",
+    "create": "Tạo mới",
+    "search": "Tìm kiếm",
+    "loading": "Đang tải...",
+    "error": "Đã xảy ra lỗi",
+    "success": "Thành công"
+  },
+  "auth": {
+    "loginTitle": "Đăng nhập vào tài khoản",
+    "signUpTitle": "Tạo tài khoản mới",
+    "email": "Email",
+    "password": "Mật khẩu",
+    "confirmPassword": "Xác nhận mật khẩu",
+    "forgotPassword": "Quên mật khẩu?",
+    "noAccount": "Chưa có tài khoản?",
+    "hasAccount": "Đã có tài khoản?"
+  },
+  "navigation": {
+    "home": "Trang chủ",
+    "about": "Giới thiệu",
+    "contact": "Liên hệ",
+    "services": "Dịch vụ",
+    "modes": "Chế độ",
+    "features": "Tính năng",
+    "terms": "Điều khoản",
+    "privacy": "Bảo mật"
+  },
+  "home": {
+    "heroTitle": "Văn phòng số",
+    "heroTitleAccent": "cho thời đại mới",
+    "heroDescription": "TEST-002 không chỉ là bảng việc làm - đây là không gian để các chuyên gia độc lập xây dựng cấu trúc làm việc riêng. Một tài khoản, bốn chế độ linh hoạt.",
+    "createOffice": "Tạo văn phòng của bạn",
+    "exploreModes": "Khám phá các chế độ",
+    "startForFree": "Bắt đầu miễn phí",
+    "modesTitle": "Một tài khoản, bốn chế độ",
+    "modesDescription": "Chuyển đổi linh hoạt giữa các vai trò theo nhu cầu của bạn",
+    "featuresTitle": "Trình tạo website HQ",
+    "featuresDescription": "Tạo microsite chuyên nghiệp trong vài phút với công cụ kéo thả trực quan",
+    "feature1Title": "3 mẫu thiết kế",
+    "feature1Description": "Minimal, Editorial, Grid - mỗi mẫu được thiết kế tỉ mỉ cho thẩm mỹ cao cấp",
+    "feature2Title": "4 khối nội dung",
+    "feature2Description": "Hero, About, Services, Contact - kéo và thả để sắp xếp theo ý muốn",
+    "feature3Title": "Kiểu dáng cố định",
+    "feature3Description": "Thiết kế được kiểm soát chặt chẽ để giữ website nhất quán và chuyên nghiệp",
+    "ctaTitle": "Sẵn sàng bắt đầu?",
+    "ctaDescription": "Tạo văn phòng số của riêng bạn ngay hôm nay. Hoàn toàn miễn phí.",
+    "signUpFree": "Đăng ký miễn phí"
+  },
+  "modes": {
+    "boss": {
+      "title": "Boss",
+      "description": "Dành cho freelancer chuyên nghiệp muốn xây dựng thương hiệu cá nhân và quản lý công việc độc lập",
+      "feature1": "Tạo microsite chuyên nghiệp",
+      "feature2": "Quản lý dịch vụ & giá cả",
+      "feature3": "Xây dựng portfolio"
+    },
+    "hq": {
+      "title": "HQ",
+      "description": "Dành cho doanh nghiệp và agency muốn có sự hiện diện trực tuyến chuyên nghiệp với website thiết kế sẵn",
+      "feature1": "3 mẫu thiết kế cao cấp",
+      "feature2": "Tùy chỉnh nội dung dễ dàng",
+      "feature3": "URL tùy chỉnh: byour.co/handle"
+    },
+    "self": {
+      "title": "Self",
+      "description": "Dành cho những ai đang khám phá freelancing và muốn tìm hiểu con đường làm việc độc lập",
+      "feature1": "Tài nguyên học tập",
+      "feature2": "Hướng dẫn bắt đầu",
+      "feature3": "Cộng đồng hỗ trợ"
+    },
+    "shaper": {
+      "title": "Shaper",
+      "description": "Dành cho những người đóng góp nội bộ giúp xây dựng và phát triển nền tảng TEST-002",
+      "feature1": "Đóng góp nội dung",
+      "feature2": "Xây dựng cộng đồng",
+      "feature3": "Phát triển nền tảng"
+    }
+  }
+}

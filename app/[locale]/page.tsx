@@ -1,39 +1,60 @@
 import Link from "next/link"
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { Button } from "@/components/ui/button"
 import { ArrowRight, Briefcase, Building2, User, Sparkles } from "lucide-react"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
-const modes = [
-  {
-    id: "boss",
-    title: "Boss",
-    description: "For professional freelancers who want to build their personal brand and manage independent work",
-    icon: Briefcase,
-    features: ["Create professional microsite", "Manage services & pricing", "Build portfolio"],
-  },
-  {
-    id: "hq",
-    title: "HQ",
-    description: "For businesses and agencies who want a professional online presence with pre-designed websites",
-    icon: Building2,
-    features: ["3 premium design templates", "Easy content customization", "Custom URL: byour.co/handle"],
-  },
-  {
-    id: "self",
-    title: "Self",
-    description: "For those exploring freelancing and wanting to discover the path to independent work",
-    icon: User,
-    features: ["Learning resources", "Getting started guides", "Supportive community"],
-  },
-  {
-    id: "shaper",
-    title: "Shaper",
-    description: "For internal contributors helping to build and develop the TEST-002 platform",
-    icon: Sparkles,
-    features: ["Contribute content", "Build community", "Develop platform"],
-  },
-]
+const modeIcons = {
+  boss: Briefcase,
+  hq: Building2,
+  self: User,
+  shaper: Sparkles,
+}
 
-export default function HomePage() {
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export default async function HomePage({ params }: Props) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  const t = await getTranslations('home')
+  const tNav = await getTranslations('navigation')
+  const tCommon = await getTranslations('common')
+  const tModes = await getTranslations('modes')
+
+  const modes = [
+    {
+      id: "boss",
+      title: tModes('boss.title'),
+      description: tModes('boss.description'),
+      icon: modeIcons.boss,
+      features: [tModes('boss.feature1'), tModes('boss.feature2'), tModes('boss.feature3')],
+    },
+    {
+      id: "hq",
+      title: tModes('hq.title'),
+      description: tModes('hq.description'),
+      icon: modeIcons.hq,
+      features: [tModes('hq.feature1'), tModes('hq.feature2'), tModes('hq.feature3')],
+    },
+    {
+      id: "self",
+      title: tModes('self.title'),
+      description: tModes('self.description'),
+      icon: modeIcons.self,
+      features: [tModes('self.feature1'), tModes('self.feature2'), tModes('self.feature3')],
+    },
+    {
+      id: "shaper",
+      title: tModes('shaper.title'),
+      description: tModes('shaper.description'),
+      icon: modeIcons.shaper,
+      features: [tModes('shaper.feature1'), tModes('shaper.feature2'), tModes('shaper.feature3')],
+    },
+  ]
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -47,21 +68,22 @@ export default function HomePage() {
               href="#modes"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Modes
+              {tNav('modes')}
             </Link>
             <Link
               href="#features"
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
-              Features
+              {tNav('features')}
             </Link>
           </nav>
           <div className="flex items-center gap-3">
+            <LanguageSwitcher />
             <Button variant="ghost" asChild>
-              <Link href="/auth/login">Log in</Link>
+              <Link href="/auth/login">{tCommon('login')}</Link>
             </Button>
             <Button asChild>
-              <Link href="/auth/sign-up">Start for free</Link>
+              <Link href="/auth/sign-up">{t('startForFree')}</Link>
             </Button>
           </div>
         </div>
@@ -73,22 +95,21 @@ export default function HomePage() {
         <div className="relative mx-auto max-w-7xl px-4 py-24 sm:px-6 sm:py-32 lg:px-8">
           <div className="mx-auto max-w-3xl text-center">
             <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl text-balance">
-              Digital Office
-              <span className="block text-accent">for the new era</span>
+              {t('heroTitle')}
+              <span className="block text-accent">{t('heroTitleAccent')}</span>
             </h1>
             <p className="mt-6 text-lg leading-relaxed text-muted-foreground text-pretty">
-              TEST-002 is not just a job board - it&apos;s a space for independent professionals to build their own work
-              structure. One login, four flexible modes.
+              {t('heroDescription')}
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild className="w-full sm:w-auto">
                 <Link href="/auth/sign-up">
-                  Create your office
+                  {t('createOffice')}
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button size="lg" variant="outline" asChild className="w-full sm:w-auto bg-transparent">
-                <Link href="#modes">Explore modes</Link>
+                <Link href="#modes">{t('exploreModes')}</Link>
               </Button>
             </div>
           </div>
@@ -99,9 +120,9 @@ export default function HomePage() {
       <section id="modes" className="border-t border-border/50 bg-muted/30 py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">One account, four modes</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('modesTitle')}</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Switch flexibly between roles according to your needs
+              {t('modesDescription')}
             </p>
           </div>
 
@@ -134,29 +155,29 @@ export default function HomePage() {
       <section id="features" className="py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">HQ Website Builder</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t('featuresTitle')}</h2>
             <p className="mt-4 text-lg text-muted-foreground">
-              Create a professional microsite in minutes with intuitive drag-and-drop tools
+              {t('featuresDescription')}
             </p>
           </div>
 
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
             <div className="rounded-xl border border-border bg-card p-8">
-              <h3 className="text-lg font-semibold">3 design templates</h3>
+              <h3 className="text-lg font-semibold">{t('feature1Title')}</h3>
               <p className="mt-2 text-muted-foreground">
-                Minimal, Editorial, Grid - each template is meticulously designed for premium aesthetics
+                {t('feature1Description')}
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-8">
-              <h3 className="text-lg font-semibold">4 content blocks</h3>
+              <h3 className="text-lg font-semibold">{t('feature2Title')}</h3>
               <p className="mt-2 text-muted-foreground">
-                Hero, About, Services, Contact - drag and drop to rearrange as you wish
+                {t('feature2Description')}
               </p>
             </div>
             <div className="rounded-xl border border-border bg-card p-8">
-              <h3 className="text-lg font-semibold">Locked styling</h3>
+              <h3 className="text-lg font-semibold">{t('feature3Title')}</h3>
               <p className="mt-2 text-muted-foreground">
-                Tightly controlled design to keep your website consistent and professional
+                {t('feature3Description')}
               </p>
             </div>
           </div>
@@ -166,13 +187,13 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="border-t border-border/50 bg-primary py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-primary-foreground">Ready to start?</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-primary-foreground">{t('ctaTitle')}</h2>
           <p className="mx-auto mt-4 max-w-xl text-primary-foreground/80">
-            Create your own digital office today. Completely free.
+            {t('ctaDescription')}
           </p>
           <Button size="lg" variant="secondary" asChild className="mt-8">
             <Link href="/auth/sign-up">
-              Sign up for free
+              {t('signUpFree')}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Link>
           </Button>
@@ -189,13 +210,13 @@ export default function HomePage() {
             </div>
             <nav className="flex gap-6 text-sm text-muted-foreground">
               <Link href="#" className="hover:text-foreground transition-colors">
-                Terms
+                {tNav('terms')}
               </Link>
               <Link href="#" className="hover:text-foreground transition-colors">
-                Privacy
+                {tNav('privacy')}
               </Link>
               <Link href="#" className="hover:text-foreground transition-colors">
-                Contact
+                {tNav('contact')}
               </Link>
             </nav>
           </div>
