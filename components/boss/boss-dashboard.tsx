@@ -80,8 +80,12 @@ export function BossDashboard({
 
     const handleNewMessage = (message: ChatMessage) => {
       console.log("Boss Dashboard: New message notification received", message)
+      console.log("Boss Dashboard: currentUserId =", currentUserId, "sender_id =", message.sender_id)
+      console.log("Boss Dashboard: Should show toast?", message.sender_id !== currentUserId)
       // Only show toast if message is from another user
+      console.log("🚀 ~ handleNewMessage ~ currentUserId:", currentUserId)
       if (message.sender_id !== currentUserId) {
+        console.log("Boss Dashboard: Showing toast now...")
         toast({
           title: `New message from ${message.sender_name}`,
           description: message.message.length > 50
@@ -91,7 +95,7 @@ export function BossDashboard({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.push("/boss/boss-chats")}
+              onClick={() => router.push(`/boss/boss-chats/${message.project_id}`)}
             >
               <MessageSquare className="mr-2 h-4 w-4" />
               View

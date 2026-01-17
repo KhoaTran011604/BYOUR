@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SocketProvider } from "@/components/providers/socket-provider"
+import { Toaster } from "@/components/ui/toaster"
 import "./globals.css"
 
 const inter = Inter({ subsets: ["latin", "vietnamese"] })
@@ -25,6 +26,7 @@ export default function RootLayout({
         <SocketProvider>
           {children}
         </SocketProvider>
+        <Toaster />
         <Analytics />
       </body>
     </html>

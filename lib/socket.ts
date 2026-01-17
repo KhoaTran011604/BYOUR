@@ -3,6 +3,7 @@ import { io, Socket } from "socket.io-client"
 export interface ChatMessage {
   id: string
   chat_id: string
+  project_id: string
   sender_id: string
   sender_type: "hq" | "boss"
   sender_name: string

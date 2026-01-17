@@ -27,6 +27,7 @@ import type { HQAttachment } from "@/lib/types"
 interface ChatMessage {
   id: string
   chat_id: string
+  project_id: string
   sender_id: string
   sender_type: "hq" | "boss"
   sender_name: string
@@ -215,6 +216,7 @@ export function ProjectGroupChat({
       const transformedMessages: ChatMessage[] = (data || []).map((msg: any) => ({
         id: msg.id,
         chat_id: msg.chat_id,
+        project_id: projectId,
         sender_id: msg.sender_id,
         sender_type: msg.sender_type,
         sender_name: msg.profiles?.full_name || (msg.sender_type === "hq" ? "HQ" : "Boss"),
@@ -309,6 +311,7 @@ export function ProjectGroupChat({
       const newMsg: ChatMessage = {
         id: msgData.id,
         chat_id: chatIdToUse,
+        project_id: projectId,
         sender_id: currentUserId,
         sender_type: userRole,
         sender_name: currentUserName,
@@ -505,7 +508,6 @@ export function ProjectGroupChat({
                         <div className="relative shrink-0">
                           <Avatar className={cn(
                             "h-8 w-8",
-                            isHQ && !isOwn && "ring-2 ring-amber-400 ring-offset-2"
                           )}>
                             <AvatarImage src={message.sender_avatar || undefined} />
                             <AvatarFallback className={cn(
@@ -538,11 +540,6 @@ export function ProjectGroupChat({
                             )}>
                               {message.sender_name}
                             </span>
-                            {isHQ && !isOwn && (
-                              <Badge variant="secondary" className="h-4 bg-amber-100 px-1 text-[10px] text-amber-700">
-                                HQ
-                              </Badge>
-                            )}
                             <span className="text-xs text-muted-foreground" suppressHydrationWarning>
                               {formatTime(message.created_at)}
                             </span>

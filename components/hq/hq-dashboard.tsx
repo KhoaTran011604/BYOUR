@@ -85,8 +85,12 @@ export function HQDashboard({
 
     const handleNewMessage = (message: ChatMessage) => {
       console.log("HQ Dashboard: New message notification received", message)
+      console.log("HQ Dashboard: currentUserId =", currentUserId, "sender_id =", message.sender_id)
+      console.log("HQ Dashboard: Should show toast?", message.sender_id !== currentUserId)
       // Only show toast if message is from another user
+      console.log("🚀 ~ handleNewMessage ~ currentUserId:", currentUserId)
       if (message.sender_id !== currentUserId) {
+        console.log("HQ Dashboard: Showing toast now...")
         toast({
           title: `New message from ${message.sender_name}`,
           description: message.message.length > 50
@@ -96,7 +100,7 @@ export function HQDashboard({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => router.push("/hq/hq-chats")}
+              onClick={() => router.push(`/hq/hq-chats/${message.project_id}`)}
             >
               <MessageSquare className="mr-2 h-4 w-4" />
               View
