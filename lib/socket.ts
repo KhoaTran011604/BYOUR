@@ -29,6 +29,7 @@ export interface OnlineUser {
 
 export interface ServerToClientEvents {
   "new-message": (message: ChatMessage) => void
+  "new-message-notification": (message: ChatMessage) => void
   "user-joined": (data: { userId: string; userName: string; userRole: string }) => void
   "user-left": (data: { userId: string; userName: string }) => void
   "online-users": (users: OnlineUser[]) => void
@@ -37,6 +38,7 @@ export interface ServerToClientEvents {
 }
 
 export interface ClientToServerEvents {
+  "register-user": (data: { userId: string }) => void
   "join-chat": (data: {
     chatId: string
     userId: string
@@ -45,7 +47,7 @@ export interface ClientToServerEvents {
     userRole: "hq" | "boss"
   }) => void
   "leave-chat": (data: { chatId: string }) => void
-  "send-message": (message: ChatMessage & { chatId: string }) => void
+  "send-message": (message: ChatMessage & { chatId: string; recipientIds?: string[] }) => void
   "typing-start": (data: { chatId: string; userId: string; userName: string }) => void
   "typing-stop": (data: { chatId: string; userId: string }) => void
 }

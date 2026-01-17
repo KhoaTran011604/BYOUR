@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo, useCallback } from "react"
 import {
   Send,
   Paperclip,
@@ -62,15 +62,26 @@ export function ProjectGroupChat({
   const [currentChatId, setCurrentChatId] = useState<string | null>(chatId)
   const [attachments, setAttachments] = useState<File[]>([])
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
+  const [recipientIds, setRecipientIds] = useState<string[]>([])
   const scrollRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const typingStartRef = useRef<boolean>(false)
 
   const { socket, isConnected, joinChat, leaveChat, sendMessage: emitMessage, startTyping, stopTyping } = useSocket()
 
-  // Load messages and join socket room
+  // Load project participants on mount (for notifications)
   useEffect(() => {
-    loadMessages()
+    loadProjectParticipants()
+  }, [projectId])
+
+  // Load messages when chat exists
+  useEffect(() => {
+    if (currentChatId) {
+      loadMessages()
+    } else {
+      setIsLoading(false)
+    }
   }, [currentChatId])
 
   // Join socket room when chat is available
@@ -139,6 +150,43 @@ export function ProjectGroupChat({
     }
   }, [messages])
 
+  // Load project participants for notifications (separate from messages)
+  const loadProjectParticipants = async () => {
+    const supabase = createClient()
+
+    // Fetch project with HQ profile to get user_id
+    const { data: projectData, error } = await supabase
+      .from("hq_projects")
+      .select(`
+        assigned_boss_id,
+        hq_profiles (
+          user_id
+        )
+      `)
+      .eq("id", projectId)
+      .single()
+
+    console.log("loadProjectParticipants result:", { projectData, error })
+
+    if (projectData) {
+      const participants: string[] = []
+      // Get HQ user_id from hq_profiles (can be object or array depending on relation)
+      const hqProfile = Array.isArray(projectData.hq_profiles)
+        ? projectData.hq_profiles[0]
+        : projectData.hq_profiles
+      if (hqProfile?.user_id) {
+        participants.push(hqProfile.user_id)
+      }
+      // assigned_boss_id is already a user_id
+      if (projectData.assigned_boss_id) {
+        participants.push(projectData.assigned_boss_id)
+      }
+      const filtered = participants.filter(id => id !== currentUserId)
+      console.log("Project participants for notifications:", filtered)
+      setRecipientIds(filtered)
+    }
+  }
+
   const loadMessages = async () => {
     if (!currentChatId) {
       setIsLoading(false)
@@ -178,6 +226,7 @@ export function ProjectGroupChat({
       }))
       setMessages(transformedMessages)
     }
+
     setIsLoading(false)
   }
 
@@ -274,8 +323,8 @@ export function ProjectGroupChat({
       setNewMessage("")
       setAttachments([])
 
-      // Emit message to socket for real-time delivery
-      emitMessage({ ...newMsg, chatId: chatIdToUse })
+      // Emit message to socket for real-time delivery (with recipientIds for dashboard notifications)
+      emitMessage({ ...newMsg, chatId: chatIdToUse, recipientIds })
 
       // Stop typing indicator
       if (currentChatId) {
@@ -306,12 +355,16 @@ export function ProjectGroupChat({
     setIsRefreshing(false)
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value)
 
-    // Handle typing indicator
+    // Handle typing indicator - only emit once when starting to type
     if (currentChatId && e.target.value) {
-      startTyping(currentChatId, currentUserId, currentUserName)
+      // Only emit startTyping if not already typing
+      if (!typingStartRef.current) {
+        typingStartRef.current = true
+        startTyping(currentChatId, currentUserId, currentUserName)
+      }
 
       // Clear existing timeout
       if (typingTimeoutRef.current) {
@@ -322,10 +375,17 @@ export function ProjectGroupChat({
       typingTimeoutRef.current = setTimeout(() => {
         if (currentChatId) {
           stopTyping(currentChatId, currentUserId)
+          typingStartRef.current = false
         }
       }, 2000)
+    } else if (!e.target.value && typingStartRef.current) {
+      // Cleared input - stop typing immediately
+      if (currentChatId) {
+        stopTyping(currentChatId, currentUserId)
+        typingStartRef.current = false
+      }
     }
-  }
+  }, [currentChatId, currentUserId, currentUserName, startTyping, stopTyping])
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString)
@@ -347,15 +407,17 @@ export function ProjectGroupChat({
     }
   }
 
-  // Group messages by date
-  const messagesByDate = messages.reduce((groups, message) => {
-    const date = formatDate(message.created_at)
-    if (!groups[date]) {
-      groups[date] = []
-    }
-    groups[date].push(message)
-    return groups
-  }, {} as Record<string, ChatMessage[]>)
+  // Group messages by date - memoized to avoid recalculation on every render
+  const messagesByDate = useMemo(() => {
+    return messages.reduce((groups, message) => {
+      const date = formatDate(message.created_at)
+      if (!groups[date]) {
+        groups[date] = []
+      }
+      groups[date].push(message)
+      return groups
+    }, {} as Record<string, ChatMessage[]>)
+  }, [messages])
 
   if (isLoading) {
     return (

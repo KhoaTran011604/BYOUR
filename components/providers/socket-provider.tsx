@@ -20,6 +20,7 @@ import {
 interface SocketContextType {
   socket: TypedSocket | null
   isConnected: boolean
+  registerUser: (userId: string) => void
   joinChat: (data: {
     chatId: string
     userId: string
@@ -28,7 +29,7 @@ interface SocketContextType {
     userRole: "hq" | "boss"
   }) => void
   leaveChat: (chatId: string) => void
-  sendMessage: (message: ChatMessage & { chatId: string }) => void
+  sendMessage: (message: ChatMessage & { chatId: string; recipientIds?: string[] }) => void
   startTyping: (chatId: string, userId: string, userName: string) => void
   stopTyping: (chatId: string, userId: string) => void
 }
@@ -58,6 +59,15 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const registerUser = useCallback(
+    (userId: string) => {
+      if (socket?.connected) {
+        socket.emit("register-user", { userId })
+      }
+    },
+    [socket]
+  )
+
   const joinChat = useCallback(
     (data: {
       chatId: string
@@ -83,7 +93,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
   )
 
   const sendMessage = useCallback(
-    (message: ChatMessage & { chatId: string }) => {
+    (message: ChatMessage & { chatId: string; recipientIds?: string[] }) => {
       if (socket?.connected) {
         socket.emit("send-message", message)
       }
@@ -114,6 +124,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
       value={{
         socket,
         isConnected,
+        registerUser,
         joinChat,
         leaveChat,
         sendMessage,
