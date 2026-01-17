@@ -11,6 +11,8 @@ import {
   Loader2,
   RefreshCw,
   Crown,
+  Wifi,
+  WifiOff,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,6 +21,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
+import { useSocket } from "@/components/providers/socket-provider"
 import type { HQAttachment } from "@/lib/types"
 
 interface ChatMessage {
@@ -58,13 +61,76 @@ export function ProjectGroupChat({
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentChatId, setCurrentChatId] = useState<string | null>(chatId)
   const [attachments, setAttachments] = useState<File[]>([])
+  const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
   const scrollRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Load messages
+  const { socket, isConnected, joinChat, leaveChat, sendMessage: emitMessage, startTyping, stopTyping } = useSocket()
+
+  // Load messages and join socket room
   useEffect(() => {
     loadMessages()
   }, [currentChatId])
+
+  // Join socket room when chat is available
+  useEffect(() => {
+    if (currentChatId && isConnected) {
+      joinChat({
+        chatId: currentChatId,
+        userId: currentUserId,
+        userName: currentUserName,
+        userAvatar: currentUserAvatar,
+        userRole,
+      })
+
+      return () => {
+        leaveChat(currentChatId)
+      }
+    }
+  }, [currentChatId, isConnected, currentUserId, currentUserName, currentUserAvatar, userRole, joinChat, leaveChat])
+
+  // Listen for new messages from socket
+  useEffect(() => {
+    if (!socket) return
+
+    const handleNewMessage = (message: ChatMessage) => {
+      // Only add if not from current user (we already added it optimistically)
+      if (message.sender_id !== currentUserId) {
+        setMessages((prev) => {
+          // Check if message already exists
+          if (prev.some((m) => m.id === message.id)) {
+            return prev
+          }
+          return [...prev, message]
+        })
+      }
+    }
+
+    const handleUserTyping = ({ userId, userName }: { userId: string; userName: string }) => {
+      if (userId !== currentUserId) {
+        setTypingUsers((prev) => new Map(prev).set(userId, userName))
+      }
+    }
+
+    const handleUserStoppedTyping = ({ userId }: { userId: string }) => {
+      setTypingUsers((prev) => {
+        const newMap = new Map(prev)
+        newMap.delete(userId)
+        return newMap
+      })
+    }
+
+    socket.on("new-message", handleNewMessage)
+    socket.on("user-typing", handleUserTyping)
+    socket.on("user-stopped-typing", handleUserStoppedTyping)
+
+    return () => {
+      socket.off("new-message", handleNewMessage)
+      socket.off("user-typing", handleUserTyping)
+      socket.off("user-stopped-typing", handleUserStoppedTyping)
+    }
+  }, [socket, currentUserId])
 
   // Auto scroll to bottom when new messages arrive
   useEffect(() => {
@@ -207,6 +273,14 @@ export function ProjectGroupChat({
       setMessages([...messages, newMsg])
       setNewMessage("")
       setAttachments([])
+
+      // Emit message to socket for real-time delivery
+      emitMessage({ ...newMsg, chatId: chatIdToUse })
+
+      // Stop typing indicator
+      if (currentChatId) {
+        stopTyping(currentChatId, currentUserId)
+      }
     } catch (err) {
       console.error("Send error:", err)
     } finally {
@@ -230,6 +304,27 @@ export function ProjectGroupChat({
     setIsRefreshing(true)
     await loadMessages()
     setIsRefreshing(false)
+  }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewMessage(e.target.value)
+
+    // Handle typing indicator
+    if (currentChatId && e.target.value) {
+      startTyping(currentChatId, currentUserId, currentUserName)
+
+      // Clear existing timeout
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current)
+      }
+
+      // Stop typing after 2 seconds of inactivity
+      typingTimeoutRef.current = setTimeout(() => {
+        if (currentChatId) {
+          stopTyping(currentChatId, currentUserId)
+        }
+      }, 2000)
+    }
   }
 
   const formatTime = (dateString: string) => {
@@ -272,13 +367,27 @@ export function ProjectGroupChat({
 
   return (
     <div className="flex h-[600px] flex-col rounded-lg border">
-      {/* Header with Refresh Button */}
+      {/* Header with Connection Status */}
       <div className="flex items-center justify-between border-b px-4 py-2">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Group Chat</span>
           <Badge variant="outline" className="text-xs">
             {messages.length} messages
           </Badge>
+          {/* Connection status indicator */}
+          <div className="flex items-center gap-1">
+            {isConnected ? (
+              <div className="flex items-center gap-1 text-green-600">
+                <Wifi className="h-3 w-3" />
+                <span className="text-xs">Live</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1 text-muted-foreground">
+                <WifiOff className="h-3 w-3" />
+                <span className="text-xs">Offline</span>
+              </div>
+            )}
+          </div>
         </div>
         <Button
           variant="ghost"
@@ -457,6 +566,16 @@ export function ProjectGroupChat({
         </div>
       )}
 
+      {/* Typing Indicator */}
+      {typingUsers.size > 0 && (
+        <div className="border-t px-4 py-2">
+          <p className="text-xs text-muted-foreground animate-pulse">
+            {Array.from(typingUsers.values()).join(", ")}{" "}
+            {typingUsers.size === 1 ? "is" : "are"} typing...
+          </p>
+        </div>
+      )}
+
       {/* Input Area */}
       <div className="border-t p-4">
         <div className="flex gap-2">
@@ -478,7 +597,7 @@ export function ProjectGroupChat({
           <Input
             placeholder="Enter message..."
             value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
+            onChange={handleInputChange}
             onKeyDown={(e) => {
               if (e.key === "Enter" && !e.shiftKey) {
                 e.preventDefault()
