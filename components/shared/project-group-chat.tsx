@@ -18,7 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
-import { useSocket } from "@/components/providers/socket-provider"
+import { usePusher } from "@/components/providers/pusher-provider"
 import { useToast } from "@/hooks/use-toast"
 
 interface ChatMessage {
@@ -71,7 +71,7 @@ export function ProjectGroupChat({
   const previousScrollHeightRef = useRef<number>(0)
   const loadedOlderMessagesRef = useRef(false)
 
-  const { socket, isConnected, joinChat, leaveChat, sendMessage: emitMessage, startTyping, stopTyping } = useSocket()
+  const { isConnected, subscribeToChat, unsubscribeFromChat, sendMessage: emitMessage, startTyping, stopTyping } = usePusher()
 
   // Load project participants on mount (for notifications)
   useEffect(() => {
@@ -87,26 +87,12 @@ export function ProjectGroupChat({
     }
   }, [currentChatId])
 
-  // Join socket room when chat is available
+  // Subscribe to Pusher channel when chat is available
   useEffect(() => {
-    if (currentChatId && isConnected) {
-      joinChat({
-        chatId: currentChatId,
-        userId: currentUserId,
-        userName: currentUserName,
-        userAvatar: currentUserAvatar,
-        userRole,
-      })
+    if (!currentChatId) return
 
-      return () => {
-        leaveChat(currentChatId)
-      }
-    }
-  }, [currentChatId, isConnected, currentUserId, currentUserName, currentUserAvatar, userRole, joinChat, leaveChat])
-
-  // Listen for new messages from socket
-  useEffect(() => {
-    if (!socket) return
+    const channel = subscribeToChat(currentChatId)
+    if (!channel) return
 
     const handleNewMessage = (message: ChatMessage) => {
       // Only add if not from current user (we already added it optimistically)
@@ -135,16 +121,17 @@ export function ProjectGroupChat({
       })
     }
 
-    socket.on("new-message", handleNewMessage)
-    socket.on("user-typing", handleUserTyping)
-    socket.on("user-stopped-typing", handleUserStoppedTyping)
+    channel.bind("new-message", handleNewMessage)
+    channel.bind("user-typing", handleUserTyping)
+    channel.bind("user-stopped-typing", handleUserStoppedTyping)
 
     return () => {
-      socket.off("new-message", handleNewMessage)
-      socket.off("user-typing", handleUserTyping)
-      socket.off("user-stopped-typing", handleUserStoppedTyping)
+      channel.unbind("new-message", handleNewMessage)
+      channel.unbind("user-typing", handleUserTyping)
+      channel.unbind("user-stopped-typing", handleUserStoppedTyping)
+      unsubscribeFromChat(currentChatId)
     }
-  }, [socket, currentUserId])
+  }, [currentChatId, currentUserId, subscribeToChat, unsubscribeFromChat])
 
   // Scroll to bottom function
   const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {

@@ -26,10 +26,10 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { useSocket } from "@/components/providers/socket-provider"
+import { usePusher } from "@/components/providers/pusher-provider"
 import { useToast } from "@/hooks/use-toast"
 import type { HQProfile, HQBusinessProfile, HQProject } from "@/lib/types"
-import type { ChatMessage } from "@/lib/socket"
+import type { ChatMessage } from "@/lib/pusher-client"
 
 interface HQDashboardProps {
   hqProfile: HQProfile
@@ -56,7 +56,7 @@ export function HQDashboard({
   currentUserId,
 }: HQDashboardProps) {
   const router = useRouter()
-  const { socket, isConnected, registerUser } = useSocket()
+  const { subscribeToUser, unsubscribeFromUser } = usePusher()
   const { toast } = useToast()
 
   const activeProjects = projects.filter(
@@ -71,26 +71,16 @@ export function HQDashboard({
     0
   )
 
-  // Register user for notifications when connected
+  // Subscribe to user channel for notifications
   useEffect(() => {
-    if (isConnected && currentUserId) {
-      registerUser(currentUserId)
-      console.log("HQ Dashboard: Registered user for notifications", currentUserId)
-    }
-  }, [isConnected, currentUserId, registerUser])
+    if (!currentUserId) return
 
-  // Listen for new message notifications and show toast
-  useEffect(() => {
-    if (!socket) return
+    const channel = subscribeToUser(currentUserId)
+    if (!channel) return
 
     const handleNewMessage = (message: ChatMessage) => {
-      console.log("HQ Dashboard: New message notification received", message)
-      console.log("HQ Dashboard: currentUserId =", currentUserId, "sender_id =", message.sender_id)
-      console.log("HQ Dashboard: Should show toast?", message.sender_id !== currentUserId)
       // Only show toast if message is from another user
-      console.log("🚀 ~ handleNewMessage ~ currentUserId:", currentUserId)
       if (message.sender_id !== currentUserId) {
-        console.log("HQ Dashboard: Showing toast now...")
         toast({
           title: `New message from ${message.sender_name}`,
           description: message.message.length > 50
@@ -110,12 +100,13 @@ export function HQDashboard({
       }
     }
 
-    socket.on("new-message-notification", handleNewMessage)
+    channel.bind("new-message-notification", handleNewMessage)
 
     return () => {
-      socket.off("new-message-notification", handleNewMessage)
+      channel.unbind("new-message-notification", handleNewMessage)
+      unsubscribeFromUser(currentUserId)
     }
-  }, [socket, currentUserId, toast, router])
+  }, [currentUserId, subscribeToUser, unsubscribeFromUser, toast, router])
 
   return (
     <div className="space-y-8">

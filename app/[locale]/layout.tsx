@@ -5,7 +5,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { NextIntlClientProvider } from 'next-intl'
 import { setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { SocketProvider } from "@/components/providers/socket-provider"
+import { PusherProvider } from "@/components/providers/pusher-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { locales, type Locale } from '@/i18n/config'
 import "../globals.css"
@@ -46,9 +46,9 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html lang={locale}>
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <SocketProvider>
+          <PusherProvider>
             {children}
-          </SocketProvider>
+          </PusherProvider>
         </NextIntlClientProvider>
         <Toaster />
         <Analytics />
