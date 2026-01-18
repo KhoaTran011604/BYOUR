@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { useSocket } from "@/components/providers/socket-provider"
+import { usePusher } from "@/components/providers/pusher-provider"
 import { useToast } from "@/hooks/use-toast"
 import type {
   Website,
@@ -37,7 +37,7 @@ import type {
   BossProject,
   BossEarnings,
 } from "@/lib/types"
-import type { ChatMessage } from "@/lib/socket"
+import type { ChatMessage } from "@/lib/pusher-client"
 
 interface BossDashboardProps {
   bossProfile: BossProfile
@@ -57,7 +57,7 @@ export function BossDashboard({
   currentUserId,
 }: BossDashboardProps) {
   const router = useRouter()
-  const { socket, isConnected, registerUser } = useSocket()
+  const { subscribeToUser, unsubscribeFromUser } = usePusher()
   const { toast } = useToast()
 
   const pendingInvites = invites.filter((i) => i.status === "pending")
@@ -66,26 +66,16 @@ export function BossDashboard({
   )
   const completedProjects = projects.filter((p) => p.status === "completed")
 
-  // Register user for notifications when connected
+  // Subscribe to user channel for notifications
   useEffect(() => {
-    if (isConnected && currentUserId) {
-      registerUser(currentUserId)
-      console.log("Boss Dashboard: Registered user for notifications", currentUserId)
-    }
-  }, [isConnected, currentUserId, registerUser])
+    if (!currentUserId) return
 
-  // Listen for new message notifications and show toast
-  useEffect(() => {
-    if (!socket) return
+    const channel = subscribeToUser(currentUserId)
+    if (!channel) return
 
     const handleNewMessage = (message: ChatMessage) => {
-      console.log("Boss Dashboard: New message notification received", message)
-      console.log("Boss Dashboard: currentUserId =", currentUserId, "sender_id =", message.sender_id)
-      console.log("Boss Dashboard: Should show toast?", message.sender_id !== currentUserId)
       // Only show toast if message is from another user
-      console.log("🚀 ~ handleNewMessage ~ currentUserId:", currentUserId)
       if (message.sender_id !== currentUserId) {
-        console.log("Boss Dashboard: Showing toast now...")
         toast({
           title: `New message from ${message.sender_name}`,
           description: message.message.length > 50
@@ -105,12 +95,13 @@ export function BossDashboard({
       }
     }
 
-    socket.on("new-message-notification", handleNewMessage)
+    channel.bind("new-message-notification", handleNewMessage)
 
     return () => {
-      socket.off("new-message-notification", handleNewMessage)
+      channel.unbind("new-message-notification", handleNewMessage)
+      unsubscribeFromUser(currentUserId)
     }
-  }, [socket, currentUserId, toast, router])
+  }, [currentUserId, subscribeToUser, unsubscribeFromUser, toast, router])
 
   return (
     <div className="space-y-6">

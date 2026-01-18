@@ -2,11 +2,12 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { MessageSquare, ArrowLeft } from "lucide-react"
+import { MessageSquare, ArrowLeft, Clock, User, FolderOpen, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
 
 interface ChatMessage {
   id: string
@@ -109,11 +110,13 @@ export function HQChatsList({ projects, currentUserId }: HQChatsListProps) {
           </div>
         </div>
 
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground/50" />
-            <p className="text-muted-foreground">No active chats</p>
-            <p className="text-sm text-muted-foreground">
+        <Card className="border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="rounded-full bg-muted p-4 mb-4">
+              <MessageSquare className="h-10 w-10 text-muted-foreground/60" />
+            </div>
+            <h3 className="text-lg font-semibold mb-1">No active chats</h3>
+            <p className="text-sm text-muted-foreground max-w-sm">
               Chats will appear here when you have projects in progress with assigned bosses.
             </p>
           </CardContent>
@@ -139,37 +142,76 @@ export function HQChatsList({ projects, currentUserId }: HQChatsListProps) {
       <div className="space-y-3">
         {chatsData.map((chat) => (
           <Link key={chat.projectId} href={`/hq/hq-chats/${chat.projectId}`}>
-            <Card className="cursor-pointer transition-colors hover:bg-muted/50">
-              <CardContent className="flex items-center gap-4 py-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={chat.bossAvatar || undefined} />
-                  <AvatarFallback>
-                    {chat.bossName.charAt(0).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium truncate">{chat.projectTitle}</h3>
-                    {chat.lastMessageTime && (
-                      <span className="text-xs text-muted-foreground ml-2 shrink-0">
-                        {formatTimeAgo(chat.lastMessageTime)}
+            <Card
+              className={cn(
+                "cursor-pointer transition-all duration-200 hover:shadow-md hover:border-primary/30",
+                chat.unreadCount > 0 && "border-l-4 border-l-primary bg-primary/5"
+              )}
+            >
+              <CardContent className="p-4">
+                <div className="flex items-start gap-4">
+                  {/* Avatar với status indicator */}
+                  <div className="relative shrink-0">
+                    <Avatar className="h-14 w-14 ring-2 ring-background shadow-sm">
+                      <AvatarImage src={chat.bossAvatar || undefined} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary/80 to-primary text-primary-foreground text-lg font-semibold">
+                        {chat.bossName.charAt(0).toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    {chat.unreadCount > 0 && (
+                      <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground shadow-sm">
+                        {chat.unreadCount > 9 ? "9+" : chat.unreadCount}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {chat.bossName}
-                  </p>
-                  <p className="text-sm text-muted-foreground truncate">
-                    {chat.lastMessage}
-                  </p>
-                </div>
 
-                {chat.unreadCount > 0 && (
-                  <Badge variant="default" className="shrink-0">
-                    {chat.unreadCount}
-                  </Badge>
-                )}
+                  {/* Main content */}
+                  <div className="flex-1 min-w-0 space-y-2">
+                    {/* Header row: Project title + time */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <FolderOpen className="h-4 w-4 text-primary shrink-0" />
+                        <h3 className={cn(
+                          "font-semibold truncate text-base",
+                          chat.unreadCount > 0 && "text-foreground"
+                        )}>
+                          {chat.projectTitle}
+                        </h3>
+                      </div>
+                      {chat.lastMessageTime && (
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
+                          <Clock className="h-3 w-3" />
+                          <span>{formatTimeAgo(chat.lastMessageTime)}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Boss info row */}
+                    <div className="flex items-center gap-2">
+                      <User className="h-3.5 w-3.5 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground font-medium">
+                        {chat.bossName}
+                      </span>
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0 h-5">
+                        Boss
+                      </Badge>
+                    </div>
+
+                    {/* Last message preview */}
+                    <div className="flex items-center gap-2 pt-1">
+                      <div className={cn(
+                        "flex-1 text-sm truncate rounded-md bg-muted/50 px-3 py-2",
+                        chat.unreadCount > 0 ? "text-foreground font-medium" : "text-muted-foreground"
+                      )}>
+                        <div className="flex items-center gap-2">
+                          <MessageSquare className="h-3.5 w-3.5 shrink-0 opacity-60" />
+                          <span className="truncate">{chat.lastMessage}</span>
+                        </div>
+                      </div>
+                      <ChevronRight className="h-5 w-5 text-muted-foreground/50 shrink-0" />
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </Link>

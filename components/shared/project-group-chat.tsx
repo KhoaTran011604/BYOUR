@@ -9,6 +9,7 @@ import {
   Crown,
   Wifi,
   WifiOff,
+  ChevronUp,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -17,7 +18,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/client"
 import { cn } from "@/lib/utils"
-import { useSocket } from "@/components/providers/socket-provider"
+import { usePusher } from "@/components/providers/pusher-provider"
 import { useToast } from "@/hooks/use-toast"
 
 interface ChatMessage {
@@ -50,19 +51,27 @@ export function ProjectGroupChat({
   currentUserAvatar,
   userRole,
 }: ProjectGroupChatProps) {
+  const MESSAGES_PER_PAGE = 6
+
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [hasMoreMessages, setHasMoreMessages] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [currentChatId, setCurrentChatId] = useState<string | null>(chatId)
   const [typingUsers, setTypingUsers] = useState<Map<string, string>>(new Map())
   const [recipientIds, setRecipientIds] = useState<string[]>([])
   const scrollRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null)
   const typingStartRef = useRef<boolean>(false)
+  const isInitialLoad = useRef(true)
+  const previousScrollHeightRef = useRef<number>(0)
+  const loadedOlderMessagesRef = useRef(false)
 
-  const { socket, isConnected, joinChat, leaveChat, sendMessage: emitMessage, startTyping, stopTyping } = useSocket()
+  const { isConnected, subscribeToChat, unsubscribeFromChat, sendMessage: emitMessage, startTyping, stopTyping } = usePusher()
 
   // Load project participants on mount (for notifications)
   useEffect(() => {
@@ -78,26 +87,12 @@ export function ProjectGroupChat({
     }
   }, [currentChatId])
 
-  // Join socket room when chat is available
+  // Subscribe to Pusher channel when chat is available
   useEffect(() => {
-    if (currentChatId && isConnected) {
-      joinChat({
-        chatId: currentChatId,
-        userId: currentUserId,
-        userName: currentUserName,
-        userAvatar: currentUserAvatar,
-        userRole,
-      })
+    if (!currentChatId) return
 
-      return () => {
-        leaveChat(currentChatId)
-      }
-    }
-  }, [currentChatId, isConnected, currentUserId, currentUserName, currentUserAvatar, userRole, joinChat, leaveChat])
-
-  // Listen for new messages from socket
-  useEffect(() => {
-    if (!socket) return
+    const channel = subscribeToChat(currentChatId)
+    if (!channel) return
 
     const handleNewMessage = (message: ChatMessage) => {
       // Only add if not from current user (we already added it optimistically)
@@ -126,23 +121,47 @@ export function ProjectGroupChat({
       })
     }
 
-    socket.on("new-message", handleNewMessage)
-    socket.on("user-typing", handleUserTyping)
-    socket.on("user-stopped-typing", handleUserStoppedTyping)
+    channel.bind("new-message", handleNewMessage)
+    channel.bind("user-typing", handleUserTyping)
+    channel.bind("user-stopped-typing", handleUserStoppedTyping)
 
     return () => {
-      socket.off("new-message", handleNewMessage)
-      socket.off("user-typing", handleUserTyping)
-      socket.off("user-stopped-typing", handleUserStoppedTyping)
+      channel.unbind("new-message", handleNewMessage)
+      channel.unbind("user-typing", handleUserTyping)
+      channel.unbind("user-stopped-typing", handleUserStoppedTyping)
+      unsubscribeFromChat(currentChatId)
     }
-  }, [socket, currentUserId])
+  }, [currentChatId, currentUserId, subscribeToChat, unsubscribeFromChat])
 
-  // Auto scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+  // Scroll to bottom function
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior })
     }
-  }, [messages])
+  }, [])
+
+  // Auto scroll to bottom when new messages arrive (only for new messages, not when loading older)
+  useEffect(() => {
+    if (messages.length > 0) {
+      // Skip scroll if we just loaded older messages
+      if (loadedOlderMessagesRef.current) {
+        loadedOlderMessagesRef.current = false
+        return
+      }
+
+      // Use instant scroll on initial load, smooth scroll for new messages
+      if (isInitialLoad.current) {
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          scrollToBottom("instant")
+          isInitialLoad.current = false
+        }, 100)
+      } else {
+        scrollToBottom("smooth")
+      }
+    }
+  }, [messages, scrollToBottom])
+
 
   // Load project participants for notifications (separate from messages)
   const loadProjectParticipants = async () => {
@@ -181,6 +200,20 @@ export function ProjectGroupChat({
     }
   }
 
+  const transformMessage = useCallback((msg: any): ChatMessage => ({
+    id: msg.id,
+    chat_id: msg.chat_id,
+    project_id: projectId,
+    sender_id: msg.sender_id,
+    sender_type: msg.sender_type,
+    sender_name: msg.profiles?.full_name || (msg.sender_type === "hq" ? "HQ" : "Boss"),
+    sender_avatar: msg.profiles?.avatar_url || null,
+    message: msg.message,
+    is_read: msg.is_read,
+    created_at: msg.created_at,
+  }), [projectId])
+
+  // Load initial messages (10 latest)
   const loadMessages = async () => {
     if (!currentChatId) {
       setIsLoading(false)
@@ -189,7 +222,7 @@ export function ProjectGroupChat({
 
     const supabase = createClient()
 
-    // Fetch messages with sender profile info
+    // Fetch latest messages (descending order, then reverse for display)
     const { data, error } = await supabase
       .from("hq_chat_messages")
       .select(`
@@ -200,29 +233,99 @@ export function ProjectGroupChat({
         )
       `)
       .eq("chat_id", currentChatId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
+      .limit(MESSAGES_PER_PAGE)
 
     if (error) {
       console.error("Error loading messages:", error)
     } else {
-      // Transform data to match ChatMessage type
-      const transformedMessages: ChatMessage[] = (data || []).map((msg: any) => ({
-        id: msg.id,
-        chat_id: msg.chat_id,
-        project_id: projectId,
-        sender_id: msg.sender_id,
-        sender_type: msg.sender_type,
-        sender_name: msg.profiles?.full_name || (msg.sender_type === "hq" ? "HQ" : "Boss"),
-        sender_avatar: msg.profiles?.avatar_url || null,
-        message: msg.message,
-        is_read: msg.is_read,
-        created_at: msg.created_at,
-      }))
+      // Transform and reverse to get chronological order
+      const transformedMessages: ChatMessage[] = (data || [])
+        .map(transformMessage)
+        .reverse()
       setMessages(transformedMessages)
+      // If we got less than MESSAGES_PER_PAGE, there are no more messages
+      setHasMoreMessages((data || []).length === MESSAGES_PER_PAGE)
     }
 
     setIsLoading(false)
   }
+
+  // Load older messages when scrolling up
+  const loadMoreMessages = useCallback(async () => {
+    if (!currentChatId || isLoadingMore || !hasMoreMessages || messages.length === 0) {
+      return
+    }
+
+    setIsLoadingMore(true)
+
+    // Save current scroll position
+    const scrollAreaViewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]')
+    if (scrollAreaViewport) {
+      previousScrollHeightRef.current = scrollAreaViewport.scrollHeight
+    }
+
+    const supabase = createClient()
+    const oldestMessage = messages[0]
+
+    // Fetch older messages (before the oldest current message)
+    const { data, error } = await supabase
+      .from("hq_chat_messages")
+      .select(`
+        *,
+        profiles:sender_id (
+          full_name,
+          avatar_url
+        )
+      `)
+      .eq("chat_id", currentChatId)
+      .lt("created_at", oldestMessage.created_at)
+      .order("created_at", { ascending: false })
+      .limit(MESSAGES_PER_PAGE)
+
+    if (error) {
+      console.error("Error loading more messages:", error)
+    } else {
+      const olderMessages: ChatMessage[] = (data || [])
+        .map(transformMessage)
+        .reverse()
+
+      if (olderMessages.length > 0) {
+        loadedOlderMessagesRef.current = true
+        setMessages((prev) => [...olderMessages, ...prev])
+      }
+
+      // If we got less than MESSAGES_PER_PAGE, there are no more messages
+      setHasMoreMessages((data || []).length === MESSAGES_PER_PAGE)
+
+      // Restore scroll position after DOM update
+      requestAnimationFrame(() => {
+        if (scrollAreaViewport) {
+          const newScrollHeight = scrollAreaViewport.scrollHeight
+          const scrollDiff = newScrollHeight - previousScrollHeightRef.current
+          scrollAreaViewport.scrollTop = scrollDiff
+        }
+      })
+    }
+
+    setIsLoadingMore(false)
+  }, [currentChatId, isLoadingMore, hasMoreMessages, messages, MESSAGES_PER_PAGE, transformMessage])
+
+  // Handle scroll to load more messages when scrolling near top
+  useEffect(() => {
+    const scrollAreaViewport = scrollRef.current?.querySelector('[data-radix-scroll-area-viewport]')
+    if (!scrollAreaViewport) return
+
+    const handleScroll = () => {
+      // Load more when scrolled near top (within 50px)
+      if (scrollAreaViewport.scrollTop < 50 && hasMoreMessages && !isLoadingMore) {
+        loadMoreMessages()
+      }
+    }
+
+    scrollAreaViewport.addEventListener('scroll', handleScroll)
+    return () => scrollAreaViewport.removeEventListener('scroll', handleScroll)
+  }, [hasMoreMessages, isLoadingMore, loadMoreMessages])
 
   const ensureChatExists = async (): Promise<string | null> => {
     if (currentChatId) {
@@ -317,6 +420,8 @@ export function ProjectGroupChat({
 
   const handleRefresh = async () => {
     setIsRefreshing(true)
+    isInitialLoad.current = true
+    setHasMoreMessages(true)
     await loadMessages()
     setIsRefreshing(false)
   }
@@ -439,6 +544,28 @@ export function ProjectGroupChat({
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Loading more indicator */}
+            {isLoadingMore && (
+              <div className="flex justify-center py-2">
+                <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+              </div>
+            )}
+
+            {/* Load more button when has more messages */}
+            {hasMoreMessages && !isLoadingMore && (
+              <div className="flex justify-center">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={loadMoreMessages}
+                  className="text-xs text-muted-foreground hover:text-foreground"
+                >
+                  <ChevronUp className="mr-1 h-4 w-4" />
+                  Load older messages
+                </Button>
+              </div>
+            )}
+
             {Object.entries(messagesByDate).map(([date, dateMessages]) => (
               <div key={date}>
                 {/* Date Separator */}
@@ -531,6 +658,8 @@ export function ProjectGroupChat({
                 </div>
               </div>
             ))}
+            {/* Scroll anchor - always at the bottom */}
+            <div ref={messagesEndRef} />
           </div>
         )}
       </ScrollArea>

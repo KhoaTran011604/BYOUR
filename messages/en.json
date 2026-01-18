@@ -1,0 +1,92 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "login": "Log in",
+    "logout": "Logout",
+    "signUp": "Sign Up",
+    "dashboard": "Dashboard",
+    "settings": "Settings",
+    "profile": "Profile",
+    "projects": "Projects",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success"
+  },
+  "auth": {
+    "loginTitle": "Login to your account",
+    "signUpTitle": "Create an account",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact",
+    "services": "Services",
+    "modes": "Modes",
+    "features": "Features",
+    "terms": "Terms",
+    "privacy": "Privacy"
+  },
+  "home": {
+    "heroTitle": "Digital Office",
+    "heroTitleAccent": "for the new era",
+    "heroDescription": "TEST-002 is not just a job board - it's a space for independent professionals to build their own work structure. One login, four flexible modes.",
+    "createOffice": "Create your office",
+    "exploreModes": "Explore modes",
+    "startForFree": "Start for free",
+    "modesTitle": "One account, four modes",
+    "modesDescription": "Switch flexibly between roles according to your needs",
+    "featuresTitle": "HQ Website Builder",
+    "featuresDescription": "Create a professional microsite in minutes with intuitive drag-and-drop tools",
+    "feature1Title": "3 design templates",
+    "feature1Description": "Minimal, Editorial, Grid - each template is meticulously designed for premium aesthetics",
+    "feature2Title": "4 content blocks",
+    "feature2Description": "Hero, About, Services, Contact - drag and drop to rearrange as you wish",
+    "feature3Title": "Locked styling",
+    "feature3Description": "Tightly controlled design to keep your website consistent and professional",
+    "ctaTitle": "Ready to start?",
+    "ctaDescription": "Create your own digital office today. Completely free.",
+    "signUpFree": "Sign up for free"
+  },
+  "modes": {
+    "boss": {
+      "title": "Boss",
+      "description": "For professional freelancers who want to build their personal brand and manage independent work",
+      "feature1": "Create professional microsite",
+      "feature2": "Manage services & pricing",
+      "feature3": "Build portfolio"
+    },
+    "hq": {
+      "title": "HQ",
+      "description": "For businesses and agencies who want a professional online presence with pre-designed websites",
+      "feature1": "3 premium design templates",
+      "feature2": "Easy content customization",
+      "feature3": "Custom URL: byour.co/handle"
+    },
+    "self": {
+      "title": "Self",
+      "description": "For those exploring freelancing and wanting to discover the path to independent work",
+      "feature1": "Learning resources",
+      "feature2": "Getting started guides",
+      "feature3": "Supportive community"
+    },
+    "shaper": {
+      "title": "Shaper",
+      "description": "For internal contributors helping to build and develop the TEST-002 platform",
+      "feature1": "Contribute content",
+      "feature2": "Build community",
+      "feature3": "Develop platform"
+    }
+  }
+}
