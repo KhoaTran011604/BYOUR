@@ -119,6 +119,7 @@ export default async function BossDashboardPage() {
       invites={invites}
       projects={projects || []}
       earnings={earnings}
+      currentUserId={user.id}
     />
   )
 }

@@ -56,6 +56,7 @@ export default async function HQDashboardPage() {
       businessProfile={businessProfile}
       projects={projects || []}
       pendingInvitesCount={pendingInvites || 0}
+      currentUserId={user.id}
     />
   )
 }

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   Globe,
   Mail,
@@ -14,6 +15,7 @@ import {
   CheckCircle2,
   Users,
   TrendingUp,
+  MessageSquare,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -26,6 +28,8 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { useSocket } from "@/components/providers/socket-provider"
+import { useToast } from "@/hooks/use-toast"
 import type {
   Website,
   BossProfile,
@@ -33,6 +37,7 @@ import type {
   BossProject,
   BossEarnings,
 } from "@/lib/types"
+import type { ChatMessage } from "@/lib/socket"
 
 interface BossDashboardProps {
   bossProfile: BossProfile
@@ -40,6 +45,7 @@ interface BossDashboardProps {
   invites: BossInvite[]
   projects: BossProject[]
   earnings: BossEarnings | null
+  currentUserId: string
 }
 
 export function BossDashboard({
@@ -48,12 +54,63 @@ export function BossDashboard({
   invites,
   projects,
   earnings,
+  currentUserId,
 }: BossDashboardProps) {
+  const router = useRouter()
+  const { socket, isConnected, registerUser } = useSocket()
+  const { toast } = useToast()
+
   const pendingInvites = invites.filter((i) => i.status === "pending")
   const activeProjects = projects.filter(
     (p) => p.status === "in_progress" || p.status === "review"
   )
   const completedProjects = projects.filter((p) => p.status === "completed")
+
+  // Register user for notifications when connected
+  useEffect(() => {
+    if (isConnected && currentUserId) {
+      registerUser(currentUserId)
+      console.log("Boss Dashboard: Registered user for notifications", currentUserId)
+    }
+  }, [isConnected, currentUserId, registerUser])
+
+  // Listen for new message notifications and show toast
+  useEffect(() => {
+    if (!socket) return
+
+    const handleNewMessage = (message: ChatMessage) => {
+      console.log("Boss Dashboard: New message notification received", message)
+      console.log("Boss Dashboard: currentUserId =", currentUserId, "sender_id =", message.sender_id)
+      console.log("Boss Dashboard: Should show toast?", message.sender_id !== currentUserId)
+      // Only show toast if message is from another user
+      console.log("🚀 ~ handleNewMessage ~ currentUserId:", currentUserId)
+      if (message.sender_id !== currentUserId) {
+        console.log("Boss Dashboard: Showing toast now...")
+        toast({
+          title: `New message from ${message.sender_name}`,
+          description: message.message.length > 50
+            ? message.message.substring(0, 50) + "..."
+            : message.message,
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push(`/boss/boss-chats/${message.project_id}`)}
+            >
+              <MessageSquare className="mr-2 h-4 w-4" />
+              View
+            </Button>
+          ),
+        })
+      }
+    }
+
+    socket.on("new-message-notification", handleNewMessage)
+
+    return () => {
+      socket.off("new-message-notification", handleNewMessage)
+    }
+  }, [socket, currentUserId, toast, router])
 
   return (
     <div className="space-y-6">
@@ -281,12 +338,21 @@ export function BossDashboard({
             )}
           </CardContent>
           <CardFooter>
-            <Button asChild variant="outline" className="w-full">
+            <div className="flex w-full gap-2">
+
+              <Button asChild variant="outline" className="flex-1">
               <Link href="/boss/invites">
                 View All Invites
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
+            <Button asChild  className="flex-1">
+              <Link href="/boss/boss-chats">
+                View All Messages
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            </div>
           </CardFooter>
         </Card>
 

@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import {
   Building2,
   Plus,
@@ -13,6 +14,7 @@ import {
   DollarSign,
   TrendingUp,
   AlertCircle,
+  MessageSquare,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -24,13 +26,17 @@ import {
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { useSocket } from "@/components/providers/socket-provider"
+import { useToast } from "@/hooks/use-toast"
 import type { HQProfile, HQBusinessProfile, HQProject } from "@/lib/types"
+import type { ChatMessage } from "@/lib/socket"
 
 interface HQDashboardProps {
   hqProfile: HQProfile
   businessProfile: HQBusinessProfile | null
   projects: HQProject[]
   pendingInvitesCount: number
+  currentUserId: string
 }
 
 const projectStatusColors: Record<string, string> = {
@@ -47,7 +53,12 @@ export function HQDashboard({
   businessProfile,
   projects,
   pendingInvitesCount,
+  currentUserId,
 }: HQDashboardProps) {
+  const router = useRouter()
+  const { socket, isConnected, registerUser } = useSocket()
+  const { toast } = useToast()
+
   const activeProjects = projects.filter(
     (p) => p.status === "in_progress" || p.status === "review"
   )
@@ -59,6 +70,52 @@ export function HQDashboard({
     (sum, p) => sum + (p.budget_min + p.budget_max) / 2,
     0
   )
+
+  // Register user for notifications when connected
+  useEffect(() => {
+    if (isConnected && currentUserId) {
+      registerUser(currentUserId)
+      console.log("HQ Dashboard: Registered user for notifications", currentUserId)
+    }
+  }, [isConnected, currentUserId, registerUser])
+
+  // Listen for new message notifications and show toast
+  useEffect(() => {
+    if (!socket) return
+
+    const handleNewMessage = (message: ChatMessage) => {
+      console.log("HQ Dashboard: New message notification received", message)
+      console.log("HQ Dashboard: currentUserId =", currentUserId, "sender_id =", message.sender_id)
+      console.log("HQ Dashboard: Should show toast?", message.sender_id !== currentUserId)
+      // Only show toast if message is from another user
+      console.log("🚀 ~ handleNewMessage ~ currentUserId:", currentUserId)
+      if (message.sender_id !== currentUserId) {
+        console.log("HQ Dashboard: Showing toast now...")
+        toast({
+          title: `New message from ${message.sender_name}`,
+          description: message.message.length > 50
+            ? message.message.substring(0, 50) + "..."
+            : message.message,
+          action: (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push(`/hq/hq-chats/${message.project_id}`)}
+            >
+              <MessageSquare className="mr-2 h-4 w-4" />
+              View
+            </Button>
+          ),
+        })
+      }
+    }
+
+    socket.on("new-message-notification", handleNewMessage)
+
+    return () => {
+      socket.off("new-message-notification", handleNewMessage)
+    }
+  }, [socket, currentUserId, toast, router])
 
   return (
     <div className="space-y-8">
@@ -224,6 +281,12 @@ export function HQDashboard({
             <CardDescription>Common tasks and shortcuts</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
+            <Button variant="outline" className="w-full justify-start" asChild>
+              <Link href="/hq/hq-chats">
+                <Plus className="h-4 w-4" />
+                Chats
+              </Link>
+            </Button>
             <Button variant="outline" className="w-full justify-start" asChild>
               <Link href="/hq/projects/create">
                 <Plus className="h-4 w-4" />
