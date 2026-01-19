@@ -14,6 +14,11 @@ const HQRatingDemo = dynamic(() => import("./hq-rating-demo").then((m) => m.HQRa
   loading: () => <DemoLoadingPlaceholder />,
 })
 
+const BossSkillsTagsDemo = dynamic(
+  () => import("./boss-skills-tags-demo").then((m) => m.BossSkillsTagsDemo),
+  { loading: () => <DemoLoadingPlaceholder /> }
+)
+
 const GenericDemo = dynamic(() => import("./generic-demo").then((m) => m.GenericDemo), {
   loading: () => <DemoLoadingPlaceholder />,
 })
@@ -21,6 +26,7 @@ const GenericDemo = dynamic(() => import("./generic-demo").then((m) => m.Generic
 // Registry of available demo components
 const DEMO_REGISTRY: Record<string, ComponentType<DemoComponentProps>> = {
   "hq-rating": HQRatingDemo,
+  "boss-skills-tags": BossSkillsTagsDemo,
   generic: GenericDemo,
 }
 

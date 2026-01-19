@@ -197,3 +197,207 @@ INSERT INTO feature_rollouts (
   80,
   'testing'
 );
+
+-- ==================== SEED DATA: Boss Skills & Tags Feature ====================
+
+-- Add Boss Skills & Tags testing feature with embedded demo
+INSERT INTO shaper_testing_features (
+  name,
+  description,
+  version,
+  status,
+  due_date,
+  testers_count,
+  bugs_count,
+  test_url,
+  docs_url,
+  demo_component,
+  demo_instructions
+) VALUES (
+  'Boss Skills & Tags',
+  'Cho phép Boss thêm skills và tags vào hồ sơ để HQ dễ dàng tìm kiếm và lựa chọn.',
+  'v2.9.0-beta',
+  'testing',
+  '2024-03-15',
+  0,
+  0,
+  NULL,
+  '/docs/features/boss-skills-tags',
+  'boss-skills-tags',
+  'Thử nghiệm tính năng quản lý Skills và Tags:
+1. Xem hồ sơ Boss hiện tại với skills/tags
+2. Thử tìm kiếm và thêm skill mới
+3. Thử thêm skill tùy chỉnh
+4. Thử thêm/xóa tags
+5. Lưu thay đổi
+
+Lưu ý: Đây là môi trường demo, dữ liệu không được lưu thực tế.'
+);
+
+-- Get the ID of the Boss Skills & Tags feature for test checklists
+DO $$
+DECLARE
+  skills_tags_feature_id UUID;
+BEGIN
+  SELECT id INTO skills_tags_feature_id
+  FROM shaper_testing_features
+  WHERE name = 'Boss Skills & Tags'
+  LIMIT 1;
+
+  -- Add test checklists for Boss Skills & Tags feature
+  INSERT INTO shaper_test_checklists (feature_id, title, description, test_steps, expected_result, order_index, is_critical) VALUES
+  (
+    skills_tags_feature_id,
+    'Hiển thị hồ sơ Boss hiện tại',
+    'Kiểm tra hồ sơ Boss được hiển thị đúng với skills và tags hiện có',
+    ARRAY[
+      'Mở trang Demo',
+      'Xem thông tin hồ sơ Boss',
+      'Kiểm tra danh sách skills hiện tại',
+      'Kiểm tra danh sách tags hiện tại'
+    ],
+    'Hồ sơ Boss hiển thị đầy đủ với skills và tags có thể xóa được',
+    1,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Tìm kiếm và thêm Skill',
+    'Kiểm tra tính năng tìm kiếm skill',
+    ARRAY[
+      'Nhập từ khóa vào ô tìm kiếm',
+      'Xem danh sách skill được lọc',
+      'Click vào một skill để thêm'
+    ],
+    'Danh sách skill được lọc theo từ khóa, skill mới được thêm vào hồ sơ',
+    2,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Chọn Skill theo Category',
+    'Kiểm tra lọc skill theo danh mục',
+    ARRAY[
+      'Click vào một category (Design, Development, etc.)',
+      'Xem danh sách skill của category đó',
+      'Thêm skill từ category được chọn'
+    ],
+    'Danh sách skill được lọc theo category, có thể chọn nhiều skill',
+    3,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Thêm Skill tùy chỉnh',
+    'Kiểm tra thêm skill không có sẵn',
+    ARRAY[
+      'Nhập tên skill tùy chỉnh vào ô input',
+      'Nhấn Enter hoặc click nút +',
+      'Kiểm tra skill mới được thêm'
+    ],
+    'Skill tùy chỉnh được thêm vào danh sách',
+    4,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Giới hạn số lượng Skills (max 10)',
+    'Kiểm tra validation số lượng skill tối đa',
+    ARRAY[
+      'Thêm skills cho đến khi đạt 10',
+      'Thử thêm skill thứ 11',
+      'Kiểm tra thông báo hoặc nút bị disable'
+    ],
+    'Không thể thêm quá 10 skills, hiển thị counter rõ ràng',
+    5,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Xóa Skill',
+    'Kiểm tra xóa skill khỏi hồ sơ',
+    ARRAY[
+      'Click nút X trên một skill',
+      'Kiểm tra skill bị xóa khỏi danh sách',
+      'Kiểm tra skill có thể thêm lại'
+    ],
+    'Skill được xóa ngay lập tức, có thể thêm lại từ danh sách',
+    6,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Thêm Tags từ danh sách phổ biến',
+    'Kiểm tra thêm tag từ suggestions',
+    ARRAY[
+      'Xem danh sách tags phổ biến',
+      'Click vào một tag để thêm',
+      'Kiểm tra tag được thêm vào hồ sơ'
+    ],
+    'Tag được thêm và hiển thị trong hồ sơ với style khác biệt',
+    7,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Thêm Tag tùy chỉnh',
+    'Kiểm tra thêm tag không có sẵn',
+    ARRAY[
+      'Nhập tên tag tùy chỉnh',
+      'Nhấn Enter hoặc click nút +',
+      'Kiểm tra tag mới được thêm'
+    ],
+    'Tag tùy chỉnh được thêm vào danh sách',
+    8,
+    FALSE
+  ),
+  (
+    skills_tags_feature_id,
+    'Giới hạn số lượng Tags (max 8)',
+    'Kiểm tra validation số lượng tag tối đa',
+    ARRAY[
+      'Thêm tags cho đến khi đạt 8',
+      'Thử thêm tag thứ 9',
+      'Kiểm tra thông báo hoặc nút bị disable'
+    ],
+    'Không thể thêm quá 8 tags, hiển thị counter rõ ràng',
+    9,
+    TRUE
+  ),
+  (
+    skills_tags_feature_id,
+    'Lưu thay đổi',
+    'Kiểm tra nút lưu và feedback',
+    ARRAY[
+      'Thay đổi skills hoặc tags',
+      'Click nút "Lưu thay đổi"',
+      'Kiểm tra feedback thành công'
+    ],
+    'Hiển thị thông báo "Đã lưu!" và nút chuyển trạng thái',
+    10,
+    TRUE
+  );
+END $$;
+
+-- Add feature rollout entry for Boss Skills & Tags
+INSERT INTO feature_rollouts (
+  feature_key,
+  feature_name,
+  description,
+  enabled_for_shapers,
+  enabled_for_boss,
+  enabled_for_hq,
+  min_tests_required,
+  min_success_rate,
+  status
+) VALUES (
+  'boss_skills_tags',
+  'Boss Skills & Tags',
+  'Allow Boss to add skills and tags to their profile for better discoverability',
+  TRUE,
+  FALSE,
+  FALSE,
+  5,
+  80,
+  'testing'
+);

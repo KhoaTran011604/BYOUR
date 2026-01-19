@@ -221,6 +221,21 @@ export const mockTestingFeatures: ShaperTestingFeature[] = [
     demo_instructions: "Thử nghiệm tính năng đánh giá Boss ngay trong trang này.",
     created_at: "2024-02-01T00:00:00Z",
   },
+  {
+    id: "test-006",
+    name: "Boss Skills & Tags",
+    description: "Cho phép Boss thêm skills và tags vào hồ sơ để HQ dễ dàng tìm kiếm và lựa chọn.",
+    version: "v2.9.0-beta",
+    status: "testing",
+    due_date: "2024-03-15",
+    testers_count: 0,
+    bugs_count: 0,
+    test_url: null,
+    docs_url: "/docs/features/boss-skills-tags",
+    demo_component: "boss-skills-tags",
+    demo_instructions: "Thử nghiệm thêm/xóa skills và tags cho hồ sơ Boss.",
+    created_at: "2024-02-05T00:00:00Z",
+  },
 ]
 
 export const mockTestHistory: ShaperTestHistory[] = [
