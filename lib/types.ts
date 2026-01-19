@@ -425,3 +425,95 @@ export interface HQProjectDraft {
   tags: string[]
   skills_required: string[]
 }
+
+// ==================== SHAPER MODE TYPES ====================
+
+export type ShaperFeedbackType = "bug" | "feature" | "improvement"
+
+export type ShaperFeedbackStatus = "pending" | "reviewing" | "planned" | "in_progress" | "completed" | "closed"
+
+export type ShaperTestingStatus = "alpha" | "beta" | "testing" | "ready"
+
+export type ShaperFeatureStatus = "available" | "coming_soon" | "locked"
+
+export interface ShaperFeedback {
+  id: string
+  user_id: string
+  type: ShaperFeedbackType
+  title: string
+  description: string
+  status: ShaperFeedbackStatus
+  votes: number
+  created_at: string
+  updated_at: string
+}
+
+export interface ShaperTestingFeature {
+  id: string
+  name: string
+  description: string
+  version: string
+  status: ShaperTestingStatus
+  due_date: string | null
+  testers_count: number
+  bugs_count: number
+  test_url: string | null
+  docs_url: string | null
+  created_at: string
+}
+
+export interface ShaperTestHistory {
+  id: string
+  user_id: string
+  feature_id: string
+  feature_name: string
+  tested_at: string
+  duration_minutes: number
+  bugs_found: number
+  status: "completed" | "in_progress" | "abandoned"
+}
+
+export interface ShaperExperimentalFeature {
+  id: string
+  name: string
+  description: string
+  icon_name: string
+  status: ShaperFeatureStatus
+  release_date: string | null
+  access_count: number
+  is_enabled: boolean
+  created_at: string
+}
+
+export interface ShaperUpcomingRelease {
+  version: string
+  release_date: string
+  features: string[]
+}
+
+export interface ShaperStats {
+  total_feedbacks: number
+  total_bugs_reported: number
+  total_features_tested: number
+  total_testing_hours: number
+  ranking: number
+  total_shapers: number
+  feedbacks_completed: number
+  feedbacks_in_progress: number
+  total_votes_received: number
+}
+
+export interface ShaperProfile {
+  id: string
+  user_id: string
+  status: ShaperStatus
+  reason_for_joining: string | null
+  applied_at: string
+  approved_at: string | null
+  rejected_at: string | null
+  rejection_reason: string | null
+  badge_level: "bronze" | "silver" | "gold" | "platinum"
+  contribution_points: number
+  created_at: string
+  updated_at: string
+}

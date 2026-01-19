@@ -1,307 +1,39 @@
-"use client"
-
-import { useState } from "react"
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { redirect } from "next/navigation"
+import { createClient } from "@/lib/supabase/server"
+import { FeedbackContent } from "@/components/shaper/feedback-content"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  ArrowLeft,
-  MessageSquare,
-  Bug,
-  Lightbulb,
-  ThumbsUp,
-  Clock,
-  CheckCircle2,
-  Send,
-} from "lucide-react"
+  getMyFeedbacks,
+  getPopularFeedbacks,
+  getShaperStats,
+  getUserVotedFeedbacks,
+} from "@/lib/api/shaper"
 
-// Fake data - will be replaced with DB data later
-const myFeedbacks = [
-  {
-    id: 1,
-    type: "feature",
-    title: "Add dark mode for dashboard",
-    description: "Would like dark mode option for more comfortable night work.",
-    status: "reviewing",
-    votes: 24,
-    createdAt: "2024-01-10",
-  },
-  {
-    id: 2,
-    type: "bug",
-    title: "Cannot save Creative block",
-    description: "When adding many items to creative block, sometimes cannot save.",
-    status: "in_progress",
-    votes: 8,
-    createdAt: "2024-01-08",
-  },
-  {
-    id: 3,
-    type: "improvement",
-    title: "Improve builder page load speed",
-    description: "Builder is slow with many blocks, hope team can optimize.",
-    status: "completed",
-    votes: 45,
-    createdAt: "2024-01-05",
-  },
-]
+export default async function ShaperFeedbackPage() {
+  const supabase = await createClient()
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser()
 
-const popularFeedbacks = [
-  {
-    id: 101,
-    type: "feature",
-    title: "Google Analytics integration",
-    author: "Minh Tran",
-    votes: 89,
-    status: "planned",
-  },
-  {
-    id: 102,
-    type: "feature",
-    title: "Export website as PDF portfolio",
-    author: "Linh Nguyen",
-    votes: 67,
-    status: "reviewing",
-  },
-  {
-    id: 103,
-    type: "feature",
-    title: "Custom domain support",
-    author: "Duc Pham",
-    votes: 156,
-    status: "in_progress",
-  },
-  {
-    id: 104,
-    type: "improvement",
-    title: "Add more templates",
-    author: "Hoa Le",
-    votes: 78,
-    status: "planned",
-  },
-]
+  if (error || !user) {
+    redirect("/auth/login")
+  }
 
-const statusConfig = {
-  pending: { label: "Pending", color: "bg-gray-500" },
-  reviewing: { label: "Reviewing", color: "bg-blue-500" },
-  planned: { label: "Planned", color: "bg-purple-500" },
-  in_progress: { label: "In progress", color: "bg-amber-500" },
-  completed: { label: "Completed", color: "bg-green-500" },
-}
-
-const typeConfig = {
-  bug: { label: "Bug", icon: Bug, color: "text-red-500" },
-  feature: { label: "Feature", icon: Lightbulb, color: "text-blue-500" },
-  improvement: { label: "Improvement", icon: ThumbsUp, color: "text-green-500" },
-}
-
-export default function ShaperFeedbackPage() {
-  const [feedbackType, setFeedbackType] = useState<string>("")
+  // Fetch all data in parallel
+  const [myFeedbacks, popularFeedbacks, stats, votedFeedbacks] = await Promise.all([
+    getMyFeedbacks(user.id),
+    getPopularFeedbacks(10),
+    getShaperStats(user.id),
+    getUserVotedFeedbacks(user.id),
+  ])
 
   return (
-    <div className="min-h-screen bg-muted/30">
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="mb-8">
-          <Button variant="ghost" asChild className="mb-4">
-            <Link href="/shaper">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
-            </Link>
-          </Button>
-          <div className="flex items-center gap-3 mb-2">
-            <MessageSquare className="h-8 w-8 text-accent" />
-            <h1 className="text-3xl font-bold">Feedback Hub</h1>
-          </div>
-          <p className="text-muted-foreground">
-            Contribute feedback to help make TEST-002 better
-          </p>
-        </div>
-
-        <div className="grid gap-8 lg:grid-cols-3">
-          {/* Submit Feedback Form */}
-          <div className="lg:col-span-2">
-            <Card>
-              <CardHeader>
-                <CardTitle>Submit new Feedback</CardTitle>
-                <CardDescription>
-                  Share ideas, report bugs, or suggest improvements
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="type">Feedback type</Label>
-                  <Select value={feedbackType} onValueChange={setFeedbackType}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select feedback type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="bug">
-                        <div className="flex items-center gap-2">
-                          <Bug className="h-4 w-4 text-red-500" />
-                          Bug - Report an issue
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="feature">
-                        <div className="flex items-center gap-2">
-                          <Lightbulb className="h-4 w-4 text-blue-500" />
-                          Feature - Suggest new feature
-                        </div>
-                      </SelectItem>
-                      <SelectItem value="improvement">
-                        <div className="flex items-center gap-2">
-                          <ThumbsUp className="h-4 w-4 text-green-500" />
-                          Improvement - Improve existing feature
-                        </div>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="title">Title</Label>
-                  <Input id="title" placeholder="Brief description of your feedback" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">Details</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="Describe your feedback in detail. If it's a bug, please provide steps to reproduce."
-                    rows={5}
-                  />
-                </div>
-
-                <Button className="w-full">
-                  <Send className="mr-2 h-4 w-4" />
-                  Submit Feedback
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* My Feedbacks */}
-            <div className="mt-8">
-              <h2 className="text-xl font-semibold mb-4">My Feedback</h2>
-              <div className="space-y-4">
-                {myFeedbacks.map((feedback) => {
-                  const TypeIcon = typeConfig[feedback.type as keyof typeof typeConfig].icon
-                  const status = statusConfig[feedback.status as keyof typeof statusConfig]
-                  return (
-                    <Card key={feedback.id}>
-                      <CardContent className="pt-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <TypeIcon
-                                className={`h-4 w-4 ${typeConfig[feedback.type as keyof typeof typeConfig].color}`}
-                              />
-                              <span className="font-medium">{feedback.title}</span>
-                            </div>
-                            <p className="text-sm text-muted-foreground mb-2">
-                              {feedback.description}
-                            </p>
-                            <div className="flex items-center gap-3 text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {feedback.createdAt}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <ThumbsUp className="h-3 w-3" />
-                                {feedback.votes} votes
-                              </span>
-                            </div>
-                          </div>
-                          <Badge
-                            variant="secondary"
-                            className={`${status.color} text-white shrink-0`}
-                          >
-                            {status.label}
-                          </Badge>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar - Popular Feedbacks */}
-          <div>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Popular Feedback</CardTitle>
-                <CardDescription>Upvote ideas you like</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {popularFeedbacks.map((feedback) => {
-                  const status = statusConfig[feedback.status as keyof typeof statusConfig]
-                  return (
-                    <div
-                      key={feedback.id}
-                      className="flex items-start gap-3 pb-3 border-b last:border-0 last:pb-0"
-                    >
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="h-auto py-2 px-2 flex flex-col items-center gap-0"
-                      >
-                        <ThumbsUp className="h-3 w-3" />
-                        <span className="text-xs font-bold">{feedback.votes}</span>
-                      </Button>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">{feedback.title}</p>
-                        <p className="text-xs text-muted-foreground">by {feedback.author}</p>
-                        <Badge variant="outline" className="mt-1 text-xs">
-                          {status.label}
-                        </Badge>
-                      </div>
-                    </div>
-                  )
-                })}
-              </CardContent>
-            </Card>
-
-            {/* Stats */}
-            <Card className="mt-4">
-              <CardHeader>
-                <CardTitle className="text-base">Your statistics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <div className="text-2xl font-bold text-accent">3</div>
-                    <div className="text-xs text-muted-foreground">Feedbacks</div>
-                  </div>
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <div className="text-2xl font-bold text-accent">77</div>
-                    <div className="text-xs text-muted-foreground">Total Votes</div>
-                  </div>
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <div className="text-2xl font-bold text-green-500">1</div>
-                    <div className="text-xs text-muted-foreground">Completed</div>
-                  </div>
-                  <div className="text-center p-3 rounded-lg bg-muted/50">
-                    <div className="text-2xl font-bold text-amber-500">1</div>
-                    <div className="text-xs text-muted-foreground">In Progress</div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    </div>
+    <FeedbackContent
+      userId={user.id}
+      myFeedbacks={myFeedbacks}
+      popularFeedbacks={popularFeedbacks}
+      stats={stats}
+      votedFeedbacks={votedFeedbacks}
+    />
   )
 }

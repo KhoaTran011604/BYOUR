@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { ShaperContent } from "@/components/shaper/shaper-content"
+import { getShaperProfile, getShaperStats } from "@/lib/api/shaper"
 
 export default async function ShaperPage() {
   const supabase = await createClient()
@@ -15,5 +16,16 @@ export default async function ShaperPage() {
 
   const { data: profile } = await supabase.from("profiles").select("*").eq("id", user.id).single()
 
-  return <ShaperContent user={user} profile={profile} />
+  // Fetch shaper-specific data
+  const shaperProfile = await getShaperProfile(user.id)
+  const shaperStats = await getShaperStats(user.id)
+
+  return (
+    <ShaperContent
+      user={user}
+      profile={profile}
+      shaperProfile={shaperProfile}
+      shaperStats={shaperStats}
+    />
+  )
 }

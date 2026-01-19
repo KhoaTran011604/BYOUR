@@ -36,6 +36,10 @@ export function SelfContent({ user, profile }: SelfContentProps) {
     }
   }
 
+  const handleUpgrade = async () => {
+    await handleModeChange("boss")
+  }
+
   const displayName = profile?.full_name || user.user_metadata?.full_name || user.email?.split("@")[0]
 
   return (
@@ -154,7 +158,7 @@ export function SelfContent({ user, profile }: SelfContentProps) {
                     </p>
                   </div>
                 </div>
-                <Button size="lg" className="shrink-0">
+                <Button size="lg" className="shrink-0" onClick={handleUpgrade}>
                   <Zap className="mr-2 h-4 w-4" />
                   Upgrade now
                 </Button>
