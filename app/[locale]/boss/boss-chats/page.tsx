@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { useRouter, Link } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -22,6 +22,8 @@ import type { BossInvite } from "@/lib/types"
 
 export default function BossChatsPage() {
   const router = useRouter()
+  const t = useTranslations("boss.chats")
+  const tInvites = useTranslations("boss.invites")
   const [acceptedProjects, setAcceptedProjects] = useState<BossInvite[]>([])
   const [searchQuery, setSearchQuery] = useState("")
   const [isLoading, setIsLoading] = useState(true)
@@ -128,14 +130,14 @@ export default function BossChatsPage() {
   })
 
   const formatBudget = (project: BossInvite) => {
-    if (!project.budget_min && !project.budget_max) return "Budget TBD"
+    if (!project.budget_min && !project.budget_max) return t("budgetTBD")
     if (project.budget_min && project.budget_max) {
       return `${project.currency}${project.budget_min.toLocaleString()} - ${project.currency}${project.budget_max.toLocaleString()}`
     }
     if (project.budget_max) {
-      return `Up to ${project.currency}${project.budget_max.toLocaleString()}`
+      return `${t("upTo")} ${project.currency}${project.budget_max.toLocaleString()}`
     }
-    return `From ${project.currency}${project.budget_min?.toLocaleString()}`
+    return `${t("from")} ${project.currency}${project.budget_min?.toLocaleString()}`
   }
 
   if (isLoading) {
@@ -157,14 +159,14 @@ export default function BossChatsPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Project Chats</h1>
+            <h1 className="text-2xl font-bold">{t("title")}</h1>
             <p className="text-muted-foreground">
-              Chat with your clients on accepted projects
+              {t("description")}
             </p>
           </div>
         </div>
         <Badge variant="secondary" className="w-fit">
-          {acceptedProjects.length} Active Projects
+          {acceptedProjects.length} {t("activeProjects")}
         </Badge>
       </div>
 
@@ -172,7 +174,7 @@ export default function BossChatsPage() {
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Search projects..."
+          placeholder={t("searchProjects")}
           className="pl-9"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -242,14 +244,14 @@ export default function BossChatsPage() {
           <div className="mb-4 rounded-full bg-muted p-4">
             <Inbox className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h3 className="mb-2 font-medium">No active projects</h3>
+          <h3 className="mb-2 font-medium">{t("noActiveProjects")}</h3>
           <p className="text-sm text-muted-foreground mb-4">
             {searchQuery
-              ? "Try adjusting your search"
-              : "Accept invites to start chatting with clients"}
+              ? t("adjustSearch")
+              : t("acceptToChat")}
           </p>
           <Button asChild>
-            <Link href="/boss/invites">View Invites</Link>
+            <Link href="/boss/invites">{tInvites("viewAllInvites")}</Link>
           </Button>
         </div>
       )}

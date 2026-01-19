@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useTranslations } from "next-intl"
 import {
   CheckCircle2,
   Circle,
@@ -71,6 +72,9 @@ export function WorkTracker({
   onSubmitForReview,
   onMarkComplete,
 }: WorkTrackerProps) {
+  const t = useTranslations("boss.workTracker")
+  const tProjects = useTranslations("boss.projects")
+  const tCommon = useTranslations("common")
   const [isAddingMilestone, setIsAddingMilestone] = useState(false)
   const [newMilestoneTitle, setNewMilestoneTitle] = useState("")
   const [newMilestoneDescription, setNewMilestoneDescription] = useState("")
@@ -131,10 +135,10 @@ export function WorkTracker({
           <div>
             <CardTitle className="flex items-center gap-2">
               <FileCheck className="h-5 w-5 text-accent" />
-              Work Progress
+              {t("workProgress")}
             </CardTitle>
             <CardDescription>
-              Track milestones and deliverables for this project
+              {t("trackMilestones")}
             </CardDescription>
           </div>
           <Badge
@@ -146,7 +150,7 @@ export function WorkTracker({
                 : "outline"
             }
           >
-            {project.status.replace("_", " ")}
+            {tProjects(project.status === "in_progress" ? "inProgress" : project.status === "review" ? "inReview" : project.status)}
           </Badge>
         </div>
       </CardHeader>
@@ -156,7 +160,7 @@ export function WorkTracker({
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">
-              {completedCount} of {milestones.length} milestones completed
+              {t("milestonesCompleted", { completed: completedCount, total: milestones.length })}
             </span>
             <span className="font-medium">{Math.round(progress)}%</span>
           </div>
@@ -179,8 +183,8 @@ export function WorkTracker({
             <Clock className="h-4 w-4" />
             <span className="text-sm">
               {new Date(project.deadline) < new Date()
-                ? "Overdue: "
-                : "Deadline: "}
+                ? `${t("overdue")}: `
+                : `${tCommon("deadline")}: `}
               {new Date(project.deadline).toLocaleDateString()}
             </span>
           </div>
@@ -191,13 +195,13 @@ export function WorkTracker({
           {milestones.length === 0 && !isAddingMilestone ? (
             <div className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed py-8 text-center">
               <Circle className="mb-2 h-8 w-8 text-muted-foreground" />
-              <p className="mb-1 font-medium">No milestones yet</p>
+              <p className="mb-1 font-medium">{t("noMilestones")}</p>
               <p className="mb-4 text-sm text-muted-foreground">
-                Add milestones to track your progress
+                {t("addMilestonesToTrack")}
               </p>
               <Button size="sm" onClick={() => setIsAddingMilestone(true)}>
                 <Plus className="h-4 w-4" />
-                Add Milestone
+                {t("addMilestone")}
               </Button>
             </div>
           ) : (
@@ -243,7 +247,7 @@ export function WorkTracker({
                     )}
                     {milestone.completed_at && (
                       <p className="mt-1 text-xs text-muted-foreground">
-                        Completed{" "}
+                        {t("completedOn")}{" "}
                         {new Date(milestone.completed_at).toLocaleDateString()}
                       </p>
                     )}
@@ -261,7 +265,7 @@ export function WorkTracker({
                         className="text-destructive"
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
-                        Delete
+                        {tCommon("delete")}
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
@@ -272,13 +276,13 @@ export function WorkTracker({
               {isAddingMilestone ? (
                 <div className="space-y-3 rounded-lg border p-3">
                   <Input
-                    placeholder="Milestone title"
+                    placeholder={t("milestoneTitle")}
                     value={newMilestoneTitle}
                     onChange={(e) => setNewMilestoneTitle(e.target.value)}
                     autoFocus
                   />
                   <Textarea
-                    placeholder="Description (optional)"
+                    placeholder={t("descriptionOptional")}
                     value={newMilestoneDescription}
                     onChange={(e) => setNewMilestoneDescription(e.target.value)}
                     rows={2}
@@ -293,7 +297,7 @@ export function WorkTracker({
                         setNewMilestoneDescription("")
                       }}
                     >
-                      Cancel
+                      {tCommon("cancel")}
                     </Button>
                     <Button
                       size="sm"
@@ -305,7 +309,7 @@ export function WorkTracker({
                       ) : (
                         <>
                           <Plus className="h-4 w-4" />
-                          Add
+                          {t("add")}
                         </>
                       )}
                     </Button>
@@ -319,7 +323,7 @@ export function WorkTracker({
                   onClick={() => setIsAddingMilestone(true)}
                 >
                   <Plus className="h-4 w-4" />
-                  Add Milestone
+                  {t("addMilestone")}
                 </Button>
               )}
             </>
@@ -332,7 +336,7 @@ export function WorkTracker({
           <div className="flex w-full items-center gap-2 rounded-lg bg-yellow-500/10 p-3 text-yellow-700 dark:text-yellow-500">
             <AlertCircle className="h-5 w-5 shrink-0" />
             <span className="text-sm">
-              Waiting for client review. They will approve or request changes.
+              {t("waitingForReview")}
             </span>
           </div>
         ) : canSubmitForReview ? (
@@ -340,24 +344,23 @@ export function WorkTracker({
             <DialogTrigger asChild>
               <Button className="w-full">
                 <Send className="h-4 w-4" />
-                Submit for Review
+                {t("submitForReview")}
               </Button>
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>Submit for Review</DialogTitle>
+                <DialogTitle>{t("submitForReview")}</DialogTitle>
                 <DialogDescription>
-                  This will notify the client that the work is ready for their review.
-                  Make sure all deliverables are complete before submitting.
+                  {t("submitReviewConfirm")}
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
-                <Button variant="outline">Cancel</Button>
+                <Button variant="outline">{tCommon("cancel")}</Button>
                 <Button onClick={handleSubmitForReview} disabled={isSubmitting}>
                   {isSubmitting ? (
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    "Submit"
+                    tCommon("submit")
                   )}
                 </Button>
               </DialogFooter>
@@ -365,7 +368,7 @@ export function WorkTracker({
           </Dialog>
         ) : (
           <p className="text-center text-sm text-muted-foreground">
-            Complete at least one milestone to submit for review
+            {t("completeOneMilestone")}
           </p>
         )}
       </CardFooter>

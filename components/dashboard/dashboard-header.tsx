@@ -1,7 +1,8 @@
 "use client"
 
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -12,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ModeSelector } from "@/components/mode-selector"
+import { LanguageSwitcher } from "@/components/language-switcher"
 import { createClient } from "@/lib/supabase/client"
 import type { UserMode, Profile } from "@/lib/types"
 import type { User } from "@supabase/supabase-js"
@@ -26,6 +28,7 @@ interface DashboardHeaderProps {
 
 export function DashboardHeader({ user, profile, currentMode, onModeChange }: DashboardHeaderProps) {
   const router = useRouter()
+  const t = useTranslations("common")
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -53,6 +56,8 @@ export function DashboardHeader({ user, profile, currentMode, onModeChange }: Da
             <ModeSelector currentMode={currentMode} onModeChange={onModeChange} />
           </div>
 
+          <LanguageSwitcher />
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -79,13 +84,13 @@ export function DashboardHeader({ user, profile, currentMode, onModeChange }: Da
               <DropdownMenuItem asChild>
                 <Link href="/profile" className="cursor-pointer">
                   <UserIcon className="mr-2 h-4 w-4" />
-                  Profile
+                  {t("profile")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/settings" className="cursor-pointer">
                   <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                  {t("settings")}
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -94,7 +99,7 @@ export function DashboardHeader({ user, profile, currentMode, onModeChange }: Da
                 className="text-destructive focus:text-destructive cursor-pointer"
               >
                 <LogOut className="mr-2 h-4 w-4" />
-                Log out
+                {t("logout")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

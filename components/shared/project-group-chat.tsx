@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useMemo, useCallback } from "react"
+import { useTranslations } from "next-intl"
 import {
   Send,
   Paperclip,
@@ -51,6 +52,7 @@ export function ProjectGroupChat({
   currentUserAvatar,
   userRole,
 }: ProjectGroupChatProps) {
+  const t = useTranslations("boss.groupChat")
   const MESSAGES_PER_PAGE = 6
 
   const [messages, setMessages] = useState<ChatMessage[]>([])
@@ -413,8 +415,8 @@ export function ProjectGroupChat({
 
   const handleAttachmentClick = () => {
     toast({
-      title: "Coming soon!",
-      description: "File attachment feature will be available soon.",
+      title: t("comingSoon"),
+      description: t("attachmentComingSoon"),
     })
   }
 
@@ -470,11 +472,11 @@ export function ProjectGroupChat({
     yesterday.setDate(yesterday.getDate() - 1)
 
     if (date.toDateString() === today.toDateString()) {
-      return "Today"
+      return t("today")
     } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Yesterday"
+      return t("yesterday")
     } else {
-      return date.toLocaleDateString("en-US")
+      return date.toLocaleDateString()
     }
   }
 
@@ -503,21 +505,21 @@ export function ProjectGroupChat({
       {/* Header with Connection Status */}
       <div className="flex items-center justify-between border-b px-4 py-2">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Group Chat</span>
+          <span className="text-sm font-medium">{t("groupChat")}</span>
           <Badge variant="outline" className="text-xs">
-            {messages.length} messages
+            {messages.length} {t("messages")}
           </Badge>
           {/* Connection status indicator */}
           <div className="flex items-center gap-1">
             {isConnected ? (
               <div className="flex items-center gap-1 text-green-600">
                 <Wifi className="h-3 w-3" />
-                <span className="text-xs">Live</span>
+                <span className="text-xs">{t("live")}</span>
               </div>
             ) : (
               <div className="flex items-center gap-1 text-muted-foreground">
                 <WifiOff className="h-3 w-3" />
-                <span className="text-xs">Offline</span>
+                <span className="text-xs">{t("offline")}</span>
               </div>
             )}
           </div>
@@ -527,7 +529,7 @@ export function ProjectGroupChat({
           size="icon"
           onClick={handleRefresh}
           disabled={isRefreshing}
-          title="Refresh messages"
+          title={t("refreshMessages")}
         >
           <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
         </Button>
@@ -537,9 +539,9 @@ export function ProjectGroupChat({
       <ScrollArea ref={scrollRef} className="min-h-0 flex-1 p-4">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <p className="text-muted-foreground">No messages yet</p>
+            <p className="text-muted-foreground">{t("noMessages")}</p>
             <p className="text-sm text-muted-foreground">
-              Start the conversation now!
+              {t("startConversation")}
             </p>
           </div>
         ) : (
@@ -561,7 +563,7 @@ export function ProjectGroupChat({
                   className="text-xs text-muted-foreground hover:text-foreground"
                 >
                   <ChevronUp className="mr-1 h-4 w-4" />
-                  Load older messages
+                  {t("loadOlder")}
                 </Button>
               </div>
             )}
@@ -669,7 +671,7 @@ export function ProjectGroupChat({
         <div className="border-t px-4 py-2">
           <p className="text-xs text-muted-foreground animate-pulse">
             {Array.from(typingUsers.values()).join(", ")}{" "}
-            {typingUsers.size === 1 ? "is" : "are"} typing...
+            {typingUsers.size === 1 ? t("isTyping") : t("areTyping")}
           </p>
         </div>
       )}
@@ -686,7 +688,7 @@ export function ProjectGroupChat({
             <Paperclip className="h-4 w-4" />
           </Button>
           <Input
-            placeholder="Enter message..."
+            placeholder={t("enterMessage")}
             value={newMessage}
             onChange={handleInputChange}
             onKeyDown={(e) => {

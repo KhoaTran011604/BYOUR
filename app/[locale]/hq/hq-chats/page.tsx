@@ -61,6 +61,8 @@ export default async function HQChatsPage() {
     .from("hq_projects")
     .select("*")
     .eq("hq_id", hqProfile.id)
+    .eq("status", "in_progress")
+    .not("assigned_boss_id", "is", null)
     .order("created_at", { ascending: false })
 
   return (

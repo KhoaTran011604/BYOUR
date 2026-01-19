@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import {
   DollarSign,
   TrendingUp,
   TrendingDown,
   Clock,
-  CheckCircle2,
   Calendar,
   Download,
   Filter,
@@ -42,7 +42,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
 import type { BossEarnings, EarningsTransaction, PaymentStatus } from "@/lib/types"
 
@@ -51,22 +50,29 @@ interface EarningsDashboardProps {
   transactions: EarningsTransaction[]
 }
 
-const statusConfig: Record<
-  PaymentStatus,
-  { label: string; variant: "default" | "secondary" | "destructive" | "outline" }
-> = {
-  pending: { label: "Pending", variant: "secondary" },
-  processing: { label: "Processing", variant: "outline" },
-  completed: { label: "Completed", variant: "default" },
-  failed: { label: "Failed", variant: "destructive" },
-}
-
 export function EarningsDashboard({
   earnings,
   transactions,
 }: EarningsDashboardProps) {
+  const t = useTranslations("boss.earnings")
+  const tCommon = useTranslations("common")
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "all">("30d")
   const [statusFilter, setStatusFilter] = useState<PaymentStatus | "all">("all")
+
+  const getStatusConfig = (status: PaymentStatus) => {
+    switch (status) {
+      case "pending":
+        return { label: t("pending"), variant: "secondary" as const }
+      case "processing":
+        return { label: t("processing"), variant: "outline" as const }
+      case "completed":
+        return { label: t("projects"), variant: "default" as const }
+      case "failed":
+        return { label: t("failed"), variant: "destructive" as const }
+      default:
+        return { label: status, variant: "outline" as const }
+    }
+  }
 
   const filteredTransactions = transactions.filter((t) => {
     if (statusFilter !== "all" && t.status !== statusFilter) return false
@@ -95,9 +101,9 @@ export function EarningsDashboard({
           </Link>
         </Button>
         <div>
-          <h1 className="text-2xl font-bold">Earnings</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Track your income and payment history
+            {t("description")}
           </p>
         </div>
       </div>
@@ -106,7 +112,7 @@ export function EarningsDashboard({
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("totalEarned")}</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -115,14 +121,14 @@ export function EarningsDashboard({
               {earnings.total_earned.toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              Lifetime earnings
+              {t("lifetimeEarnings")}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">This Month</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("pending")}</CardTitle>
             {monthChange >= 0 ? (
               <TrendingUp className="h-4 w-4 text-green-500" />
             ) : (
@@ -152,7 +158,7 @@ export function EarningsDashboard({
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("pending")}</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -161,14 +167,14 @@ export function EarningsDashboard({
               {earnings.pending_amount.toLocaleString()}
             </div>
             <p className="text-xs text-muted-foreground">
-              Awaiting release
+              {t("awaitingRelease")}
             </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Projects</CardTitle>
+            <CardTitle className="text-sm font-medium">{t("projects")}</CardTitle>
             <Briefcase className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -177,7 +183,7 @@ export function EarningsDashboard({
               {earnings.average_rating && (
                 <>
                   <Star className="h-3 w-3 fill-yellow-500 text-yellow-500" />
-                  {earnings.average_rating.toFixed(1)} avg. rating
+                  {earnings.average_rating.toFixed(1)} {t("avgRating").toLowerCase()}
                 </>
               )}
             </div>
@@ -190,9 +196,9 @@ export function EarningsDashboard({
         <CardHeader>
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <CardTitle>Transaction History</CardTitle>
+              <CardTitle>{t("transactionHistory")}</CardTitle>
               <CardDescription>
-                Your payment history and pending transactions
+                {t("paymentHistory")}
               </CardDescription>
             </div>
             <div className="flex gap-2">
@@ -205,10 +211,10 @@ export function EarningsDashboard({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="7d">Last 7 days</SelectItem>
-                  <SelectItem value="30d">Last 30 days</SelectItem>
-                  <SelectItem value="90d">Last 90 days</SelectItem>
-                  <SelectItem value="all">All time</SelectItem>
+                  <SelectItem value="7d">{t("last7Days")}</SelectItem>
+                  <SelectItem value="30d">{t("last30Days")}</SelectItem>
+                  <SelectItem value="90d">{t("last90Days")}</SelectItem>
+                  <SelectItem value="all">{t("allTime")}</SelectItem>
                 </SelectContent>
               </Select>
               <Select
@@ -220,11 +226,11 @@ export function EarningsDashboard({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All status</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="processing">Processing</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
+                  <SelectItem value="all">{t("allStatus")}</SelectItem>
+                  <SelectItem value="completed">{t("projects")}</SelectItem>
+                  <SelectItem value="pending">{t("pending")}</SelectItem>
+                  <SelectItem value="processing">{t("processing")}</SelectItem>
+                  <SelectItem value="failed">{t("failed")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -235,16 +241,16 @@ export function EarningsDashboard({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Project</TableHead>
-                  <TableHead>Client</TableHead>
-                  <TableHead>Date</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Amount</TableHead>
+                  <TableHead>{tCommon("project")}</TableHead>
+                  <TableHead>{tCommon("client")}</TableHead>
+                  <TableHead>{tCommon("date")}</TableHead>
+                  <TableHead>{tCommon("status")}</TableHead>
+                  <TableHead className="text-right">{tCommon("amount")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredTransactions.map((transaction) => {
-                  const status = statusConfig[transaction.status]
+                  const status = getStatusConfig(transaction.status)
                   return (
                     <TableRow key={transaction.id}>
                       <TableCell className="font-medium">
@@ -271,11 +277,11 @@ export function EarningsDashboard({
           ) : (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <DollarSign className="mb-4 h-12 w-12 text-muted-foreground" />
-              <p className="mb-2 font-medium">No transactions found</p>
+              <p className="mb-2 font-medium">{t("noTransactions")}</p>
               <p className="text-sm text-muted-foreground">
                 {statusFilter !== "all" || timeRange !== "all"
-                  ? "Try adjusting your filters"
-                  : "Your transactions will appear here"}
+                  ? t("adjustFilters")
+                  : t("transactionsAppear")}
               </p>
             </div>
           )}
@@ -283,12 +289,11 @@ export function EarningsDashboard({
         {filteredTransactions.length > 0 && (
           <CardFooter className="justify-between">
             <p className="text-sm text-muted-foreground">
-              Showing {filteredTransactions.length} transaction
-              {filteredTransactions.length !== 1 ? "s" : ""}
+              {tCommon("showing")} {filteredTransactions.length} {filteredTransactions.length !== 1 ? tCommon("transactions") : tCommon("transaction")}
             </p>
             <Button variant="outline" size="sm">
               <Download className="h-4 w-4" />
-              Export CSV
+              {tCommon("exportCsv")}
             </Button>
           </CardFooter>
         )}

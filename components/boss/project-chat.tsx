@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useTranslations } from "next-intl"
 import {
   Send,
   Paperclip,
@@ -15,7 +16,7 @@ import {
   X,
   Loader2,
 } from "lucide-react"
-import Link from "next/link"
+import { Link } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -52,6 +53,7 @@ export function ProjectChat({
   clientAvatar,
   onSendMessage,
 }: ProjectChatProps) {
+  const t = useTranslations("boss.projects")
   const [newMessage, setNewMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
   const [attachments, setAttachments] = useState<File[]>([])
@@ -103,8 +105,8 @@ export function ProjectChat({
     const yesterday = new Date(today)
     yesterday.setDate(yesterday.getDate() - 1)
 
-    if (date.toDateString() === today.toDateString()) return "Today"
-    if (date.toDateString() === yesterday.toDateString()) return "Yesterday"
+    if (date.toDateString() === today.toDateString()) return t("today")
+    if (date.toDateString() === yesterday.toDateString()) return t("yesterday")
     return date.toLocaleDateString()
   }
 
@@ -143,7 +145,7 @@ export function ProjectChat({
           </Avatar>
           <div>
             <h3 className="font-semibold">{project.title}</h3>
-            <p className="text-sm text-muted-foreground">with {clientName}</p>
+            <p className="text-sm text-muted-foreground">{t("with")} {clientName}</p>
           </div>
         </div>
 
@@ -157,7 +159,7 @@ export function ProjectChat({
                 : "outline"
             }
           >
-            {project.status.replace("_", " ")}
+            {t(project.status === "in_progress" ? "inProgress" : project.status === "review" ? "inReview" : project.status)}
           </Badge>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -168,16 +170,16 @@ export function ProjectChat({
             <DropdownMenuContent align="end">
               <DropdownMenuItem>
                 <Info className="mr-2 h-4 w-4" />
-                Project Details
+                {t("projectDetailsMenu")}
               </DropdownMenuItem>
               <DropdownMenuItem>
                 <FileText className="mr-2 h-4 w-4" />
-                View Files
+                {t("viewFiles")}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
                 <Phone className="mr-2 h-4 w-4" />
-                Schedule Call
+                {t("scheduleCall")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -312,7 +314,7 @@ export function ProjectChat({
           <Paperclip className="h-5 w-5" />
         </Button>
         <Input
-          placeholder="Type a message..."
+          placeholder={t("typeMessage")}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyDown}

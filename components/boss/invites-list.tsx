@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
 import { Mail, Filter, Search, Inbox, ArrowLeft } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -23,6 +24,7 @@ interface InvitesListProps {
 }
 
 export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) {
+  const t = useTranslations("boss.invites")
   const [searchQuery, setSearchQuery] = useState("")
   const [sortBy, setSortBy] = useState<"date" | "budget">("date")
   const [activeTab, setActiveTab] = useState<InviteStatus | "all">("pending")
@@ -68,9 +70,9 @@ export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) 
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Invites</h1>
+            <h1 className="text-2xl font-bold">{t("title")}</h1>
             <p className="text-muted-foreground">
-              Manage project invitations from clients
+              {t("description")}
             </p>
           </div>
         </div>
@@ -81,7 +83,7 @@ export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) 
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search invites..."
+            placeholder={t("searchInvites")}
             className="pl-9"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -90,11 +92,11 @@ export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) 
         <Select value={sortBy} onValueChange={(v: "date" | "budget") => setSortBy(v)}>
           <SelectTrigger className="w-[180px]">
             <Filter className="mr-2 h-4 w-4" />
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder={t("sortBy")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="date">Newest first</SelectItem>
-            <SelectItem value="budget">Highest budget</SelectItem>
+            <SelectItem value="date">{t("newestFirst")}</SelectItem>
+            <SelectItem value="budget">{t("highestBudget")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -104,7 +106,7 @@ export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) 
         <TabsList>
           <TabsTrigger value="pending" className="gap-2">
             <Mail className="h-4 w-4" />
-            Pending
+            {t("pending")}
             {pendingCount > 0 && (
               <span className="ml-1 rounded-full bg-accent px-2 py-0.5 text-xs text-accent-foreground">
                 {pendingCount}
@@ -112,12 +114,12 @@ export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) 
             )}
           </TabsTrigger>
           <TabsTrigger value="accepted">
-            Accepted ({acceptedCount})
+            {t("accepted")} ({acceptedCount})
           </TabsTrigger>
           <TabsTrigger value="declined">
-            Declined ({declinedCount})
+            {t("declined")} ({declinedCount})
           </TabsTrigger>
-          <TabsTrigger value="all">All ({invites.length})</TabsTrigger>
+          <TabsTrigger value="all">{t("title")} ({invites.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-6">
@@ -137,13 +139,13 @@ export function InvitesList({ invites, onAccept, onDecline }: InvitesListProps) 
               <div className="mb-4 rounded-full bg-muted p-4">
                 <Inbox className="h-8 w-8 text-muted-foreground" />
               </div>
-              <h3 className="mb-2 font-medium">No invites found</h3>
+              <h3 className="mb-2 font-medium">{t("noInvitesFound")}</h3>
               <p className="text-sm text-muted-foreground">
                 {searchQuery
-                  ? "Try adjusting your search"
+                  ? t("tryAdjusting")
                   : activeTab === "pending"
-                  ? "New invites will appear here"
-                  : `No ${activeTab} invites yet`}
+                  ? t("newInvitesAppear")
+                  : t("noInvitesYet", { status: activeTab })}
               </p>
             </div>
           )}

@@ -1,16 +1,12 @@
 import { redirect } from "next/navigation"
-import Link from "next/link"
+import { getTranslations } from "next-intl/server"
+import { Link } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/server"
 import {
   Briefcase,
-  Clock,
-  CheckCircle2,
   ArrowRight,
   ArrowLeft,
-  Search,
-  Filter,
 } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -21,24 +17,11 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-
-const statusConfig = {
-  invited: { label: "Invited", variant: "outline" as const },
-  in_progress: { label: "In Progress", variant: "default" as const },
-  review: { label: "In Review", variant: "secondary" as const },
-  completed: { label: "Completed", variant: "default" as const },
-  cancelled: { label: "Cancelled", variant: "destructive" as const },
-}
 
 export default async function ProjectsPage() {
   const supabase = await createClient()
+  const t = await getTranslations("boss.projects")
+  const tCommon = await getTranslations("common")
 
   const {
     data: { user },
@@ -73,6 +56,23 @@ export default async function ProjectsPage() {
   const completedProjects =
     projects?.filter((p) => p.status === "completed") || []
 
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "invited":
+        return { label: t("invited"), variant: "outline" as const }
+      case "in_progress":
+        return { label: t("inProgress"), variant: "default" as const }
+      case "review":
+        return { label: t("inReview"), variant: "secondary" as const }
+      case "completed":
+        return { label: t("completed"), variant: "default" as const }
+      case "cancelled":
+        return { label: t("cancelled"), variant: "destructive" as const }
+      default:
+        return { label: status, variant: "outline" as const }
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -84,8 +84,8 @@ export default async function ProjectsPage() {
             </Link>
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">Projects</h1>
-            <p className="text-muted-foreground">Manage your active and past projects</p>
+            <h1 className="text-2xl font-bold">{t("title")}</h1>
+            <p className="text-muted-foreground">{t("description")}</p>
           </div>
         </div>
       </div>
@@ -95,7 +95,7 @@ export default async function ProjectsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Active Projects
+              {t("activeProjects")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -105,7 +105,7 @@ export default async function ProjectsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Completed
+              {t("completed")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -115,7 +115,7 @@ export default async function ProjectsPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Projects
+              {t("totalProjects")}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -128,7 +128,7 @@ export default async function ProjectsPage() {
       {projects && projects.length > 0 ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => {
-            const status = statusConfig[project.status as keyof typeof statusConfig]
+            const status = getStatusConfig(project.status)
             return (
               <Card key={project.id}>
                 <CardHeader>
@@ -145,7 +145,7 @@ export default async function ProjectsPage() {
                 <CardContent className="space-y-2">
                   {project.budget && (
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Budget</span>
+                      <span className="text-muted-foreground">{tCommon("budget")}</span>
                       <span className="font-medium">
                         {project.currency}
                         {project.budget.toLocaleString()}
@@ -154,7 +154,7 @@ export default async function ProjectsPage() {
                   )}
                   {project.deadline && (
                     <div className="flex items-center justify-between text-sm">
-                      <span className="text-muted-foreground">Deadline</span>
+                      <span className="text-muted-foreground">{tCommon("deadline")}</span>
                       <span className="font-medium">
                         {new Date(project.deadline).toLocaleDateString()}
                       </span>
@@ -164,7 +164,7 @@ export default async function ProjectsPage() {
                 <CardFooter>
                   <Button asChild variant="outline" className="w-full">
                     <Link href={`/boss/projects/${project.id}`}>
-                      View Project
+                      {t("viewProject")}
                       <ArrowRight className="h-4 w-4" />
                     </Link>
                   </Button>
@@ -179,13 +179,13 @@ export default async function ProjectsPage() {
             <div className="mb-4 rounded-full bg-muted p-4">
               <Briefcase className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="mb-2 font-medium">No projects yet</h3>
+            <h3 className="mb-2 font-medium">{t("noProjects")}</h3>
             <p className="mb-4 text-center text-sm text-muted-foreground">
-              Accept an invite to start your first project
+              {t("acceptInvite")}
             </p>
             <Button asChild>
               <Link href="/boss/invites">
-                View Invites
+                {t("viewInvites")}
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>

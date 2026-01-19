@@ -2,6 +2,7 @@
 
 import type React from "react"
 
+import { useTranslations } from "next-intl"
 import { Button } from "@/components/ui/button"
 import type { WebsiteBlock, BlockType } from "@/lib/types"
 import { GripVertical, Eye, EyeOff, Type, User, Briefcase, Mail, Sparkles, Plus, Trash2 } from "lucide-react"
@@ -12,14 +13,6 @@ const blockIcons: Record<BlockType, React.ElementType> = {
   services: Briefcase,
   contact: Mail,
   creative: Sparkles,
-}
-
-const blockLabels: Record<BlockType, string> = {
-  hero: "Hero",
-  about: "About",
-  services: "Services",
-  contact: "Contact",
-  creative: "Creative",
 }
 
 interface BlockListProps {
@@ -41,6 +34,16 @@ export function BlockList({
   onAddBlock,
   onDeleteBlock,
 }: BlockListProps) {
+  const t = useTranslations("builder")
+
+  const blockLabels: Record<BlockType, string> = {
+    hero: t("blocks.hero"),
+    about: t("blocks.about"),
+    services: t("blocks.services"),
+    contact: t("blocks.contact"),
+    creative: t("blocks.creative"),
+  }
+
   const handleDragStart = (e: React.DragEvent, index: number) => {
     e.dataTransfer.setData("text/plain", index.toString())
   }
@@ -71,7 +74,7 @@ export function BlockList({
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-muted-foreground">Content blocks</h3>
+        <h3 className="text-sm font-semibold text-muted-foreground">{t("blocks.contentBlocks")}</h3>
         <Button
           variant="outline"
           size="sm"
@@ -102,7 +105,7 @@ export function BlockList({
               <Icon className="h-4 w-4" />
               <span className="flex-1 text-sm font-medium truncate">
                 {block.block_type === "creative"
-                  ? (block.content as { name?: string })?.name || "Creative"
+                  ? (block.content as { name?: string })?.name || t("blocks.creative")
                   : blockLabels[block.block_type]}
               </span>
               <Button
@@ -135,7 +138,7 @@ export function BlockList({
           )
         })}
       </div>
-      <p className="mt-4 text-xs text-muted-foreground">Drag and drop to reorder blocks</p>
+      <p className="mt-4 text-xs text-muted-foreground">{t("blocks.dragToReorder")}</p>
     </div>
   )
 }

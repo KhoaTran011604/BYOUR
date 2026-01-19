@@ -1,7 +1,9 @@
 "use client"
 
 import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
+import { useRouter } from "@/i18n/navigation"
+import { Link } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { ProjectChat } from "@/components/boss/project-chat"
 import { WorkTracker } from "@/components/boss/work-tracker"
@@ -9,7 +11,6 @@ import { PaymentCard } from "@/components/boss/payment-card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { MessageSquare, FileCheck, DollarSign, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import type { BossProject, ProjectMessage, BossPayment } from "@/lib/types"
 
 interface Milestone {
@@ -27,6 +28,8 @@ export default function ProjectDetailPage({
 }) {
   const { id: projectId } = use(params)
   const router = useRouter()
+  const t = useTranslations("boss")
+  const tCommon = useTranslations("common")
   const [project, setProject] = useState<BossProject | null>(null)
   const [messages, setMessages] = useState<ProjectMessage[]>([])
   const [milestones, setMilestones] = useState<Milestone[]>([])
@@ -255,7 +258,7 @@ export default function ProjectDetailPage({
       <Button variant="ghost" asChild>
         <Link href="/boss/projects">
           <ArrowLeft className="h-4 w-4" />
-          Back to Projects
+          {t("projects.backToProjects")}
         </Link>
       </Button>
 
@@ -264,15 +267,15 @@ export default function ProjectDetailPage({
         <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="chat" className="gap-2">
             <MessageSquare className="h-4 w-4" />
-            Chat
+            {t("tabs.chat")}
           </TabsTrigger>
           <TabsTrigger value="work" className="gap-2">
             <FileCheck className="h-4 w-4" />
-            Work
+            {t("tabs.work")}
           </TabsTrigger>
           <TabsTrigger value="payment" className="gap-2">
             <DollarSign className="h-4 w-4" />
-            Payment
+            {t("tabs.payment")}
           </TabsTrigger>
         </TabsList>
 
@@ -283,7 +286,7 @@ export default function ProjectDetailPage({
             currentUserId={currentUser.id}
             currentUserName={currentUser.name}
             currentUserAvatar={currentUser.avatar}
-            clientName={clientInfo?.name || "Client"}
+            clientName={clientInfo?.name || tCommon("client")}
             clientAvatar={clientInfo?.avatar}
             onSendMessage={handleSendMessage}
           />
@@ -303,15 +306,15 @@ export default function ProjectDetailPage({
             <div className="space-y-6">
               {/* Project Info Card */}
               <div className="rounded-lg border p-4">
-                <h3 className="mb-4 font-semibold">Project Details</h3>
+                <h3 className="mb-4 font-semibold">{t("projects.projectDetails")}</h3>
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Title</span>
+                    <span className="text-muted-foreground">{tCommon("project")}</span>
                     <span className="font-medium">{project.title}</span>
                   </div>
                   {project.budget && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Budget</span>
+                      <span className="text-muted-foreground">{tCommon("budget")}</span>
                       <span className="font-medium">
                         {project.currency}
                         {project.budget.toLocaleString()}
@@ -320,7 +323,7 @@ export default function ProjectDetailPage({
                   )}
                   {project.deadline && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Deadline</span>
+                      <span className="text-muted-foreground">{tCommon("deadline")}</span>
                       <span className="font-medium">
                         {new Date(project.deadline).toLocaleDateString()}
                       </span>
@@ -328,7 +331,7 @@ export default function ProjectDetailPage({
                   )}
                   {project.started_at && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Started</span>
+                      <span className="text-muted-foreground">{t("projects.started")}</span>
                       <span className="font-medium">
                         {new Date(project.started_at).toLocaleDateString()}
                       </span>

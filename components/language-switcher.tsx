@@ -1,7 +1,8 @@
 'use client'
 
 import { useLocale } from 'next-intl'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useTransition } from 'react'
 import { Globe } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -10,38 +11,29 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { locales } from '@/i18n/config'
+import { locales, type Locale } from '@/i18n/config'
 
-const localeNames: Record<string, string> = {
+const localeNames: Record<Locale, string> = {
   en: 'English',
   vi: 'Tiếng Việt',
 }
 
 export function LanguageSwitcher() {
-  const locale = useLocale()
+  const locale = useLocale() as Locale
   const router = useRouter()
   const pathname = usePathname()
+  const [isPending, startTransition] = useTransition()
 
-  const switchLocale = (newLocale: string) => {
-    // Remove current locale from pathname
-    const segments = pathname.split('/')
-    const currentLocaleIndex = locales.includes(segments[1] as any) ? 1 : -1
-
-    let newPathname: string
-    if (currentLocaleIndex === 1) {
-      segments[1] = newLocale
-      newPathname = segments.join('/')
-    } else {
-      newPathname = `/${newLocale}${pathname}`
-    }
-
-    router.push(newPathname)
+  const switchLocale = (newLocale: Locale) => {
+    startTransition(() => {
+      router.replace(pathname, { locale: newLocale })
+    })
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-2">
+        <Button variant="ghost" size="sm" className="gap-2" disabled={isPending}>
           <Globe className="h-4 w-4" />
           <span className="hidden sm:inline">{localeNames[locale]}</span>
         </Button>

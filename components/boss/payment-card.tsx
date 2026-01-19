@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import {
   CheckCircle2,
   Clock,
@@ -30,57 +31,60 @@ interface PaymentCardProps {
   payment: BossPayment | null
 }
 
-const statusConfig = {
-  pending: {
-    icon: Clock,
-    label: "Pending",
-    description: "Waiting for client to release payment",
-    color: "text-yellow-500",
-    bgColor: "bg-yellow-500/10",
-  },
-  processing: {
-    icon: Loader2,
-    label: "Processing",
-    description: "Payment is being processed",
-    color: "text-blue-500",
-    bgColor: "bg-blue-500/10",
-    animate: true,
-  },
-  completed: {
-    icon: CheckCircle2,
-    label: "Paid",
-    description: "Payment received successfully",
-    color: "text-green-500",
-    bgColor: "bg-green-500/10",
-  },
-  failed: {
-    icon: AlertCircle,
-    label: "Failed",
-    description: "Payment failed - please contact support",
-    color: "text-destructive",
-    bgColor: "bg-destructive/10",
-  },
+const statusIcons = {
+  pending: Clock,
+  processing: Loader2,
+  completed: CheckCircle2,
+  failed: AlertCircle,
+}
+
+const statusColors = {
+  pending: { color: "text-yellow-500", bgColor: "bg-yellow-500/10" },
+  processing: { color: "text-blue-500", bgColor: "bg-blue-500/10", animate: true },
+  completed: { color: "text-green-500", bgColor: "bg-green-500/10" },
+  failed: { color: "text-destructive", bgColor: "bg-destructive/10" },
 }
 
 export function PaymentCard({ project, payment }: PaymentCardProps) {
+  const t = useTranslations("boss.payment")
+
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      pending: t("pending"),
+      processing: t("processing"),
+      completed: t("paid"),
+      failed: t("failed"),
+    }
+    return labels[status] || status
+  }
+
+  const getStatusDescription = (status: string) => {
+    const descriptions: Record<string, string> = {
+      pending: t("pendingDesc"),
+      processing: t("processingDesc"),
+      completed: t("paidDesc"),
+      failed: t("failedDesc"),
+    }
+    return descriptions[status] || ""
+  }
   if (!payment) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <DollarSign className="h-5 w-5 text-accent" />
-            Payment
+            {t("payment")}
           </CardTitle>
-          <CardDescription>Payment details for this project</CardDescription>
+          <CardDescription>{t("paymentDetails")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <div className="mb-4 rounded-full bg-muted p-4">
               <DollarSign className="h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="mb-2 font-medium">No payment yet</p>
+            <p className="mb-2 font-medium">{t("noPaymentYet")}</p>
             <p className="text-sm text-muted-foreground">
-              Payment will be available after the project is completed
+              {t("paymentAfterComplete")}
             </p>
           </div>
         </CardContent>
@@ -88,8 +92,8 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
     )
   }
 
-  const config = statusConfig[payment.status]
-  const Icon = config.icon
+  const Icon = statusIcons[payment.status]
+  const colors = statusColors[payment.status]
 
   return (
     <Card>
@@ -98,9 +102,9 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
           <div>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5 text-accent" />
-              Payment
+              {t("payment")}
             </CardTitle>
-            <CardDescription>Payment details for this project</CardDescription>
+            <CardDescription>{t("paymentDetails")}</CardDescription>
           </div>
           <Badge
             variant={
@@ -111,7 +115,7 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
                 : "secondary"
             }
           >
-            {config.label}
+            {getStatusLabel(payment.status)}
           </Badge>
         </div>
       </CardHeader>
@@ -121,25 +125,25 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
         <div
           className={cn(
             "flex items-center gap-3 rounded-lg p-4",
-            config.bgColor
+            colors.bgColor
           )}
         >
           <Icon
             className={cn(
               "h-6 w-6 shrink-0",
-              config.color,
-              config.animate && "animate-spin"
+              colors.color,
+              colors.animate && "animate-spin"
             )}
           />
           <div>
-            <p className={cn("font-medium", config.color)}>{config.label}</p>
-            <p className="text-sm text-muted-foreground">{config.description}</p>
+            <p className={cn("font-medium", colors.color)}>{getStatusLabel(payment.status)}</p>
+            <p className="text-sm text-muted-foreground">{getStatusDescription(payment.status)}</p>
           </div>
         </div>
 
         {/* Amount */}
         <div className="rounded-lg bg-muted/50 p-4 text-center">
-          <p className="text-sm text-muted-foreground">Amount</p>
+          <p className="text-sm text-muted-foreground">{t("amount")}</p>
           <p className="text-3xl font-bold">
             {payment.currency}
             {payment.amount.toLocaleString()}
@@ -151,10 +155,10 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-2 text-muted-foreground">
               <CreditCard className="h-4 w-4" />
-              Payment Method
+              {t("paymentMethod")}
             </span>
             <span className="font-medium">
-              {payment.payment_method || "Not specified"}
+              {payment.payment_method || t("notSpecified")}
             </span>
           </div>
 
@@ -163,7 +167,7 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
           <div className="flex items-center justify-between text-sm">
             <span className="flex items-center gap-2 text-muted-foreground">
               <Calendar className="h-4 w-4" />
-              {payment.status === "completed" ? "Paid on" : "Created on"}
+              {payment.status === "completed" ? t("paidOn") : t("createdOn")}
             </span>
             <span className="font-medium">
               {new Date(
@@ -176,7 +180,7 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
             <>
               <Separator />
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Transaction ID</span>
+                <span className="text-muted-foreground">{t("transactionId")}</span>
                 <span className="font-mono text-xs">{payment.transaction_id}</span>
               </div>
             </>
@@ -188,7 +192,7 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
         <CardFooter>
           <Button variant="outline" className="w-full">
             <Download className="h-4 w-4" />
-            Download Invoice
+            {t("downloadInvoice")}
           </Button>
         </CardFooter>
       )}
@@ -197,7 +201,7 @@ export function PaymentCard({ project, payment }: PaymentCardProps) {
         <CardFooter>
           <Button variant="outline" className="w-full">
             <ExternalLink className="h-4 w-4" />
-            Contact Support
+            {t("contactSupport")}
           </Button>
         </CardFooter>
       )}

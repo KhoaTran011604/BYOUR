@@ -1,8 +1,9 @@
 "use client"
 
 import { useState, useCallback } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
+import { Link } from "@/i18n/navigation"
+import { useRouter } from "@/i18n/navigation"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/lib/supabase/client"
 import type { Website, WebsiteBlock, Service, WebsiteTemplate, BlockType } from "@/lib/types"
@@ -23,6 +24,7 @@ type DeviceView = "desktop" | "mobile"
 
 export function WebsiteBuilder({ website, initialBlocks, initialServices }: WebsiteBuilderProps) {
   const router = useRouter()
+  const t = useTranslations("builder")
   const [blocks, setBlocks] = useState<WebsiteBlock[]>(initialBlocks)
   const [services, setServices] = useState<Service[]>(initialServices)
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(blocks[0]?.id || null)
@@ -114,10 +116,10 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
 
       const defaultContent: Record<BlockType, object> = {
         hero: { title: "", subtitle: "", image_url: null, cta_text: null, cta_link: null },
-        about: { heading: "About me", description: "", image_url: null },
-        services: { heading: "Services", description: null },
-        contact: { heading: "Contact", email: null, phone: null, address: null, social_links: {} },
-        creative: { name: "Creative Block", items: [] },
+        about: { heading: t("defaults.aboutMe"), description: "", image_url: null },
+        services: { heading: t("defaults.servicesHeading"), description: null },
+        contact: { heading: t("defaults.contactHeading"), email: null, phone: null, address: null, social_links: {} },
+        creative: { name: t("blocks.creativeBlock"), items: [] },
       }
 
       const newBlock = {
@@ -135,7 +137,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
         setSelectedBlockId(data.id)
       }
     },
-    [website.id, blocks.length],
+    [website.id, blocks.length, t],
   )
 
   const handleBlockDelete = useCallback(
@@ -180,7 +182,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
           <Button variant="ghost" size="sm" asChild>
             <Link href="/boss">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Dashboard
+              {t("header.dashboard")}
             </Link>
           </Button>
           <div className="h-6 w-px bg-border" />
@@ -216,7 +218,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
               className="h-7 px-3"
               onClick={() => setViewMode("edit")}
             >
-              Edit
+              {t("header.edit")}
             </Button>
             <Button
               variant={viewMode === "preview" ? "secondary" : "ghost"}
@@ -225,7 +227,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
               onClick={() => setViewMode("preview")}
             >
               <Eye className="mr-1 h-4 w-4" />
-              Preview
+              {t("header.preview")}
             </Button>
           </div>
 
@@ -235,7 +237,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
 
           <Button variant={isPublished ? "outline" : "default"} size="sm" onClick={handlePublish} disabled={isSaving}>
             <Globe className="mr-2 h-4 w-4" />
-            {isSaving ? "Saving..." : isPublished ? "Unpublish" : "Publish"}
+            {isSaving ? t("header.saving") : isPublished ? t("header.unpublish") : t("header.publish")}
           </Button>
         </div>
       </header>
@@ -283,7 +285,7 @@ export function WebsiteBuilder({ website, initialBlocks, initialServices }: Webs
             {/* Live Preview */}
             <div className="hidden w-[400px] flex-shrink-0 border-l border-border bg-muted/50 overflow-y-auto lg:block">
               <div className="p-4">
-                <div className="text-sm font-medium text-muted-foreground mb-2">Preview</div>
+                <div className="text-sm font-medium text-muted-foreground mb-2">{t("preview.preview")}</div>
                 <div className="rounded-lg border border-border bg-background overflow-hidden">
                   <WebsitePreview blocks={blocks} services={services} template={template} scale={0.5} />
                 </div>

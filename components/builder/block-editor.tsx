@@ -1,5 +1,6 @@
 "use client"
 
+import { useTranslations } from "next-intl"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -36,6 +37,8 @@ export function BlockEditor({
   onServiceUpdate,
   onServiceDelete,
 }: BlockEditorProps) {
+  const t = useTranslations("builder")
+
   const handleChange = (field: string, value: string | object) => {
     onBlockUpdate(block.id, {
       ...block.content,
@@ -48,35 +51,35 @@ export function BlockEditor({
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="title">Title</Label>
+          <Label htmlFor="title">{t("blockEditor.title")}</Label>
           <Input
             id="title"
             value={content.title || ""}
             onChange={(e) => handleChange("title", e.target.value)}
-            placeholder="Main title"
+            placeholder={t("blockEditor.mainTitle")}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="subtitle">Subtitle</Label>
+          <Label htmlFor="subtitle">{t("blockEditor.subtitle")}</Label>
           <Textarea
             id="subtitle"
             value={content.subtitle || ""}
             onChange={(e) => handleChange("subtitle", e.target.value)}
-            placeholder="Short description about you"
+            placeholder={t("blockEditor.subtitlePlaceholder")}
             rows={3}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="cta_text">CTA Button</Label>
+          <Label htmlFor="cta_text">{t("blockEditor.ctaButton")}</Label>
           <Input
             id="cta_text"
             value={content.cta_text || ""}
             onChange={(e) => handleChange("cta_text", e.target.value)}
-            placeholder="Contact now"
+            placeholder={t("blockEditor.ctaPlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="cta_link">Link CTA</Label>
+          <Label htmlFor="cta_link">{t("blockEditor.ctaLink")}</Label>
           <Input
             id="cta_link"
             value={content.cta_link || ""}
@@ -93,21 +96,21 @@ export function BlockEditor({
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="heading">Title</Label>
+          <Label htmlFor="heading">{t("blockEditor.title")}</Label>
           <Input
             id="heading"
             value={content.heading || ""}
             onChange={(e) => handleChange("heading", e.target.value)}
-            placeholder="About me"
+            placeholder={t("defaults.aboutMe")}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="description">Content</Label>
+          <Label htmlFor="description">{t("blockEditor.content")}</Label>
           <Textarea
             id="description"
             value={content.description || ""}
             onChange={(e) => handleChange("description", e.target.value)}
-            placeholder="Introduce yourself and your experience..."
+            placeholder={t("blockEditor.contentPlaceholder")}
             rows={6}
           />
         </div>
@@ -121,21 +124,21 @@ export function BlockEditor({
       <div className="space-y-6">
         <div className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="heading">Title</Label>
+            <Label htmlFor="heading">{t("blockEditor.title")}</Label>
             <Input
               id="heading"
               value={content.heading || ""}
               onChange={(e) => handleChange("heading", e.target.value)}
-              placeholder="Services"
+              placeholder={t("defaults.servicesHeading")}
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t("blockEditor.description")}</Label>
             <Textarea
               id="description"
               value={content.description || ""}
               onChange={(e) => handleChange("description", e.target.value)}
-              placeholder="What I can help you with"
+              placeholder={t("blockEditor.descriptionPlaceholder")}
               rows={2}
             />
           </div>
@@ -143,10 +146,10 @@ export function BlockEditor({
 
         <div className="border-t border-border pt-4">
           <div className="flex items-center justify-between mb-4">
-            <Label>Service list</Label>
+            <Label>{t("blockEditor.serviceList")}</Label>
             <Button variant="outline" size="sm" onClick={onServiceAdd} className="bg-transparent">
               <Plus className="mr-2 h-4 w-4" />
-              Add service
+              {t("blockEditor.addService")}
             </Button>
           </div>
 
@@ -158,12 +161,12 @@ export function BlockEditor({
                     <Input
                       value={service.title}
                       onChange={(e) => onServiceUpdate(service.id, { title: e.target.value })}
-                      placeholder="Service name"
+                      placeholder={t("blockEditor.serviceName")}
                     />
                     <Textarea
                       value={service.description || ""}
                       onChange={(e) => onServiceUpdate(service.id, { description: e.target.value })}
-                      placeholder="Service description"
+                      placeholder={t("blockEditor.serviceDescription")}
                       rows={2}
                     />
                     <div className="flex gap-2">
@@ -175,8 +178,8 @@ export function BlockEditor({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="fixed">Fixed price</SelectItem>
-                          <SelectItem value="quote">Quote</SelectItem>
+                          <SelectItem value="fixed">{t("blockEditor.fixedPrice")}</SelectItem>
+                          <SelectItem value="quote">{t("blockEditor.quote")}</SelectItem>
                         </SelectContent>
                       </Select>
                       {service.price_type === "fixed" && (
@@ -188,7 +191,7 @@ export function BlockEditor({
                               price_amount: e.target.value ? Number.parseFloat(e.target.value) : null,
                             })
                           }
-                          placeholder="Price (VND)"
+                          placeholder={t("blockEditor.priceVnd")}
                           className="flex-1"
                         />
                       )}
@@ -208,7 +211,7 @@ export function BlockEditor({
 
             {services.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
-                No services yet. Click "Add service" to get started.
+                {t("blockEditor.noServices")}
               </p>
             )}
           </div>
@@ -222,45 +225,45 @@ export function BlockEditor({
     return (
       <div className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="heading">Title</Label>
+          <Label htmlFor="heading">{t("blockEditor.title")}</Label>
           <Input
             id="heading"
             value={content.heading || ""}
             onChange={(e) => handleChange("heading", e.target.value)}
-            placeholder="Contact"
+            placeholder={t("defaults.contactHeading")}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">{t("blockEditor.email")}</Label>
           <Input
             id="email"
             type="email"
             value={content.email || ""}
             onChange={(e) => handleChange("email", e.target.value)}
-            placeholder="email@example.com"
+            placeholder={t("blockEditor.emailPlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="phone">Phone number</Label>
+          <Label htmlFor="phone">{t("blockEditor.phoneNumber")}</Label>
           <Input
             id="phone"
             value={content.phone || ""}
             onChange={(e) => handleChange("phone", e.target.value)}
-            placeholder="0912 345 678"
+            placeholder={t("blockEditor.phonePlaceholder")}
           />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="address">Address</Label>
+          <Label htmlFor="address">{t("blockEditor.address")}</Label>
           <Textarea
             id="address"
             value={content.address || ""}
             onChange={(e) => handleChange("address", e.target.value)}
-            placeholder="Your address"
+            placeholder={t("blockEditor.addressPlaceholder")}
             rows={2}
           />
         </div>
         <div className="space-y-2">
-          <Label>Social media</Label>
+          <Label>{t("blockEditor.socialMedia")}</Label>
           <div className="space-y-2">
             <Input
               value={content.social_links?.facebook || ""}
@@ -283,12 +286,15 @@ export function BlockEditor({
     )
   }
 
-  const blockTitles: Record<string, string> = {
-    hero: "Hero Section",
-    about: "About",
-    services: "Services",
-    contact: "Contact",
-    creative: "Creative Block",
+  const getBlockTitle = (blockType: string) => {
+    const titles: Record<string, string> = {
+      hero: t("blocks.heroSection"),
+      about: t("blocks.about"),
+      services: t("blocks.services"),
+      contact: t("blocks.contact"),
+      creative: t("blocks.creativeBlock"),
+    }
+    return titles[blockType] || blockType
   }
 
   return (
@@ -296,8 +302,8 @@ export function BlockEditor({
       <CardHeader>
         <CardTitle>
           {block.block_type === "creative"
-            ? (block.content as CreativeContent).name || "Creative Block"
-            : blockTitles[block.block_type]}
+            ? (block.content as CreativeContent).name || t("blocks.creativeBlock")
+            : getBlockTitle(block.block_type)}
         </CardTitle>
       </CardHeader>
       <CardContent>

@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect, use } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
+import { useTranslations } from "next-intl"
+import { useRouter, Link } from "@/i18n/navigation"
 import { createClient } from "@/lib/supabase/client"
 import { ProjectGroupChat } from "@/components/shared/project-group-chat"
 import { Button } from "@/components/ui/button"
@@ -37,6 +37,8 @@ export default function BossChatDetailPage({
 }) {
   const { projectId } = use(params)
   const router = useRouter()
+  const t = useTranslations("boss.bossChats")
+  const tCommon = useTranslations("common")
   const [project, setProject] = useState<ProjectWithDetails | null>(null)
   const [chatId, setChatId] = useState<string | null>(null)
   const [milestones, setMilestones] = useState<HQMilestone[]>([])
@@ -128,21 +130,45 @@ export default function BossChatDetailPage({
   }
 
   const getClientName = () => {
-    if (!project) return "Client"
+    if (!project) return tCommon("client")
     return (
       project.hq_profiles?.hq_business_profiles?.display_name ||
       project.hq_profiles?.company_name ||
-      "Client"
+      tCommon("client")
     )
   }
 
-  const statusConfig: Record<string, { variant: "default" | "secondary" | "outline" | "destructive"; label: string }> = {
-    draft: { variant: "outline", label: "Draft" },
-    open: { variant: "secondary", label: "Open" },
-    in_progress: { variant: "default", label: "In Progress" },
-    review: { variant: "secondary", label: "Under Review" },
-    completed: { variant: "default", label: "Completed" },
-    cancelled: { variant: "destructive", label: "Cancelled" },
+  const getStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      draft: t("draft"),
+      open: t("open"),
+      in_progress: t("inProgress"),
+      review: t("underReview"),
+      completed: t("completed"),
+      cancelled: t("cancelled"),
+    }
+    return labels[status] || status
+  }
+
+  const getStatusVariant = (status: string): "default" | "secondary" | "outline" | "destructive" => {
+    const variants: Record<string, "default" | "secondary" | "outline" | "destructive"> = {
+      draft: "outline",
+      open: "secondary",
+      in_progress: "default",
+      review: "secondary",
+      completed: "default",
+      cancelled: "destructive",
+    }
+    return variants[status] || "outline"
+  }
+
+  const getMilestoneStatusLabel = (status: string) => {
+    const labels: Record<string, string> = {
+      approved: t("approved"),
+      submitted: t("submitted"),
+      pending: t("pending"),
+    }
+    return labels[status] || status
   }
 
   if (isLoading) {
@@ -157,8 +183,6 @@ export default function BossChatDetailPage({
     return null
   }
 
-  const status = statusConfig[project.status] || statusConfig.draft
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -167,7 +191,7 @@ export default function BossChatDetailPage({
           <Button variant="ghost" size="sm" asChild className="mb-2">
             <Link href="/boss/boss-chats">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Chats
+              {t("backToChats")}
             </Link>
           </Button>
           <h1 className="text-2xl font-bold">{project.title}</h1>
@@ -176,7 +200,7 @@ export default function BossChatDetailPage({
             <span>{getClientName()}</span>
           </div>
         </div>
-        <Badge variant={status.variant}>{status.label}</Badge>
+        <Badge variant={getStatusVariant(project.status)}>{getStatusLabel(project.status)}</Badge>
       </div>
 
       {/* Tabs */}
@@ -184,11 +208,11 @@ export default function BossChatDetailPage({
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="chat" className="gap-2">
             <MessageSquare className="h-4 w-4" />
-            Chat
+            {t("chat")}
           </TabsTrigger>
           <TabsTrigger value="details" className="gap-2">
             <FileText className="h-4 w-4" />
-            Details
+            {t("details")}
           </TabsTrigger>
         </TabsList>
 
@@ -208,12 +232,12 @@ export default function BossChatDetailPage({
             {/* Project Info */}
             <Card>
               <CardHeader>
-                <CardTitle>Project Details</CardTitle>
+                <CardTitle>{t("projectDetails")}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="mb-1 text-sm font-medium text-muted-foreground">
-                    Description
+                    {t("description")}
                   </h4>
                   <p className="text-sm">{project.description}</p>
                 </div>
@@ -221,7 +245,7 @@ export default function BossChatDetailPage({
                 {project.requirements && (
                   <div>
                     <h4 className="mb-1 text-sm font-medium text-muted-foreground">
-                      Requirements
+                      {t("requirements")}
                     </h4>
                     <p className="text-sm whitespace-pre-wrap">
                       {project.requirements}
@@ -232,7 +256,7 @@ export default function BossChatDetailPage({
                 {project.deliverables && project.deliverables.length > 0 && (
                   <div>
                     <h4 className="mb-1 text-sm font-medium text-muted-foreground">
-                      Deliverables
+                      {t("deliverables")}
                     </h4>
                     <ul className="list-inside list-disc text-sm">
                       {project.deliverables.map((item, index) => (
@@ -245,7 +269,7 @@ export default function BossChatDetailPage({
                 {project.skills_required && project.skills_required.length > 0 && (
                   <div>
                     <h4 className="mb-1 text-sm font-medium text-muted-foreground">
-                      Skills Required
+                      {t("skillsRequired")}
                     </h4>
                     <div className="flex flex-wrap gap-1">
                       {project.skills_required.map((skill, index) => (
@@ -265,7 +289,7 @@ export default function BossChatDetailPage({
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <DollarSign className="h-5 w-5" />
-                    Budget
+                    {t("budget")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -281,13 +305,13 @@ export default function BossChatDetailPage({
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Calendar className="h-5 w-5" />
-                    Timeline
+                    {t("timeline")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
                   {project.deadline && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Deadline</span>
+                      <span className="text-muted-foreground">{t("deadline")}</span>
                       <span className="font-medium">
                         {new Date(project.deadline).toLocaleDateString()}
                       </span>
@@ -295,7 +319,7 @@ export default function BossChatDetailPage({
                   )}
                   {project.timeline_start && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Start Date</span>
+                      <span className="text-muted-foreground">{t("startDate")}</span>
                       <span className="font-medium">
                         {new Date(project.timeline_start).toLocaleDateString()}
                       </span>
@@ -303,7 +327,7 @@ export default function BossChatDetailPage({
                   )}
                   {project.timeline_end && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">End Date</span>
+                      <span className="text-muted-foreground">{t("endDate")}</span>
                       <span className="font-medium">
                         {new Date(project.timeline_end).toLocaleDateString()}
                       </span>
@@ -316,7 +340,7 @@ export default function BossChatDetailPage({
               {milestones.length > 0 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle>Milestones</CardTitle>
+                    <CardTitle>{t("milestones")}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
@@ -347,7 +371,7 @@ export default function BossChatDetailPage({
                                   : "outline"
                               }
                             >
-                              {milestone.status}
+                              {getMilestoneStatusLabel(milestone.status)}
                             </Badge>
                           </div>
                         </div>

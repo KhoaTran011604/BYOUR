@@ -1,7 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useTranslations } from "next-intl"
+import { useRouter } from "@/i18n/navigation"
 import { Briefcase, Building2, Loader2, ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -23,20 +24,13 @@ import {
 } from "@/components/ui/select"
 import { createClient } from "@/lib/supabase/client"
 
-const businessTypes = [
-  { value: "sole_trader", label: "Sole Trader" },
-  { value: "limited_company", label: "Limited Company" },
-  { value: "partnership", label: "Partnership" },
-  { value: "freelancer", label: "Freelancer" },
-  { value: "contractor", label: "Contractor" },
-]
-
 interface RegistrationFormProps {
   userId: string
 }
 
 export function RegistrationForm({ userId }: RegistrationFormProps) {
   const router = useRouter()
+  const t = useTranslations("boss.registration")
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
@@ -45,13 +39,21 @@ export function RegistrationForm({ userId }: RegistrationFormProps) {
     businessType: "",
   })
 
+  const businessTypes = [
+    { value: "sole_trader", label: t("soleTrader") },
+    { value: "limited_company", label: t("limitedCompany") },
+    { value: "partnership", label: t("partnership") },
+    { value: "freelancer", label: t("freelancer") },
+    { value: "contractor", label: t("contractor") },
+  ]
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
     setError(null)
 
     if (!formData.registrationNumber.trim()) {
-      setError("Registration number is required")
+      setError(t("registrationRequired"))
       setIsLoading(false)
       return
     }
@@ -76,7 +78,7 @@ export function RegistrationForm({ userId }: RegistrationFormProps) {
       router.push("/boss/verify")
     } catch (err) {
       console.error("Registration error:", err)
-      setError("Failed to submit registration. Please try again.")
+      setError(t("failedSubmit"))
     } finally {
       setIsLoading(false)
     }
@@ -89,20 +91,20 @@ export function RegistrationForm({ userId }: RegistrationFormProps) {
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-accent/10">
             <Briefcase className="h-8 w-8 text-accent" />
           </div>
-          <CardTitle className="text-2xl">Boss Mode Registration</CardTitle>
+          <CardTitle className="text-2xl">{t("title")}</CardTitle>
           <CardDescription>
-            Enter your business registration number to verify your professional status
+            {t("description")}
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="registrationNumber">
-                Registration Number <span className="text-destructive">*</span>
+                {t("registrationNumber")} <span className="text-destructive">*</span>
               </Label>
               <Input
                 id="registrationNumber"
-                placeholder="e.g., CRO123456"
+                placeholder={t("registrationPlaceholder")}
                 value={formData.registrationNumber}
                 onChange={(e) =>
                   setFormData({ ...formData, registrationNumber: e.target.value })
@@ -110,15 +112,15 @@ export function RegistrationForm({ userId }: RegistrationFormProps) {
                 disabled={isLoading}
               />
               <p className="text-xs text-muted-foreground">
-                Your company registration number or business license ID
+                {t("registrationHelp")}
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="companyName">Company Name</Label>
+              <Label htmlFor="companyName">{t("companyName")}</Label>
               <Input
                 id="companyName"
-                placeholder="e.g., Acme Ltd"
+                placeholder={t("companyPlaceholder")}
                 value={formData.companyName}
                 onChange={(e) =>
                   setFormData({ ...formData, companyName: e.target.value })
@@ -128,7 +130,7 @@ export function RegistrationForm({ userId }: RegistrationFormProps) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="businessType">Business Type</Label>
+              <Label htmlFor="businessType">{t("businessType")}</Label>
               <Select
                 value={formData.businessType}
                 onValueChange={(value) =>
@@ -137,7 +139,7 @@ export function RegistrationForm({ userId }: RegistrationFormProps) {
                 disabled={isLoading}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select business type" />
+                  <SelectValue placeholder={t("selectBusinessType")} />
                 </SelectTrigger>
                 <SelectContent>
                   {businessTypes.map((type) => (
@@ -163,11 +165,11 @@ export function RegistrationForm({ userId }: RegistrationFormProps) {
               {isLoading ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Verifying...
+                  {t("verifying")}
                 </>
               ) : (
                 <>
-                  Verify Registration
+                  {t("verifyRegistration")}
                   <ArrowRight className="h-4 w-4" />
                 </>
               )}
