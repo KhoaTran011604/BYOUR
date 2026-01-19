@@ -376,14 +376,14 @@ export async function getFeatureRollout(featureId: string): Promise<FeatureRollo
     .from("feature_rollouts")
     .select("*")
     .eq("feature_name", feature.name)
-    .single()
+    .maybeSingle()
 
-  if (error) {
+  if (error && error.code !== "PGRST116") {
     console.error("Error fetching feature rollout:", error)
     return null
   }
 
-  return data
+  return data || null
 }
 
 export async function getTestChecklists(featureId: string): Promise<ShaperTestChecklist[]> {

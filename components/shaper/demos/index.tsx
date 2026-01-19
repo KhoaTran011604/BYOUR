@@ -25,7 +25,7 @@ const GenericDemo = dynamic(() => import("./generic-demo").then((m) => m.Generic
 
 // Registry of available demo components
 const DEMO_REGISTRY: Record<string, ComponentType<DemoComponentProps>> = {
-  "hq-rating": HQRatingDemo,
+  "test-002": HQRatingDemo,
   "boss-skills-tags": BossSkillsTagsDemo,
   generic: GenericDemo,
 }

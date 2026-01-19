@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Users, Settings, Shield } from "lucide-react"
+import { LayoutDashboard, Users, Settings, Shield, FlaskConical } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
   Sidebar,
@@ -26,6 +26,11 @@ const menuItems = [
     title: "Shaper Requests",
     href: "/admin/requests",
     icon: Users,
+  },
+  {
+    title: "Testing Features",
+    href: "/admin/features",
+    icon: FlaskConical,
   },
   {
     title: "Settings",
