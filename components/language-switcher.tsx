@@ -18,6 +18,8 @@ const localeNames: Record<Locale, string> = {
   vi: 'Tiếng Việt',
 }
 
+const LOCALE_COOKIE_NAME = 'preferred-locale'
+
 export function LanguageSwitcher() {
   const locale = useLocale() as Locale
   const router = useRouter()
@@ -25,6 +27,8 @@ export function LanguageSwitcher() {
   const [isPending, startTransition] = useTransition()
 
   const switchLocale = (newLocale: Locale) => {
+    // Lưu vào cookie (middleware sẽ đọc cookie này)
+    document.cookie = `${LOCALE_COOKIE_NAME}=${newLocale};path=/;max-age=31536000`
     startTransition(() => {
       router.replace(pathname, { locale: newLocale })
     })

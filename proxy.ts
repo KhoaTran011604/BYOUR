@@ -12,19 +12,15 @@ function getLocaleFromPath(pathname: string): string | null {
   return null
 }
 
-function getPreferredLocale(request: NextRequest): string {
-  const acceptLanguage = request.headers.get('Accept-Language')
-  if (acceptLanguage) {
-    const preferredLocales = acceptLanguage
-      .split(',')
-      .map(lang => lang.split(';')[0].trim().substring(0, 2))
+const LOCALE_COOKIE_NAME = 'preferred-locale'
 
-    for (const locale of preferredLocales) {
-      if (locales.includes(locale as any)) {
-        return locale
-      }
-    }
+function getPreferredLocale(request: NextRequest): string {
+  // Ưu tiên đọc từ cookie
+  const cookieLocale = request.cookies.get(LOCALE_COOKIE_NAME)?.value
+  if (cookieLocale && locales.includes(cookieLocale as any)) {
+    return cookieLocale
   }
+
   return defaultLocale
 }
 
