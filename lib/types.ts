@@ -459,6 +459,8 @@ export interface ShaperTestingFeature {
   bugs_count: number
   test_url: string | null
   docs_url: string | null
+  demo_component: string | null // Component key for embedded demo (e.g., "hq-rating", "boss-feedback")
+  demo_instructions: string | null // Instructions for using the demo
   created_at: string
 }
 
@@ -514,6 +516,83 @@ export interface ShaperProfile {
   rejection_reason: string | null
   badge_level: "bronze" | "silver" | "gold" | "platinum"
   contribution_points: number
+  created_at: string
+  updated_at: string
+}
+
+// ==================== FEATURE ROLLOUT TYPES ====================
+
+export type FeatureRolloutStatus =
+  | "testing"
+  | "ready_for_review"
+  | "approved"
+  | "rolling_out"
+  | "fully_released"
+  | "paused"
+
+export interface FeatureRollout {
+  id: string
+  feature_key: string
+  feature_name: string
+  description: string | null
+  enabled_for_shapers: boolean
+  enabled_for_boss: boolean
+  enabled_for_hq: boolean
+  enabled_for_all: boolean
+  rollout_percentage: number
+  min_tests_required: number
+  min_success_rate: number
+  current_tests_count: number
+  current_success_count: number
+  status: FeatureRolloutStatus
+  testing_started_at: string
+  approved_at: string | null
+  boss_enabled_at: string | null
+  hq_enabled_at: string | null
+  fully_released_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface ShaperTestChecklist {
+  id: string
+  feature_id: string
+  title: string
+  description: string | null
+  test_steps: string[]
+  expected_result: string
+  order_index: number
+  is_critical: boolean
+  created_at: string
+}
+
+export interface ShaperTestResult {
+  id: string
+  test_history_id: string
+  checklist_id: string
+  user_id: string
+  passed: boolean
+  actual_result: string | null
+  notes: string | null
+  screenshot_url: string | null
+  tested_at: string
+}
+
+export interface ShaperFeatureFeedback {
+  id: string
+  test_history_id: string
+  feature_id: string
+  user_id: string
+  overall_rating: number | null
+  recommend_release: boolean | null
+  usability_score: number | null
+  performance_score: number | null
+  design_score: number | null
+  pros: string | null
+  cons: string | null
+  suggestions: string | null
+  would_use_as_boss: boolean | null
+  would_use_as_hq: boolean | null
   created_at: string
   updated_at: string
 }

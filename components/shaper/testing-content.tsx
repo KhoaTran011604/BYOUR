@@ -145,23 +145,11 @@ export function TestingContent({
                       </div>
 
                       <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          className="flex-1"
-                          asChild={!!feature.test_url}
-                          disabled={!feature.test_url}
-                        >
-                          {feature.test_url ? (
-                            <Link href={feature.test_url}>
-                              <Play className="mr-1 h-3 w-3" />
-                              Start Testing
-                            </Link>
-                          ) : (
-                            <>
-                              <Play className="mr-1 h-3 w-3" />
-                              Start Testing
-                            </>
-                          )}
+                        <Button size="sm" className="flex-1" asChild>
+                          <Link href={`/shaper/testing/${feature.id}`}>
+                            <Play className="mr-1 h-3 w-3" />
+                            Start Testing
+                          </Link>
                         </Button>
                         <Button
                           size="sm"

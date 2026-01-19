@@ -157,6 +157,8 @@ export const mockTestingFeatures: ShaperTestingFeature[] = [
     bugs_count: 3,
     test_url: "/builder/new?template=portfolio-pro-beta",
     docs_url: "/docs/templates/portfolio-pro",
+    demo_component: null,
+    demo_instructions: "Truy cập URL test để xem và thử nghiệm template mới.",
     created_at: "2024-01-05T00:00:00Z",
   },
   {
@@ -170,6 +172,8 @@ export const mockTestingFeatures: ShaperTestingFeature[] = [
     bugs_count: 1,
     test_url: "/builder/test-dnd",
     docs_url: "/docs/builder/drag-drop",
+    demo_component: null,
+    demo_instructions: "Truy cập URL test và thử kéo thả các block.",
     created_at: "2024-01-03T00:00:00Z",
   },
   {
@@ -183,6 +187,8 @@ export const mockTestingFeatures: ShaperTestingFeature[] = [
     bugs_count: 7,
     test_url: "/builder/test-ai",
     docs_url: "/docs/ai/content-generator",
+    demo_component: null,
+    demo_instructions: "Truy cập URL test và thử tạo nội dung bằng AI.",
     created_at: "2024-01-10T00:00:00Z",
   },
   {
@@ -196,7 +202,24 @@ export const mockTestingFeatures: ShaperTestingFeature[] = [
     bugs_count: 0,
     test_url: "/builder/test-i18n",
     docs_url: "/docs/i18n/setup",
+    demo_component: null,
+    demo_instructions: "Truy cập URL test và thử đổi ngôn ngữ.",
     created_at: "2024-01-01T00:00:00Z",
+  },
+  {
+    id: "test-005",
+    name: "HQ Rating for Boss",
+    description: "Cho phép Boss đánh giá HQ sau khi hoàn thành dự án.",
+    version: "v2.9.0-beta",
+    status: "testing",
+    due_date: "2024-03-01",
+    testers_count: 0,
+    bugs_count: 0,
+    test_url: null,
+    docs_url: "/docs/features/hq-rating",
+    demo_component: "hq-rating",
+    demo_instructions: "Thử nghiệm tính năng đánh giá Boss ngay trong trang này.",
+    created_at: "2024-02-01T00:00:00Z",
   },
 ]
 

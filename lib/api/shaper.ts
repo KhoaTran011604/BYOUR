@@ -8,6 +8,10 @@ import type {
   ShaperUpcomingRelease,
   ShaperStats,
   ShaperFeedbackType,
+  ShaperTestChecklist,
+  ShaperTestResult,
+  ShaperFeatureFeedback,
+  FeatureRollout,
 } from "@/lib/types"
 
 // ==================== SHAPER PROFILE ====================
@@ -352,4 +356,240 @@ export async function getUpcomingReleases(): Promise<ShaperUpcomingRelease[]> {
   }
 
   return data || []
+}
+
+// ==================== FEATURE ROLLOUT & TEST FLOW ====================
+
+export async function getFeatureRollout(featureId: string): Promise<FeatureRollout | null> {
+  const supabase = await createClient()
+
+  // Get feature name first to match with rollout
+  const { data: feature } = await supabase
+    .from("shaper_testing_features")
+    .select("name")
+    .eq("id", featureId)
+    .single()
+
+  if (!feature) return null
+
+  const { data, error } = await supabase
+    .from("feature_rollouts")
+    .select("*")
+    .eq("feature_name", feature.name)
+    .single()
+
+  if (error) {
+    console.error("Error fetching feature rollout:", error)
+    return null
+  }
+
+  return data
+}
+
+export async function getTestChecklists(featureId: string): Promise<ShaperTestChecklist[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("shaper_test_checklists")
+    .select("*")
+    .eq("feature_id", featureId)
+    .order("order_index", { ascending: true })
+
+  if (error) {
+    console.error("Error fetching test checklists:", error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function getTestResultsForHistory(testHistoryId: string): Promise<ShaperTestResult[]> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("shaper_test_results")
+    .select("*")
+    .eq("test_history_id", testHistoryId)
+
+  if (error) {
+    console.error("Error fetching test results:", error)
+    return []
+  }
+
+  return data || []
+}
+
+export async function submitTestResult(
+  testHistoryId: string,
+  checklistId: string,
+  userId: string,
+  passed: boolean,
+  actualResult?: string,
+  notes?: string
+): Promise<{ success: boolean; data?: ShaperTestResult; error?: string }> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("shaper_test_results")
+    .upsert(
+      {
+        test_history_id: testHistoryId,
+        checklist_id: checklistId,
+        user_id: userId,
+        passed,
+        actual_result: actualResult || null,
+        notes: notes || null,
+      },
+      { onConflict: "test_history_id,checklist_id" }
+    )
+    .select()
+    .single()
+
+  if (error) {
+    console.error("Error submitting test result:", error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true, data }
+}
+
+export async function getFeatureFeedback(
+  testHistoryId: string
+): Promise<ShaperFeatureFeedback | null> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("shaper_feature_feedback")
+    .select("*")
+    .eq("test_history_id", testHistoryId)
+    .single()
+
+  if (error && error.code !== "PGRST116") {
+    console.error("Error fetching feature feedback:", error)
+    return null
+  }
+
+  return data || null
+}
+
+export async function submitFeatureFeedback(
+  testHistoryId: string,
+  featureId: string,
+  userId: string,
+  feedback: {
+    overall_rating: number
+    recommend_release: boolean
+    usability_score: number
+    performance_score: number
+    design_score: number
+    pros?: string
+    cons?: string
+    suggestions?: string
+    would_use_as_boss?: boolean
+    would_use_as_hq?: boolean
+  }
+): Promise<{ success: boolean; data?: ShaperFeatureFeedback; error?: string }> {
+  const supabase = await createClient()
+
+  const { data, error } = await supabase
+    .from("shaper_feature_feedback")
+    .upsert(
+      {
+        test_history_id: testHistoryId,
+        feature_id: featureId,
+        user_id: userId,
+        ...feedback,
+      },
+      { onConflict: "test_history_id,feature_id" }
+    )
+    .select()
+    .single()
+
+  if (error) {
+    console.error("Error submitting feature feedback:", error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true, data }
+}
+
+export async function completeFeatureTest(
+  testHistoryId: string,
+  featureId: string,
+  passedCount: number,
+  totalCount: number,
+  recommendRelease: boolean
+): Promise<{ success: boolean; error?: string }> {
+  const supabase = await createClient()
+
+  const { error } = await supabase.rpc("complete_feature_test", {
+    p_test_history_id: testHistoryId,
+    p_feature_id: featureId,
+    p_passed_count: passedCount,
+    p_total_count: totalCount,
+    p_recommend_release: recommendRelease,
+  })
+
+  if (error) {
+    console.error("Error completing feature test:", error)
+    return { success: false, error: error.message }
+  }
+
+  return { success: true }
+}
+
+export async function getOrCreateTestHistory(
+  userId: string,
+  featureId: string
+): Promise<{ data: ShaperTestHistory | null; isNew: boolean; error?: string }> {
+  const supabase = await createClient()
+
+  // Check for existing in-progress test
+  const { data: existing } = await supabase
+    .from("shaper_test_history")
+    .select(`
+      *,
+      shaper_testing_features:feature_id (name)
+    `)
+    .eq("user_id", userId)
+    .eq("feature_id", featureId)
+    .eq("status", "in_progress")
+    .single()
+
+  if (existing) {
+    return {
+      data: {
+        ...existing,
+        feature_name: existing.shaper_testing_features?.name || "Unknown Feature",
+      },
+      isNew: false,
+    }
+  }
+
+  // Create new test history
+  const { data, error } = await supabase
+    .from("shaper_test_history")
+    .insert({
+      user_id: userId,
+      feature_id: featureId,
+      status: "in_progress",
+    })
+    .select(`
+      *,
+      shaper_testing_features:feature_id (name)
+    `)
+    .single()
+
+  if (error) {
+    console.error("Error creating test history:", error)
+    return { data: null, isNew: false, error: error.message }
+  }
+
+  return {
+    data: {
+      ...data,
+      feature_name: data.shaper_testing_features?.name || "Unknown Feature",
+    },
+    isNew: true,
+  }
 }
